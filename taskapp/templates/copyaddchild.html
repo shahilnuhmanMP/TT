@@ -1,0 +1,150 @@
+
+{% extends 'header.html' %}
+{% block content %}
+<style>
+    body {
+      margin: 85px;
+      padding: 0;
+      height: 60vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+
+    }
+
+
+    .add-child-tile {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .add-child-tile button {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px solid #4CAF50;
+      color: #4CAF50;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+
+    }
+    .content-container {
+    margin-top: 60px; /* Adjust based on your header height */
+  }
+    form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+</style>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Child</title>
+
+    <!-- Include chosen.js library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+
+    <script>
+        // Initialize chosen.js for the interests dropdown with checkboxes
+        $(document).ready(function () {
+            $('#id_interests').chosen({
+                placeholder_text_multiple: 'Select interests',
+                width: '100%',
+                max_selected_options: 10, // Set the maximum number of selected options if needed
+            });
+        });
+    </script>
+</head>
+<body>
+
+<div class="content-container">
+    <div class="add-child-tile">
+        <form method="post" action="{% url 'add_child' %}">
+            {% csrf_token %}
+
+            <!-- Name Field -->
+            <div>
+                <label for="id_name">Name:</label>
+            </div>
+            <div>
+                <input type="text" name="name" id="id_name" required>
+            </div>
+
+            <!-- Gender Field as Bubble Select -->
+            <div>
+                <label for="id_gender">Gender:</label>
+            </div>
+            <div>
+                <select class="gender-select" name="gender" id="id_gender" required>
+                    <option value="M">Boy</option>
+                    <option value="F">Girl</option>
+                </select>
+            </div>
+
+            <!-- Date of Birth (dob) Field -->
+            <div>
+                <label for="id_dob">Date of Birth:</label>
+            </div>
+            <div>
+                <input type="date" name="dob" id="id_dob">
+            </div>
+
+            <!-- Interests Field as dropdown with multiple choices -->
+            <div>
+                <label for="id_interests">Interests:</label>
+            </div>
+            <div>
+                <select multiple name="interests" id="id_interests">
+                    <option value="playing">Playing</option>
+                    <option value="reading">Reading</option>
+                    <option value="drawing">Drawing</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+
+
+
+            <div>
+                <button type="submit">Add Child</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+{% endblock %}
+
+

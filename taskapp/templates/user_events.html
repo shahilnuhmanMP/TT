@@ -1,0 +1,114 @@
+<!-- user_events.html -->
+{% extends 'header.html' %}
+
+{% block content %}
+<head>
+    <title>Events</title>
+    <style>
+        .event-container {
+            position: relative; /* Make the container relative for absolute positioning */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 5px;
+        }
+
+        .event-tile {
+            position: relative; /* Make the tile relative for absolute positioning of the cover slider */
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            width: 200px; /* Set the width of each tile as needed */
+            text-align: center;
+            transition: box-shadow 0.3s; /* Smooth transition for the hover effect */
+        }
+
+        .event-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .event-details {
+            margin-top: 5px;
+        }
+
+        /* Customize link styles */
+        .event-container a {
+            text-decoration: none; /* Remove underline */
+            color: blue; /* Change link color */
+        }
+
+        /* Change link color when hovered */
+        .event-container a:hover {
+            color: darkblue; /* Change link color on hover */
+        }
+
+        /* Add hover effect to event tiles */
+        .event-tile:hover {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+        }
+
+        /* Cover slider style */
+        .cover-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.5); /* Low opaque white cover */
+            opacity: 0; /* Initially hidden */
+            transition: opacity 0.3s; /* Smooth transition for opacity */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .event-tile:hover .cover-slider {
+            opacity: 1; /* Show cover slider on hover */
+        }
+
+        .cover-slider-text {
+            font-weight: bold;
+            color: blue;
+        }
+        @media (max-width: 768px) {
+            /* Adjust styles for smaller screens */
+            #events {
+                margin: 20% auto 10px;
+                height: auto; /* Adjust height for smaller screens */
+            }
+    </style>
+</head>
+<body>
+<div id="events">
+    <h1>My Events</h1>
+
+    <div class="event-container">
+        {% for event in events %}
+        <a href="{% url 'fee_payment' event.id %}">
+            <div class="event-tile" style="background-color: {{ event.child.color_code }};">
+                <div class="event-header">{{ event.summary }}</div>
+                <div class="event-details">
+                    <p class="event-header">{{ event.child.name }}</p>
+                    {% if event.repeat == "custom" %}
+                    <p>Repeat: {{ event.custom_repeat_days }}</p>
+                    {% else %}
+                    <p>Repeat: {{ event.repeat }}</p>
+                    {% endif %}
+                </div>
+                <div class="cover-slider">
+                    <span class="cover-slider-text">Mark Payment</span>
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+</body>
+
+
+{% endblock %}
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

@@ -1,0 +1,171 @@
+{% extends 'header.html' %}
+
+{% block content %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 80%;
+            max-width: 1200px;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .left, .right {
+            flex: 1;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        .left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .right {
+            background-color: #00c9a7;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        /*h1 {*/
+        /*    margin: 0 0 20px;*/
+        /*    font-size: 24px;*/
+        /*}*/
+        .social-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .social-container a {
+            border: 1px solid #ddd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        .form-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #00c9a7;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #00b89c;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        .right h2 {
+            font-size: 28px;
+        }
+        .right button {
+            background-color: transparent;
+            border: 2px solid white;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .right button:hover {
+            background-color: white;
+            color: #00c9a7;
+        }
+
+        /* Media queries for mobile view */
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 250px;
+                flex-direction: column;
+                width: 90%;
+            }
+            .left, .right {
+                padding: 20px;
+            }
+            .right {
+                text-align: center;
+            }
+            .right h2 {
+                font-size: 24px;
+            }
+            .right button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left">
+            <h1>CompanyName</h1>
+            <h1>Sign in to Account</h1>
+            <div class="social-container">
+                <a href="#">f</a>
+                <a href="#">in</a>
+                <a href="#">G+</a>
+            </div>
+            <p>or use your email account</p>
+            <div class="form-container">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label><input type="checkbox"> Remember me</label>
+                    <a href="#" style="color: #333; text-decoration: none;">Forgot Password?</a>
+                </div>
+                <button>Sign In</button>
+            </div>
+            <div class="footer">
+                <a href="#" style="color: #333; text-decoration: none;">Privacy Policy</a> &middot;
+                <a href="#" style="color: #333; text-decoration: none;">Terms & Conditions</a>
+            </div>
+        </div>
+        <div class="right">
+            <h2>Hello, Friend!</h2>
+            <p>Fill up personal information and start journey with us.</p>
+            <button>Sign Up</button>
+        </div>
+    </div>
+</body>
+{% endblock %}
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

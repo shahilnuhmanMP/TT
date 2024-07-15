@@ -1,0 +1,247 @@
+{% extends 'header.html' %}
+
+{% block content %}
+
+<title>Fee Payment</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    form {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        margin: 0 auto 20px auto;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666;
+    }
+
+    input[type="number"],
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+
+    #month,
+    #quarterly {
+        display: none;
+    }
+
+    .option-container {
+        margin-bottom: 15px;
+    }
+
+    .toggle-label {
+        color: #333;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .tile {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 0 auto 10px auto;
+        max-width: 400px;
+        color: #333;
+    }
+
+    .tile h2 {
+        margin: 0 0 10px 0;
+        font-size: 18px;
+    }
+
+    .tile p {
+        margin: 5px 0;
+        font-size: 16px;
+    }
+
+    .error {
+        color: red;
+        text-align: center;
+    }
+
+    .custom-dropdown {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .dropdown-button {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: white;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        width: 100%;
+        border-radius: 5px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .dropdown-content label {
+        display: block;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .dropdown-content label:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+<script>
+    function togglePaymentDateInput(feeType) {
+        const occurrenceInput = document.getElementById('occurrence');
+        const monthInput = document.getElementById('month');
+        const quarterlyInput = document.getElementById('quarterly');
+
+        if (feeType === 'monthly') {
+            occurrenceInput.style.display = 'none';
+            monthInput.style.display = 'block';
+            quarterlyInput.style.display = 'none';
+        } else if (feeType === 'Quarterly') {
+            occurrenceInput.style.display = 'none';
+            monthInput.style.display = 'none';
+            quarterlyInput.style.display = 'block';
+        } else {
+            occurrenceInput.style.display = 'block';
+            monthInput.style.display = 'none';
+            quarterlyInput.style.display = 'none';
+        }
+    }
+
+    function toggleDropdown(dropdownId) {
+        const dropdown = document.getElementById(dropdownId);
+        if (dropdown.style.display === "none" || dropdown.style.display === "") {
+            dropdown.style.display = "block";
+        } else {
+            dropdown.style.display = "none";
+        }
+    }
+
+    function updateSelectedOptions(dropdownId, inputId) {
+        const checkboxes = document.querySelectorAll(`#${dropdownId} input[type="checkbox"]`);
+        const selectedOptions = [];
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                selectedOptions.push(checkbox.value);
+            }
+        });
+        document.getElementById(inputId).value = selectedOptions.join(', ');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const feeType = "{{ event.fee_date }}";
+        togglePaymentDateInput(feeType);
+
+        document.getElementById('fee-payment-form').addEventListener('submit', function () {
+            updateSelectedOptions('quarterly_dropdown', 'selected_months');
+        });
+    });
+</script>
+
+<body>
+<h1>Fee Payment for {{ event.summary }} - {{ event.child.name }}</h1>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" id="fee-payment-form">
+        {% csrf_token %}
+        <div class="option-container" id="occurrence">
+            <label for="payment_date" class="toggle-label">Select Occurrence:</label>
+            <select name="payment_date" id="occurrence_date">
+                {% for occurrence in occurrences %}
+                    <option value="{{ occurrence }}" {% if occurrence in paid_dates %}disabled{% endif %}>{{ occurrence }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="option-container" id="month" style="display:none;">
+            <label for="payment_month" class="toggle-label">Select Month:</label>
+            <select name="payment_month" id="payment_month">
+                {% for month in occurrence_months %}
+                    <option value="{{ month }}" {% if month in paid_dates %}disabled{% endif %}>{{ month }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="option-container" id="quarterly" style="display:none;">
+            <label for="payment_months" class="toggle-label">Select 3 Months:</label>
+            <div class="custom-dropdown">
+                <input type="text" id="selected_months_display" readonly class="dropdown-button" onclick="toggleDropdown('quarterly_dropdown')">
+                <div id="quarterly_dropdown" class="dropdown-content">
+                    {% for month in occurrence_months %}
+                        <label>
+                            <input type="checkbox" name="quarterly_months" value="{{ month }}" onclick="updateSelectedOptions('quarterly_dropdown', 'selected_months_display')" {% if month in paid_dates %}disabled{% endif %}>
+                            {{ month }}
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <input type="hidden" name="selected_months" id="selected_months">
+        </div>
+
+        <label for="paid_amount">Paid Amount:</label>
+        <input type="number" name="paid_amount" id="paid_amount" step="0.01" required>
+        <br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if sorted_payment_entries %}
+        <div class="tile">
+            <h2>Paid Fees Details</h2>
+            {% for entry in sorted_payment_entries %}
+                <p><strong>Date:</strong> {{ entry.payment_date }} - <strong>Amount:</strong> {{ entry.paid_amount }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+</body>
+
+{% endblock %}
+
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

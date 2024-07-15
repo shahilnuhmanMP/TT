@@ -1,0 +1,17 @@
+<!-- add_class.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add necessary meta tags and CSS links -->
+</head>
+<body>
+    <div class="container">
+        <h1>Add Class</h1>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

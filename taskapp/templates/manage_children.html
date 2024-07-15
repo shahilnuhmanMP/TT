@@ -1,0 +1,355 @@
+<!-- taskapp/templates/manage_children.html -->
+
+{% extends 'header.html' %}
+{% load static tailwind_tags %}
+{% block content %}
+
+<head>
+  {% tailwind_css %}
+</head>
+<style>
+  body{
+    background: linear-gradient(149deg, rgba(255, 255, 255, 1) 0%, rgba(234, 255, 253, 1) 45%, rgba(255, 255, 255, 1) 100%);
+  }
+  .child-tile
+  {
+    background-color:white;
+    border-left:7px solid red;
+ 
+    
+ 
+  }
+  .color-plate {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .color {
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+        cursor: pointer;
+        border: 1px solid #000;
+        position: relative;
+    }
+
+    .color.selected::after {
+        content: '✓';
+        color: white;
+        font-size: 24px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+</style>
+
+<body  class=" h-full w-full">
+
+  <!--For showing Model when adding community and children  -->
+  <div id="comModal" class="h-full w-full bg-black absolute flex justify-center items-center " style="display: none; background-color: rgba(0, 0, 0, 0.5);">
+    <div class="h-[60%] w-[100%]  lg:w-[40%] bg-white rounded-xl flex flex-col p-4">
+      <div class="flex flex-row justify-between">
+          <h1 class="font-bold text-xl">Add Trusted Person</h1>
+          <h1 onclick="closeComModal()" class="font-bold">X</h1>
+      </div>
+      <div class="mt-5">
+ 
+        <form method="post" action="{% url 'add_trusted_person' %}">
+            {% csrf_token %}
+
+
+            <input name="name" placeholder="Name"
+            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+
+
+            <input name="relation" placeholder="Relation"
+            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+
+            <!-- <label for="{{ form.phone_country_code.id_for_label }}">Country Code</label>
+
+            {{ form.phone_country_code }} -->
+            <input name="phone_country_code" placeholder="Country Code"
+            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+
+
+
+            <input name="phone_number" placeholder="Contact" 
+            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+           
+          
+            <button type="submit"  class="bg-[blue] text-white p-2 font-bold rounded-lg mt-5">Add Trusted Person</button>
+        </form>
+      </div>
+
+    </div>
+</div>
+
+  <div id="childModal" class="h-full w-full bg-black  absolute flex justify-center items-center mt-5 " style="display: none; background-color: rgba(0, 0, 0, 0.5);">
+        <div class="h-auto w-[100%]  lg:w-[40%] bg-white rounded-xl flex flex-col p-4">
+          <div class="flex flex-row justify-between">
+            <h1 class="font-bold text-xl">Add Child</h1>
+            <h1 onclick="closeChildModal()" class="font-bold">X</h1>
+        </div>
+        <div class="mt-5">
+          <form method="post" class="flex flex-col items-start" action="{% url 'add_child' %}">
+            {% csrf_token %}
+
+            <input name="name" placeholder="Name"
+            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+
+           
+
+            <div  class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;">
+                <select class="gender-select w-full bg-transparent border-0" name="gender" id="id_gender" required>
+                    <option value="M">Boy</option>
+                    <option value="F">Girl</option>
+                </select>
+            </div>
+
+            <div class="mt-3">
+                <label for="id_dob " class="font-bold">Date of Birth:</label>
+            </div>
+            <div class="w-full">
+                <input type="date"  name="dob" id="id_dob" required   class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;" />
+                <div id="dob-error" class="alert error" style="display: none;">Date of Birth cannot be greater than current date.</div>
+            </div>
+
+            <script>
+                var dobInput = document.getElementById('id_dob');
+
+                dobInput.addEventListener('change', function() {
+                    var selectedDate = new Date(this.value);
+                    var currentDate = new Date();
+
+                    if (selectedDate > currentDate) {
+                        document.getElementById('dob-error').style.display = 'block';
+                        this.value = '';
+                    } else {
+                        document.getElementById('dob-error').style.display = 'none';
+                    }
+                });
+            </script>
+
+            <div class="mt-3">
+                <label for="id_interests" class="font-bold">Interests:</label>
+            </div>
+            <div    class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;" >
+                <select  name="interests" id="id_interests" class=" w-full bg-transparent border-0">
+                    <option value="music">Music</option>
+                    <option value="sports">Sports</option>
+                    <option value="artcraft">Arts & Crafts</option>
+                    <option value="movement">Movement</option>
+                    <option value="educational">Educational</option>
+                    <option value="boardgame">Board Games</option>
+                    <option value="weekend">Weekend Activities / Adventure</option>
+                </select>
+            </div>
+
+            <input type="hidden" name="color_code" id="color_code" required>
+            <div class=" flex flex-row items-center mt-3 ">
+                <label for="id_color" class="font-bold mr-4">Color:</label>
+                <div class="color-plate flex flex-row justify-center" name="color">
+                  <div class="color" style="background-color: rgba(254, 188, 200, 1);" onclick="selectColor('rgba(254, 188, 200, 1)', this)"></div>
+                  <div class="color" style="background-color: rgba(255, 238, 147, 1);" onclick="selectColor('rgba(255, 238, 147, 1)', this)"></div>
+                  <div class="color" style="background-color: rgba(173, 247, 182, 1);" onclick="selectColor('rgba(173, 247, 182, 1)', this)"></div>
+                  <div class="color" style="background-color: rgba(189, 178, 255, 1);" onclick="selectColor('rgba(189, 178, 255, 1)', this)"></div>
+                  <div class="color" style="background-color: rgba(151, 236, 241, 1);" onclick="selectColor('rgba(151, 236, 241, 1)', this)"></div>
+                  <div class="color" style="background-color: rgba(255, 193, 7, 1);" onclick="selectColor('rgba(255, 193, 7, 1)', this)"></div>
+  
+              </div>
+            </div>
+          
+
+            <script>
+                function selectColor(color, element) {
+                    var colors = document.querySelectorAll('.color');
+                    colors.forEach(function(colorDiv) {
+                        colorDiv.classList.remove('selected');
+                    });
+
+                    element.classList.add('selected');
+                    document.getElementById('color_code').value = color;
+                    document.getElementById('selected-color-info').innerText = 'Selected Color: ' + color;
+                }
+            </script>
+
+            <div>
+                <button type="submit"  class="bg-[blue] text-white p-2 font-bold rounded-lg mt-5">Add Child</button>
+            </div>
+        </form>
+        </div>
+        </div>
+  </div>
+  <!--  -->
+
+
+  <div  style=" align-items: center; " class="h-full w-full mt-20 flex flex-col lg:flex-row">
+
+
+
+        <div class="flex flex-col items-start w-full  lg:w-[50%] h-full p-4 lg:p-10 ">
+
+                <div class="flex flex-row items-center">
+                  <h2 class="text-black font-bold  text-3xl mr-3">Manage Children</h2>
+               
+                  <img onclick="openChildModal()" src="{% static 'taskapp/images/add-button.png' %}" class="h-[30px] w-[30px] mr-5 "/>
+             
+                </div>
+              
+
+                <!-- Display existing children in tiles -->
+                <div class="child-tiles w-full mt-5 flex flex-col items-center  lg:items-start" >
+                    {% for child in user_children %}
+                        <div class="child-tile flex  flex-row shadow-xl w-[90%] rounded-xl items-center mt-3 p-3 ">
+                          <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
+                            <h3 class="font-bold">{{ child.name }}</h3>
+                            <!-- <button button class="delete-button"    onclick="confirmDelete('{{ child.name }}', '/children/{{ child.id }}/')">Delete</button> -->
+
+                         <!-- Add more details if needed -->
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Add Child button -->
+                
+              
+        </div>
+
+        <div class="   h-[80%] w-[2px] bg-gray-200 hidden lg:block">
+
+        </div>
+
+     
+        <div class="flex flex-col w-full  lg:w-[50%] h-full p-4 lg:p-10 ">
+              <div class="flex flex-row items-center">
+                <h2 class="text-black font-bold  text-3xl mr-3">Manage Community</h2>
+          
+                    <img onclick="openCommunityModal()" src="{% static 'taskapp/images/add-button.png' %}" class="h-[30px] w-[30px] mr-5 "/>
+                
+              </div>
+    
+              {% if trusted_people %}
+              <div class="child-tiles w-full mt-5 flex flex-col items-center  lg:items-start ">
+
+                {% for person in trusted_people %}
+                  <div class="child-tile flex flex-row shadow-xl w-[90%] rounded-xl items-center mt-3 p-3 ">
+                    <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
+                    <h4 class="font-bold">{{ person.name }}- {{ person.relation }} - {{ person.phone_number }}</h4>
+                    <!-- <button class="delete-button" onclick="confirmDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')"">Delete</button> -->
+                  </div>
+                {% endfor %}
+              </div>
+
+
+               {% else %}
+              <!-- <div>
+                <div>
+                   <p style=" align-content: inherit">Add Members to Community </p>
+
+                    
+
+                    
+                      <button class="add-trusted-person-button" onclick="location.href=`{% url 'add_trusted_person' %}`">
+                        <i class="fas fa-plus-circle"></i>Add
+                      </button>
+                </div>
+              </div> -->
+
+              {% endif %}
+            </div>
+            
+
+        <script>
+          function confirmDelete(itemName, url) {
+            if (confirm(`Do you want to delete ${itemName}?`)) {
+              // If user confirms, send a DELETE request to the API
+              fetch(url, {
+                method: 'DELETE',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token for security
+                }
+              })
+                .then(response => {
+                  if (response.ok) {
+                    // Reload the page to reflect the changes after successful deletion
+                    window.location.reload();
+                  } else {
+                    // Handle errors if any
+                    console.error(`Failed to delete ${itemName}`);
+                  }
+                })
+                .catch(error => {
+                  console.error('Error:', error);
+                });
+            }
+          }
+        </script>
+
+
+
+<script>
+
+  function openCommunityModal()
+  {
+      var ele=document.getElementById("comModal");
+      ele.style.display="flex"
+  }
+  function closeComModal()
+  {
+     var ele=document.getElementById("comModal");
+      ele.style.display="none"
+  }
+  function openChildModal()
+  {
+      var ele=document.getElementById("childModal");
+      ele.style.display="flex"
+  }
+  function closeChildModal()
+  {
+     var ele=document.getElementById("childModal");
+      ele.style.display="none"
+  }
+
+
+  function confirmDelete(childName, childId) {
+    const url = `/children/${childId}/`;
+    console.log("Delete URL:", url); // Print the URL for debugging
+    if (confirm(`Do you want to delete ${childName}?`)) {
+      // If user confirms, send a DELETE request to the API
+      fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token for security
+        }
+      })
+        .then(response => {
+          if (response.ok) {
+            // Reload the page to reflect the changes after successful deletion
+            window.location.reload();
+          } else {
+            // Handle errors if any
+            console.error(`Failed to delete ${childName}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+  }
+</script>
+</div>
+
+</body>
+
+
+
+{% endblock %}
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

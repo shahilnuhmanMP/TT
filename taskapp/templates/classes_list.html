@@ -1,0 +1,45 @@
+<!-- classes_list.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add necessary meta tags and CSS links -->
+</head>
+<body>
+    <div class="container">
+        <h1>Classes</h1>
+
+
+
+
+        <div class="row justify-content-center">
+            {% for class_item in classes %}
+
+            <div class="class-tile" style="background-image: url('{{ class_item.image.url }}');" onclick="navigateToDetails('{{ class_item.id }}')">
+                <h6>{{ class_item.title }}</h6>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function navigateToDetails(classId) {
+            window.location.href = '/class-details/' + classId; // Redirect to class details page
+        }
+    </script>
+</body>
+</html>
+
+
+<!--        {% if classes %}-->
+<!--            <p>Classes Exist: {{ classes }}</p>-->
+<!--            <div class="row justify-content-center">-->
+<!--                {% for class_item in classes %}-->
+<!--                    <h3>hhhhh</h3>-->
+<!--                    <div class="class-tile" style="background-image: url('{{ class_item.image.url }}');" onclick="navigateToDetails('{{ class_item.id }}')">-->
+<!--                        <h2>{{ class_item.title }}</h2>-->
+<!--                    </div>-->
+<!--                {% endfor %}-->
+<!--            </div>-->
+<!--        {% else %}-->
+<!--            <p>No Classes Found</p>-->
+<!--        {% endif %}-->

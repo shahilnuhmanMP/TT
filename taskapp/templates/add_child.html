@@ -1,0 +1,227 @@
+{% extends 'header.html' %}
+{% block content %}
+<style>
+    body {
+        margin: 85px;
+        padding: 0;
+        height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .add-child-tile {
+        text-align: center;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .add-child-tile button {
+        margin-top: 15px;
+        padding: 10px;
+        border: 1px solid #4CAF50;
+        color: #4CAF50;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .content-container {
+        margin-top: 60px; /* Adjust based on your header height */
+    }
+
+    form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .color-plate {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .color {
+        width: 50px;
+        height: 50px;
+        cursor: pointer;
+        border: 1px solid #000;
+        position: relative;
+    }
+
+    .color.selected::after {
+        content: '✓';
+        color: white;
+        font-size: 24px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+    }
+
+    .alert.error {
+        color: #a94442;
+        background-color: #f2dede;
+        border-color: #ebccd1;
+    }
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Child</title>
+
+    <!-- Include chosen.js library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#id_interests').chosen({
+                placeholder_text_multiple: 'Select interests',
+                width: '100%',
+                max_selected_options: 10, // Set the maximum number of selected options if needed
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="content-container">
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="add-child-tile">
+        <form method="post" action="{% url 'add_child' %}">
+            {% csrf_token %}
+
+            <div>
+                <label for="id_name">Name:</label>
+            </div>
+            <div>
+                <input type="text" name="name" id="id_name" required>
+            </div>
+
+            <div>
+                <label for="id_gender">Gender:</label>
+            </div>
+            <div>
+                <select class="gender-select" name="gender" id="id_gender" required>
+                    <option value="M">Boy</option>
+                    <option value="F">Girl</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="id_dob">Date of Birth:</label>
+            </div>
+            <div>
+                <input type="date" name="dob" id="id_dob" required>
+                <div id="dob-error" class="alert error" style="display: none;">Date of Birth cannot be greater than current date.</div>
+            </div>
+
+            <script>
+                var dobInput = document.getElementById('id_dob');
+
+                dobInput.addEventListener('change', function() {
+                    var selectedDate = new Date(this.value);
+                    var currentDate = new Date();
+
+                    if (selectedDate > currentDate) {
+                        document.getElementById('dob-error').style.display = 'block';
+                        this.value = '';
+                    } else {
+                        document.getElementById('dob-error').style.display = 'none';
+                    }
+                });
+            </script>
+
+            <div>
+                <label for="id_interests">Interests:</label>
+            </div>
+            <div>
+                <select multiple name="interests" id="id_interests">
+                    <option value="music">Music</option>
+                    <option value="sports">Sports</option>
+                    <option value="artcraft">Arts & Crafts</option>
+                    <option value="movement">Movement</option>
+                    <option value="educational">Educational</option>
+                    <option value="boardgame">Board Games</option>
+                    <option value="weekend">Weekend Activities / Adventure</option>
+                </select>
+            </div>
+
+            <input type="hidden" name="color_code" id="color_code" required>
+            <div>
+                <label for="id_color">Color:</label>
+            </div>
+            <div class="color-plate" name="color">
+                <div class="color" style="background-color: rgba(254, 188, 200, 1);" onclick="selectColor('rgba(254, 188, 200, 1)', this)"></div>
+                <div class="color" style="background-color: rgba(255, 238, 147, 1);" onclick="selectColor('rgba(255, 238, 147, 1)', this)"></div>
+                <div class="color" style="background-color: rgba(173, 247, 182, 1);" onclick="selectColor('rgba(173, 247, 182, 1)', this)"></div>
+                <div class="color" style="background-color: rgba(189, 178, 255, 1);" onclick="selectColor('rgba(189, 178, 255, 1)', this)"></div>
+                <div class="color" style="background-color: rgba(151, 236, 241, 1);" onclick="selectColor('rgba(151, 236, 241, 1)', this)"></div>
+                <div class="color" style="background-color: rgba(255, 193, 7, 1);" onclick="selectColor('rgba(255, 193, 7, 1)', this)"></div>
+
+            </div>
+
+            <script>
+                function selectColor(color, element) {
+                    var colors = document.querySelectorAll('.color');
+                    colors.forEach(function(colorDiv) {
+                        colorDiv.classList.remove('selected');
+                    });
+
+                    element.classList.add('selected');
+                    document.getElementById('color_code').value = color;
+                    document.getElementById('selected-color-info').innerText = 'Selected Color: ' + color;
+                }
+            </script>
+
+            <div>
+                <button type="submit">Add Child</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+
+{% endblock %}
+
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

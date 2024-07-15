@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Child Activities</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>{{ child.name }}'s Activities</h1>
+    <h2>Total Spent: {{ total_spent }}</h2>
+    <h2>Total Attended: {{ total_attended }}</h2>
+    <h2>Total Absent: {{ total_absent }}</h2>
+
+    <canvas id="attendanceChart"></canvas>
+    <canvas id="spendChart"></canvas>
+
+    <script>
+        const attendanceData = {
+            labels: ['Attended', 'Absent'],
+            datasets: [{
+                label: 'Attendance',
+                data: [{{ total_attended }}, {{ total_absent }}],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+        new Chart(attendanceCtx, {
+            type: 'pie',
+            data: attendanceData,
+            options: {
+                responsive: true,
+            }
+        });
+
+        const spendData = {{ total_spent }};
+
+        const spendCtx = document.getElementById('spendChart').getContext('2d');
+        new Chart(spendCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Spent'],
+                datasets: [{
+                    label: 'Amount',
+                    data: [spendData],
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{% extends 'header.html' %}
+
+{% block content %}
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Child Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 50px;
+    }
+
+    form {
+        margin-top: 160px;
+        margin-bottom: 20px;
+    }
+
+    h2 {
+        color: #333;
+    }
+
+    .event-card {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+        background-color: #f9f9f9;
+    }
+
+    .chart-container {
+        position: relative;
+        /*width: 100%;*/
+        margin: 10px;
+    }
+
+    .error {
+        color: red;
+        font-weight: bold;
+    }
+</style>
+
+<body>
+
+<form id="childForm" method="post" action="{% url 'child_dashboard' %}">
+    {% csrf_token %}
+    <label for="child">Select Child:</label>
+    <select name="child_id" id="child">
+        <option value="" disabled selected>Select Child</option>
+        {% for child_option in children %}
+            <option value="{{ child_option.id }}" {% if child and child_option.id == child.id %}selected{% endif %}>{{ child_option.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="month">Select Month:</label>
+    <select name="month" id="month">
+        <option value="" disabled selected>Select Month</option>
+        {% for month in months %}
+            <option value="{{ month }}" {% if month|stringformat:"02d" == selected_month|stringformat:"02d" %}selected{% endif %}>{{ month }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="year">Select Year:</label>
+    <select name="year" id="year">
+        <option value="" disabled selected>Select Year</option>
+        {% for year in years %}
+            <option value="{{ year }}" {% if year == selected_year %}selected{% endif %}>{{ year }}</option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Submit</button>
+</form>
+
+{% if error %}
+    <p class="error">{{ error }}</p>
+{% endif %}
+
+{% if child %}
+    <h2>{{ child.name }}'s Dashboard</h2>
+
+    {% for data in event_data %}
+        <div class="event-card">
+            <h3>{{ data.event.summary }}</h3>
+            <p>Total Classes: {{ data.total_classes }}</p>
+            <p>Attended Days: {{ data.attended_days }}</p>
+            <p>Absent Days: {{ data.absent_days }}</p>
+
+            <!-- Chart container -->
+            <div class="chart-container">
+                <canvas id="attendanceChart-{{ data.event.id }}" width="400" height="200"></canvas>
+            </div>
+
+            <script>
+                // Chart.js code for creating a simple pie chart
+                var ctx = document.getElementById('attendanceChart-{{ data.event.id }}').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Total Classes', 'Attended Days', 'Absent Days'],
+                        datasets: [{
+                            data: [{{ data.total_classes }}, {{ data.attended_days }}, {{ data.absent_days }}],
+                            backgroundColor: [
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 99, 132, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 99, 132, 1)',
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                    }
+                });
+            </script>
+
+        </div>
+    {% endfor %}
+{% endif %}
+
+<script>
+    function checkFormAndSubmit() {
+        var child = document.getElementById('child').value;
+        var month = document.getElementById('month').value;
+        var year = document.getElementById('year').value;
+
+        if (child && month && year) {
+            document.getElementById('childForm').submit();
+        }
+    }
+
+    document.getElementById('child').addEventListener('change', checkFormAndSubmit);
+    document.getElementById('month').addEventListener('change', checkFormAndSubmit);
+    document.getElementById('year').addEventListener('change', checkFormAndSubmit);
+</script>
+
+</body>
+
+{% endblock %}
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

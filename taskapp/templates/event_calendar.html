@@ -1,0 +1,320 @@
+{% extends 'header.html' %}
+
+{% block content %}
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Calendar</title>
+
+<!-- Include jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: white;
+        margin-top: 20px;
+        padding: 0;
+    }
+
+    #EventCalendar {
+        max-width: 95%;
+        margin: auto;
+        max-width: 1200px; /* Limit maximum width */
+        height: 600px; /* Adjust height as needed */
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+        overflow: auto; /* Enable scrolling if needed */
+    }
+
+    h2 {
+        background-color: #3e818d;
+        color: #fff;
+        padding: 20px;
+        margin: 0;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .calendar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .calendar-slider {
+        display: flex;
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    .date-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 70px;
+        padding: 10px;
+        margin: 5px;
+        border-radius: 80%;
+        cursor: pointer;
+    }
+
+    .date-item.current {
+        background-color: #3e818d;
+        color: white;
+    }
+
+    .date-item.selected {
+        background-color: #5c6bc0;
+        color: white;
+    }
+
+    .button-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .button-container button {
+        background-color: #5c6bc0;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .button-container button:hover {
+        background-color: #3949ab;
+    }
+
+    .event {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+    }
+
+    .event h3 {
+        margin-top: 0;
+        color: #5c6bc0;
+    }
+
+    .event p {
+        margin: 5px 0;
+    }
+
+    #eventList {
+        max-width: 90%;
+        margin: auto;
+    }
+
+    .fc-attendance-container {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 10px;
+        background-color: white;
+        border: 2px solid #ccc;
+        border-radius: 4px;
+        z-index: 1;
+    }
+
+    .fc-attendance-mark {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 5px;
+        color: inherit;
+        font-size: 16px;
+        line-height: 1;
+        z-index: 1;
+    }
+
+    .fc-attended {
+        color: green;
+    }
+
+    .fc-absent {
+        color: red;
+    }
+
+    h1, h3 {
+        color: black;
+    }
+
+    @media (max-width: 768px) {
+        /* Adjust styles for smaller screens */
+        .calendar-container {
+            margin: 20px auto 10px;
+            height: auto; /* Adjust height for smaller screens */
+        }
+        .button-container {
+            flex-direction: column;
+        }
+        .date-item {
+            width: 50px;
+            padding: 5px;
+            margin: 2px;
+        }
+    }
+</style>
+
+<body>
+<div class="calendar-container">
+    <div class="button-container">
+        <button id="prev-button">&lt; </button>
+        <span id="month-year"></span>
+        <button id="next-button">&gt;</button>
+    </div>
+
+    <div class="calendar-slider" id="calendar-dates"></div>
+
+    <div id="selected-date"></div>
+</div>
+
+<div class="button-container">
+    <button onclick="filterEvents('all')">All</button>
+    {% for child in children %}
+        <button onclick="filterEvents('{{ child.id }}')">{{ child.name }}</button>
+    {% endfor %}
+</div>
+
+<!--    <h1 id="eventsHeading">Events for Today</h1>-->
+<div id="eventList">
+    <!-- Event list will be populated here -->
+</div>
+
+<script>
+    const calendarDates = document.getElementById('calendar-dates');
+    const monthYearDisplay = document.getElementById('month-year');
+    const prevButton = document.getElementById('prev-button');
+    const nextButton = document.getElementById('next-button');
+    const selectedDateDisplay = document.getElementById('selected-date');
+    const eventList = document.getElementById('eventList');
+
+    const today = new Date();
+    let currentMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+    let selectedChildId = 'all'; // Default to show all events
+
+    function formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const dayName = date.toLocaleString('default', { weekday: 'short' });
+        return { day, dayName };
+    }
+
+    function generateDates(start, daysToShow) {
+        calendarDates.innerHTML = ''; // Clear existing dates
+        let date = new Date(start);
+        for (let i = 0; i < daysToShow; i++) {
+            const { day, dayName } = formatDate(date);
+            const dateItem = document.createElement('div');
+            dateItem.className = 'date-item';
+            if (date.toDateString() === today.toDateString()) {
+                dateItem.classList.add('current');
+            }
+            dateItem.innerHTML = `<div>${day}</div><div>${dayName}</div>`;
+            dateItem.dataset.date = date.toISOString();
+            dateItem.addEventListener('click', () => selectDate(dateItem));
+            calendarDates.appendChild(dateItem);
+            date.setDate(date.getDate() + 1);
+        }
+        updateMonthYear();
+    }
+
+    function updateMonthYear() {
+        const firstVisibleDate = new Date(calendarDates.firstChild.dataset.date);
+        monthYearDisplay.textContent = `${firstVisibleDate.toLocaleString('default', { month: 'long' })} ${firstVisibleDate.getFullYear()}`;
+    }
+
+    function scrollDates(direction) {
+        const daysToShow = 20; // Show 20 days at a time
+        currentMonthStart.setMonth(currentMonthStart.getMonth() + direction);
+        generateDates(currentMonthStart, daysToShow);
+    }
+
+    function selectDate(dateItem) {
+        document.querySelectorAll('.date-item').forEach(item => item.classList.remove('selected'));
+        dateItem.classList.add('selected');
+
+        const date = new Date(dateItem.dataset.date);
+        // selectedDateDisplay.textContent = `Selected Date: ${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
+        fetchEventsForDate(date);
+    }
+
+    function fetchEventsForDate(date) {
+        var localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+
+        $.ajax({
+            url: '/get_events_for_date/',
+            method: 'GET',
+            data: {
+                'date': localDate.toISOString().split('T')[0],
+                'child_id': selectedChildId
+            },
+            success: function(response) {
+                displayEvents(response.events, date);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching events for date:', error);
+            }
+        });
+    }
+
+    function displayEvents(events, date) {
+        eventList.innerHTML = '';
+        const eventsHeading = document.createElement('h2');
+        eventsHeading.textContent = `Events for ${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
+        eventList.appendChild(eventsHeading);
+        if (events.length > 0) {
+            events.forEach(function(event) {
+                const eventHtml = `
+                    <div class="event child-${event.child}">
+                        <h3>${event.title} For ${event.childname} </h3>
+                        <p><strong>From</strong> ${event.start} To ${event.end}</p>
+                        <!--- <p><strong>Attendance:</strong> ${event.attendance_status}</p> ---!>
+                    </div>`;
+                eventList.innerHTML += eventHtml;
+            });
+        } else {
+            eventList.innerHTML += '<p>No events for the selected date.</p>';
+        }
+    }
+
+    window.filterEvents = function (childId) {
+        var events = document.getElementsByClassName('event');
+        for (var i = 0; i < events.length; i++) {
+            var event = events[i];
+            if (childId === 'all') {
+                event.style.display = 'block';
+            } else {
+                if (event.classList.contains('child-' + childId)) {
+                    event.style.display = 'block';
+                } else {
+                    event.style.display = 'none';
+                }
+            }
+        }
+    }
+
+    // Display all events by default
+    filterEvents('all');
+
+    prevButton.addEventListener('click', () => scrollDates(-1));
+    nextButton.addEventListener('click', () => scrollDates(1));
+
+    // Generate initial dates and display events for today
+    generateDates(currentMonthStart, 30);
+    fetchEventsForDate(today);
+</script>
+
+</body>
+</html>
+{% endblock %}
+
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

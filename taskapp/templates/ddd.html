@@ -1,0 +1,88 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Classes</title>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        .class-tile {-->
+<!--            background-color: black; /* Change background color */-->
+<!--            min-height: 100px; /* Adjust tile height */-->
+<!--            padding: 10px;-->
+<!--            border-radius: 5px;-->
+<!--            margin-bottom: 20px;-->
+<!--            cursor: pointer;-->
+<!--            color: white;-->
+<!--            width: calc(33.33% - 20px); /* Divide width by 3 with margin */-->
+<!--            margin-right: 20px;-->
+<!--            display: inline-block;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .row {-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="container">-->
+<!--        <h1>Classes</h1>-->
+
+<!--        <div class="row justify-content-center">-->
+<!--            &lt;!&ndash; Toddler Sense &ndash;&gt;-->
+<!--            <div class="class-tile" onclick="navigateToDetails('toddler-sense')">-->
+<!--                <h2>Toddler Sense by Wow Center</h2>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Art Classes &ndash;&gt;-->
+<!--            <div class="class-tile" onclick="navigateToDetails('art-classes')">-->
+<!--                <h2>Art Classes by Red Pixie Studio</h2>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Music Classes &ndash;&gt;-->
+<!--            <div class="class-tile" onclick="navigateToDetails('music-classes')">-->
+<!--                <h2>Music by Melody Magic School of Music</h2>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="row justify-content-center">-->
+<!--            &lt;!&ndash; Private Tutoring &ndash;&gt;-->
+<!--            <div class="class-tile" onclick="navigateToDetails('private-tutoring')">-->
+<!--                <h2>Private Tutoring with Liza Mam</h2>-->
+<!--            </div>-->
+
+<!--            &lt;!&ndash; Add more tiles as needed &ndash;&gt;-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function navigateToDetails(classId) {-->
+<!--            window.location.href = '/class-details/' + classId; // Redirect to class details page-->
+<!--        }-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+<!-- add_class.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Add necessary meta tags and CSS links -->
+</head>
+<body>
+    <div class="container">
+        <h1>Add Class</h1>
+        <form method="post">
+            {% csrf_token %}
+            <label for="title">Title:</label><br>
+            <input type="text" id="title" name="title"><br>
+            <label for="description">Description:</label><br>
+            <textarea id="description" name="description"></textarea><br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{% for event in events %}
+    <div class="event child-{{ event.child.id }}">
+        <h3>{{ event.summary }}</h3>
+        <h3>{{event.child}}</h3>
+        <p><strong>Start Time:</strong> {{ event.start_datetime.time }}</p>
+        <p><strong>End Time:</strong> {{ event.end_datetime.time }}</p>
+
+        <!-- Add more details as needed -->
+    </div>
+{% empty %}
+    <p>No events for this day.</p>
+{% endfor %}

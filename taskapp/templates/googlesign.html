@@ -1,0 +1,82 @@
+
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% tailwind_css %}
+    <title>Sign-in with Google Account</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="165395380569-of14nua8crmk5ecvduuev39st38cklfl.apps.googleusercontent.com">
+
+    <script src="https://www.gstatic.com/firebasejs/8.0/firebase.js"></script>
+    <script>
+        var config = {
+        apiKey: "AIzaSyAFK8WI1acViQRzYIR5Pw1q735EcHMcvaA",
+        authDomain: "psychic-root-399406.firebaseapp.com",
+        };
+    firebase.initializeApp(config);
+    </script>
+
+
+
+
+    <style>
+        .button-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px; /* Adjust as needed */
+        }
+
+        /* Adjust as needed */
+        .button-group button {
+            margin-left: 10px; /* Adjust as needed */
+        }
+
+        .g-signin2 {
+            width: 200px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .g-logo {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+    </style>
+</head>
+
+<body class="w-full">
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="outline"></div>
+    <div class="g-logo"></div>
+
+    <script>
+        function onSignIn(googleUser) {
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log('ID Token: ' + id_token);
+            // Send the ID token to your server or perform other actions.
+        }
+
+        function initGoogleSignIn() {
+            gapi.load('auth2', function () {
+                gapi.auth2.init({
+                    client_id: '165395380569-of14nua8crmk5ecvduuev39st38cklfl.apps.googleusercontent.com',
+                });
+            });
+        }
+
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+            });
+        }
+
+        // Call the init function when the page is loaded
+        window.onload = initGoogleSignIn;
+    </script>
+</body>
+
+</html>

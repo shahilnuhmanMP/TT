@@ -1,0 +1,93 @@
+<!-- taskapp/templates/add_trusted_person.html -->
+{% extends 'header.html' %}
+{% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    /* Your existing styles */
+    body {
+        margin: 0;
+        padding: 0;
+        height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+    .content-container {
+    margin-top: 250px; /* Adjust based on your header height */
+  }
+
+    .add-trusted-person-tile {
+        text-align: center;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .add-trusted-person-tile button {
+        margin-top: 15px;
+        padding: 10px;
+        border: 1px solid #4CAF50;
+        color: #4CAF50;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    /* Additional styles for form fields */
+    form {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+</style>
+
+
+<div class="content-container">
+    <div class="add-trusted-person-tile">
+        <h2>Add Trusted Person</h2>
+        <form method="post" action="{% url 'add_trusted_person' %}">
+            {% csrf_token %}
+
+            <label for="{{ form.name.id_for_label }}">Name</label>
+            {{ form.name }}
+
+            <label for="{{ form.relation.id_for_label }}">Relation</label>
+            {{ form.relation }}
+
+            <label for="{{ form.phone_country_code.id_for_label }}">Country Code</label>
+
+            {{ form.phone_country_code }}
+
+
+
+            <label for="{{ form.phone_number.id_for_label }}">Contact</label>
+            {{ form.phone_number }}
+
+            <button type="submit">Add Trusted Person</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

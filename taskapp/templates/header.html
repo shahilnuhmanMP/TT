@@ -1,0 +1,217 @@
+<!--#taskapp/templates/header.html-->
+
+{% load static %}
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinytaskers</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <style>
+        /* Your existing styles for the header */
+        body {
+            font-family: "Inter", sans-serif;
+      
+            background-color: #ffffff;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+         
+            position: relative;
+            width: 100%;
+            /* Include padding and border in the element's total width and height */
+        }
+
+        header {
+            background-color: #3E818D;
+            color: #fff;
+            margin: 0;
+            padding: 10px;
+            text-align: right;
+            text-align-last: auto;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fas.fa-child {
+            margin-right: 1%;
+        }
+
+        header a {
+            color: white;
+            text-decoration: none;
+            margin: 10px;
+            margin-right: 1%;
+        }
+
+        .content {
+            flex: 1;
+            /* Take up the remaining space */
+
+            
+          
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            /* Adjust based on header height */
+            width: 100%;
+            box-sizing: border-box;
+         
+       
+        }
+
+        header .logo {
+            float: left;
+            margin-right: 100px;
+        }
+
+        .user-menu {
+            display: contents;
+            align-items: center;
+        }
+
+        .user-icon {
+            position: relative;
+            display: inline-block;
+
+            margin-right: 10%;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #fff;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            border-radius: 5px;
+            text-align: center;
+            width: 150px;
+        }
+
+        .user-icon:hover .user-dropdown {
+            display: block;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #f4f4f4;
+        }
+
+
+        @media (max-width: 768px) {
+            /* Adjustments for smaller screens (e.g., mobile devices) */
+
+            header {
+
+                padding: 10px 20px;
+                /* Increase padding for better spacing */
+                text-align: center;
+                /* Center-align content */
+
+
+            }
+
+            .logo {
+                margin-right: 0;
+                /* Remove right margin to center the logo */
+            }
+
+            .fas.fa-child {
+                margin-right: 0;
+                /* Remove right margin to center the child icon */
+            }
+
+            header a {
+                margin-right: 0px;
+                /* Decrease margin for better spacing */
+            }
+
+            .user-icon {
+             
+                /* Reduce top margin for better alignment */
+                margin-right: 10px;
+                /* Reduce right margin for better spacing */
+                margin-left: 5%;
+            }
+
+            .user-dropdown {
+                top: 50px;
+                /* Adjust dropdown position */
+                right: 50%;
+                /* Center dropdown horizontally */
+                transform: translateX(50%);
+                /* Center dropdown horizontally */
+                text-align: center;
+                /* Center-align dropdown links */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="{% url 'home' %}">
+                <!-- <img src="{% static 'taskapp/images/Screenshot 2023-09-18 at 11.24.53 AM.png' %}" alt="Tinytaskers Logo"> -->
+                <h1 style="color: white;font-weight: bold; font-size: 25px;">Tinytaskers</h1>
+            </a>
+        </div>
+        {% if user.is_authenticated %}
+        <div style="display: flex;flex-direction: row; align-items: center;">
+            <a href="{% url 'home' %}" style="margin-right: 10px;color:white">Home</a>
+            <!--        <div class="user-icon">-->
+            <!--            <i class="fas fa-child"></i>-->
+            <!--            <div class="user-dropdown">-->
+            <!--                <a href="{% url 'manage_children' %}">Manage Children</a>-->
+            <!--            </div>-->
+            <!--        </div>-->
+
+            <div class="user-icon ">
+                <i class="fas fa-user-circle"></i>
+                <div class="user-dropdown">
+                    <a href="{% url 'profile' %}">My Profile</a>
+                    <a href="{% url 'logout' %}"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                        {% csrf_token %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        {% else %}
+        <a style="color:white" href="{% url 'login' %}">Sign In</a>
+        {% endif %}
+    </header>
+    <div class="content">
+        {% block content %}
+
+
+        {% endblock %}
+    </div>
+
+</body>

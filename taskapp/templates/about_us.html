@@ -1,0 +1,49 @@
+{% extends 'header.html' %}
+{% block content %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Tiny Tasker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #555;
+        }
+        p {
+            line-height: 1.6;
+            color: #666;
+            text-align: justify; /* Aligning text for better readability */
+        }
+    </style>
+
+<body>
+    <div class="container">
+        <h1>About Us</h1>
+        <p>Hey there! We're Tracy & George, the proud parents behind Tiny Tasker. We understand the joys and challenges of parenthood, and we're on a mission to make the lives of parents a bit easier. As parents to a 9-year-old girl and a 4-year-old boy, we've experienced the chaos of managing our children's extracurricular activities. That's how we created Tiny Tasker, an application designed to streamline, schedule, manage, discover and pay for our little one’s extracurricular activities.</p>
+        <p>We welcome you to join our community and discover the ease with which we can manage our little one’s time as well as ours.</p>
+
+        <h2>About Tiny Tasker</h2>
+        <p><strong>Tiny Tasker - Simplifying Parenting, One Activity at a Time..</strong></p>
+        <p>Tiny Tasker is not just an app; it's your partner in parenting. Our primary goal is to help parents effortlessly discover, organize and monitor their children's extracurricular activities. With features like activity scheduling, payment tracking, and a vibrant community, Tiny Tasker ensures that parents stay on top of their game.</p>
+    </div>
+</body>
+
+{% endblock %}
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}

@@ -1,0 +1,144 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Select Color</title>-->
+<!--    <style>-->
+<!--        .color-plate {-->
+<!--            display: flex;-->
+<!--            flex-wrap: wrap;-->
+<!--            gap: 1px;-->
+<!--        }-->
+
+<!--        .color {-->
+<!--            width: 30px;-->
+<!--            height: 30px;-->
+<!--            cursor: pointer;-->
+<!--            border: 1px solid #000;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h2>Select a Color:</h2>-->
+<!--    <div class="color-plate">-->
+<!--        <div class="color" style="background-color: rgba(244, 67, 54, 1);" onclick="selectColor('rgba(244, 67, 54, 1)')"></div>-->
+
+<!--        <div class="color" style="background-color: rgba(63, 81, 181, 0.8);" onclick="selectColor('rgba(63, 81, 181, 0.8)')"></div>-->
+
+<!--        <div class="color" style="background-color: rgba(0, 188, 212, 0.7);" onclick="selectColor('rgba(0, 188, 212, 0.7)')"></div>-->
+
+<!--        <div class="color" style="background-color: rgba(76, 175, 80, 0.8);" onclick="selectColor('rgba(76, 175, 80, 0.8)')"></div>-->
+
+<!--        <div class="color" style="background-color: rgba(205, 220, 57, 0.9);" onclick="selectColor('rgba(205, 220, 57, 0.9)')"></div>-->
+
+<!--        <div class="color" style="background-color: rgba(255, 193, 7, 1);" onclick="selectColor('rgba(255, 193, 7, 1)')"></div>-->
+<!--        &lt;!&ndash; Add more color divs here &ndash;&gt;-->
+<!--    </div>-->
+
+<!--    <script>-->
+<!--        function selectColor(color) {-->
+<!--            alert("Selected Color: " + color);-->
+<!--            // You can do something with the selected color here, like send it to a server or update a form field-->
+<!--        }-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Child</title>
+    <style>
+        .color-plate {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .color {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+
+<div class="content-container">
+    <div class="add-child-tile">
+        <form method="post" action="{% url 'add_child' %}">
+            {% csrf_token %}
+
+            <!-- Name Field -->
+            <div>
+                <label for="id_name">Name:</label>
+            </div>
+            <div>
+                <input type="text" name="name" id="id_name" required>
+            </div>
+
+            <!-- Gender Field as Bubble Select -->
+            <div>
+                <label for="id_gender">Gender:</label>
+            </div>
+            <div>
+                <select class="gender-select" name="gender" id="id_gender" required>
+                    <option value="M">Boy</option>
+                    <option value="F">Girl</option>
+                </select>
+            </div>
+
+            <!-- Date of Birth (dob) Field -->
+            <div>
+                <label for="id_dob">Date of Birth:</label>
+            </div>
+            <div>
+                <input type="date" name="dob" id="id_dob">
+            </div>
+
+            <!-- Interests Field as dropdown with multiple choices -->
+            <div>
+                <label for="id_interests">Interests:</label>
+            </div>
+            <div>
+                <select multiple name="interests" id="id_interests">
+                    <option value="playing">Playing</option>
+                    <option value="reading">Reading</option>
+                    <option value="drawing">Drawing</option>
+                    <!-- Add more options as needed -->
+                </select>
+            </div>
+
+            <!-- Color Selection Field -->
+            <div>
+                <label for="id_color">Color:</label>
+            </div>
+            <div class="color-plate">
+                <div class="color" style="background-color: rgba(244, 67, 54, 1);" onclick="selectColor('rgba(244, 67, 54, 1)')"></div>
+                <div class="color" style="background-color: rgba(63, 81, 181, 0.8);" onclick="selectColor('rgba(63, 81, 181, 0.8)')"></div>
+                <div class="color" style="background-color: rgba(0, 188, 212, 0.7);" onclick="selectColor('rgba(0, 188, 212, 0.7)')"></div>
+                <div class="color" style="background-color: rgba(76, 175, 80, 0.8);" onclick="selectColor('rgba(76, 175, 80, 0.8)')"></div>
+                <div class="color" style="background-color: rgba(205, 220, 57, 0.9);" onclick="selectColor('rgba(205, 220, 57, 0.9)')"></div>
+                <div class="color" style="background-color: rgba(255, 193, 7, 1);" onclick="selectColor('rgba(255, 193, 7, 1)')"></div>
+                <!-- Add more color divs here -->
+            </div>
+
+            <div>
+                <button type="submit">Add Child</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function selectColor(color) {
+        alert("Selected Color: " + color);
+        // You can do something with the selected color here, like send it to a server or update a hidden form field
+    }
+</script>
+
+</body>
+</html>

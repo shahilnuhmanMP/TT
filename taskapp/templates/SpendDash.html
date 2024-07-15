@@ -1,0 +1,249 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .summary-item {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+        .summary-item h2 {
+            margin: 0;
+            color: #4CAF50;
+        }
+        .summary-item p {
+            margin: 10px 0 0 0;
+            font-size: 18px;
+            color: #333;
+        }
+        .charts-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .chart {
+            flex: 1 1 45%;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+        }
+        .chart-detail {
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: left;
+        }
+        .child-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .child-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .child-button:hover {
+            background-color: #45a049;
+        }
+        .month-selector {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="summary">
+            <div class="summary-item">
+                <h2>Total Spent</h2>
+                <p id="total-spent">{{ total_spent }}</p>
+            </div>
+            <div class="summary-item">
+                <h2>Total Classes</h2>
+                <p id="total-classes">{{ total_classes_count }}</p>
+            </div>
+        </div>
+        <div class="month-selector">
+            <label for="month-select">Select Month:</label>
+            <select id="month-select">
+                <option value="total">Total</option>
+                {% for month in monthly_spends %}
+                    <option value="{{ month }}">{{ month }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="charts-container">
+            <div class="chart">
+                <h3>Spends By Activity</h3>
+                <canvas id="spendChart"></canvas>
+                <div class="chart-detail" id="spend-detail"></div>
+            </div>
+            <div class="chart">
+                <h3>Spends By Child</h3>
+                <canvas id="childSpendChart"></canvas>
+                <div class="chart-detail" id="child-spend-detail"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const eventSpends = {{ event_spends|safe }};
+        const childSpends = {{ child_spends|safe }};
+        const monthlyEventSpends = {{ monthly_event_spends|safe }};
+        const monthlyChildSpends = {{ monthly_child_spends|safe }};
+
+        const eventNames = Object.keys(eventSpends);
+        const spendData = Object.values(eventSpends);
+
+        const childNames = Object.keys(childSpends);
+        const childSpendData = Object.values(childSpends);
+
+        function updateSummary(month) {
+            let totalSpent = 0;
+            let totalClasses = 0;
+            let eventSpendDetails = "";
+            let childSpendDetails = "";
+
+            const currentEventSpends = month === 'total' ? eventSpends : monthlyEventSpends[month] || {};
+            const currentChildSpends = month === 'total' ? childSpends : monthlyChildSpends[month] || {};
+
+            for (let event in currentEventSpends) {
+                totalSpent += currentEventSpends[event];
+                eventSpendDetails += `<p>${event} spend is ${currentEventSpends[event].toFixed(2)}</p>`;
+            }
+
+            for (let child in currentChildSpends) {
+                totalClasses += currentChildSpends[child];
+                childSpendDetails += `<p>${child} spend is ${currentChildSpends[child].toFixed(2)}</p>`;
+            }
+
+            document.getElementById('spend-detail').innerHTML = `Event Spends <b>${month}</b>: ${totalSpent.toFixed(2)}` + eventSpendDetails;
+            document.getElementById('child-spend-detail').innerHTML = ` Child Spends  <b>${month}</b>: ${totalClasses}` + childSpendDetails;
+        }
+
+        updateSummary('total');
+
+        const spendCtx = document.getElementById('spendChart').getContext('2d');
+        const spendChart = new Chart(spendCtx, {
+            type: 'pie',
+            data: {
+                labels: eventNames,
+                datasets: [{
+                    label: 'Total Spends by Event',
+                    data: spendData,
+                    backgroundColor: eventNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 0.2)`),
+                    borderColor: eventNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.raw.toFixed(2);
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const childSpendCtx = document.getElementById('childSpendChart').getContext('2d');
+        const childSpendChart = new Chart(childSpendCtx, {
+            type: 'pie',
+            data: {
+                labels: childNames,
+                datasets: [{
+                    label: 'Total Spends by Child',
+                    data: childSpendData,
+                    backgroundColor: childNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 0.2)`),
+                    borderColor: childNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.raw.toFixed(2);
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('month-select').addEventListener('change', function(event) {
+            const selectedMonth = event.target.value;
+            let newEventSpends = {};
+            let newChildSpends = {};
+            if (selectedMonth === 'total') {
+                newEventSpends = eventSpends;
+                newChildSpends = childSpends;
+            } else {
+                newEventSpends = monthlyEventSpends[selectedMonth] || {};
+                newChildSpends = monthlyChildSpends[selectedMonth] || {};
+            }
+
+            updateChart(spendChart, newEventSpends);
+            updateChart(childSpendChart, newChildSpends);
+            updateSummary(selectedMonth);  // Update the summary after changing the month
+        });
+
+        function updateChart(chart, newData) {
+            chart.data.labels = Object.keys(newData);
+            chart.data.datasets[0].data = Object.values(newData);
+            chart.data.datasets[0].backgroundColor = chart.data.labels.map((_, i) => `rgba(${(i * 150) % 255}, ${(i * 180) % 255}, ${(i * 80) % 255}, 0.2)`);
+            chart.data.datasets[0].borderColor = chart.data.labels.map((_, i) => `rgba(${(i * 150) % 255}, ${(i * 180) % 255}, ${(i * 80) % 255}, 1)`);
+            chart.update();
+        }
+    </script>
+</body>

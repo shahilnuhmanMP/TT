@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html>
+<!--  <head>-->
+    <title>Sign-in with Google Account</title>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="812266982268-2t02qjcd7n51q9tkh9bitagpgg30ditk.apps.googleusercontent.com">
+    <style>
+        .button-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Adjust as needed */
+        .button-group button {
+            margin-right: -100px;
+            margin-left: 250px;
+        }
+      .g-signin2 {
+
+        margin-left: 160px;
+        margin-right: auto;
+        width: 200px;
+        padding: 10px;
+        text-align: center;
+
+      }
+      .g-signin2:focus {
+        outline: none;
+      }
+      .g-logo {
+        position: absolute;
+        left: 20px;
+        top: 20px;
+      }
+    </style>
+<!--  </head>-->
+  <body>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-theme="outline"></div>
+    <div class="g-logo"></div>
+    <script>
+      function onSignIn(googleUser) {
+        // Use the ID token to authenticate the user.
+        var id_token = googleUser.getAuthResponse().id_token;
+        // Send the ID token to your server.
+        console.log('ID Token: ' + id_token);
+      }
+    </script>
+  </body>
+</html>

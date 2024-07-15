@@ -1,0 +1,224 @@
+{% block content %}
+{% load static tailwind_tags %}
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+        integrity="sha512-kz+oiR6R9jMw53oVQ3oVmbAdb9PxFq4foIg/DtR6+qBOG6H9/JRxmHRyb0DInWId1f8aEtFkA8gTtJbnYEuP9WA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!--  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>-->
+    <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 30px;
+            margin-top: 10px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: Inter, sans-serif;
+            overflow-y: scroll;
+          
+        }
+
+        .card-link:hover {
+            text-decoration: none;
+        }
+
+     
+        .card {
+            width: 380px;
+            height: 250px;
+            background-color: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+
+            border-radius: 8px;
+
+
+            cursor: pointer;
+        }
+        
+    </style>
+    {% tailwind_css %}
+</head>
+
+<body class="h-full " style="background-color: red;margin-top: 100px;">
+    {% if not user.is_authenticated %}
+    <div class="header-container">
+        <h2 class="landing">
+            Tiny Tasker - Simplifying Parenting, One Activity at a Time..
+        </h2>
+    </div>
+    <div>
+        <h4>Your parenting ally. Our goal is to help parents easily discover, organize, and monitor their kid's
+            activities</h4>
+        <button><a href="/login/">Get Started</a></button>
+    </div>
+    {% else %}
+    <!--        <div>-->
+    <!--            {% if not user_children %}-->
+    <!--                <p>Please add your child's details to continue:</p>-->
+    <!--                <button><a href="/add_child/">Add Child Details</a></button>-->
+    <!--            {% else %}-->
+    <!--                {% if not events %}-->
+    <!--                    <p>No activities added for your child. Add activities to continue:</p>-->
+    <!--                    <button><a href="/calendar/">Add Activities</a></button>-->
+    <!--                {% else %}-->
+    <!--                    &lt;!&ndash; Display all activities here &ndash;&gt;-->
+    <!--                {% endif %}-->
+    <!--            {% endif %}-->
+    <!--        </div>-->
+
+    <div class="h-auto lg:h-[50%]  flex flex-col justify-center mt-20 ">
+        <div class="h-auto w-full flex flex-col lg:flex-row justify-around items-center " >
+
+
+            
+            <div class="card rounded-lg shadow-lg mb-3 lg:mb-0">
+                <div style="height: 40%;background-color: #3E818D;">
+
+                </div>
+                <div
+                    style="position: absolute;height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;">
+                    <a href="view_events_by_child_and_date" class="card-link h-full w-full">
+                        <div class="h-full w-full flex  flex-col justify-center items-center">
+                            <div
+                                style="display: flex ;justify-content: center;align-items: center;box-shadow: 2px 2px 3px gray;background-color: white; height: 90px; width: 90px;border-radius: 45px;">
+                                <img src="{% static 'taskapp/images/calendar.png' %}" height="50" width="50" />
+
+                            </div>
+                            <h5 class="card-title text-2xl mt-2"
+                                style="color:#3E818D ;font-weight: bold;font-size: 20px;"></i>   Events</h5>
+                            <div style="height: 1px;background-color:#3E818D ; width: 90%;margin-top:10px"></div>
+                            <p class="card-para" style="margin-top: 10px;color:#3E818D ;">Events and Attndance</p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+
+           
+
+            <div class="card rounded-lg shadow-lg mb-5 lg:mb-0">
+                <div style="height: 40%;background-color: #3E818D;">
+
+                </div>
+                <div
+                    style="position: absolute;height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;">
+                    <a href="dashboard" class="card-link h-full w-full">
+                        <div class="h-full w-full flex  flex-col justify-center items-center">
+                            <div
+                                style="display: flex ;justify-content: center;align-items: center;box-shadow: 2px 2px 3px gray;background-color: white; height: 90px; width: 90px;border-radius: 45px;">
+                                <img src="{% static 'taskapp/images/dashboard.png' %}" height="50" width="50" />
+
+                            </div>
+                            <h5 class="card-title text-2xl mt-2"
+                                style="color:#3E818D ;font-weight: bold;font-size: 20px;"></i> Dashboard</h5>
+                            <div style="height: 1px;background-color:#3E818D ; width: 90%;margin-top:10px"></div>
+                            <p class="card-para" style="margin-top: 10px;color:#3E818D ;">Attendance and Spends</p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+
+
+            <div class="card rounded-lg shadow-lg mb-3 lg:mb-0">
+                <div style="height: 40%;background-color: #3E818D;">
+
+                </div>
+                <div
+                    style="position: absolute;height: 100%;width: 100%;display: flex;justify-content: center;align-items: center;">
+                    <a href="manage_children" class="card-link h-full w-full">
+                        <div class="h-full w-full flex  flex-col justify-center items-center">
+                            <div
+                                style="display: flex ;justify-content: center;align-items: center;box-shadow: 2px 2px 3px gray;background-color: white; height: 90px; width: 90px;border-radius: 45px;">
+                                <img src="{% static 'taskapp/images/social-media.png' %}" height="50" width="50" />
+
+                            </div>
+                            <h5 class="card-title text-2xl mt-2"
+                                style="color:#3E818D ;font-weight: bold;font-size: 20px;"></i> Community</h5>
+                            <div style="height: 1px;background-color:#3E818D ; width: 90%;margin-top:10px"></div>
+                            <p class="card-para" style="margin-top: 10px;color:#3E818D ;">Explore Communities</p>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+
+
+
+
+            <!--                <div class="col">-->
+            <!--                    <div class="card h-100">-->
+            <!--                        <a href="calendar" class="card-link">-->
+            <!--                            <div class="card-body">-->
+            <!--                                <h5 class="card-title"><i class="fas fa-plus-circle"></i> Add Activity</h5>-->
+            <!--                                <p class="card-text">Add and Assign Activities</p>-->
+            <!--                            </div>-->
+            <!--                        </a>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div class="col">-->
+            <!--                    <div class="card h-100">-->
+            <!--                        <a href="eventcalendar" class="card-link">-->
+            <!--                            <div class="card-body">-->
+            <!--                                <h5 class="card-title"><i class="fas fa-calendar"></i> Calendar</h5>-->
+            <!--                            </div>-->
+            <!--                        </a>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--                <div class="col">-->
+            <!--                    <div class="card h-100">-->
+            <!--                        <a href="events1" class="card-link">-->
+            <!--                            <div class="card-body">-->
+            <!--                                <h5 class="card-title"><i class="fas fa-arrow-circle-right"></i> Mark Fees</h5>-->
+            <!--                            </div>-->
+            <!--                        </a>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+        </div>
+        {% if providers %}
+        <div class="provider-container" style="margin-top: 20px; margin-bottom: 10px;">
+            <h2>Our Service Providers</h2>
+            <div class="row row-cols-1 row-cols-md-3 g-4">
+                {% if user.is_superuser %}
+                <div class="col">
+                    <div class="card h-100">
+                        <a href="{% url 'add_class' %}">
+                            <div class="provider-content">
+                                <h3>Add Provider</h3>
+                                <p>Add a new service provider</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+                {% for provider in providers %}
+                <div class="col">
+                    <div class="card h-100">
+                        <a href="{{ provider.url }}">
+                            <div class="provider-content">
+                                <h3>{{ provider.title }}</h3>
+                                <p>{{ provider.description }}</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <!-- Fixed Add Activity Icon -->
+    <!--        <div class="fixed-add-icon" onclick="window.location.href='/calendar/'">-->
+    <!--            <i class="fas fa-plus"></i>-->
+    <!--        </div>-->
+    {% endif %}
+</body>
+
+{% endblock %}

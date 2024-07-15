@@ -1,0 +1,159 @@
+<!-- signup.html -->
+
+{% block content %}
+{% load static tailwind_tags %}
+
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tinytaskers Signup</title>
+{% tailwind_css %}
+<style>
+    body {
+
+        font-family: Arial, sans-serif;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+
+        background-color: #f0f2f5;
+        overflow-y: hidden;
+    }
+
+    .password-input
+    {
+        -webkit-tap-highlight-color: transparent;
+    }
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+    @media (max-width: 768px) {
+        /* Adjust styles for smaller screens */
+
+    }
+</style>
+
+<body>
+
+
+    <div class="h-full w-full flex items-start justify-center bg-white lg:bg-opacity-0  mt-14">
+
+        <img src="{% static 'taskapp/images/images.png' %}" height="900" width="900"
+            class="self-start  flex lg:hidden absolute self-end z-3 opacity-[0.4]" />
+        <div
+            class=" h-full  lg:h-[80%] w-full  lg:w-[70%] bg-opacity-0  lg:bg-white  flex flex-col lg:flex-row justify-center  rounded-xl z-0">
+            <div
+                class=" w-full lg:w-[50%]  h-auto  lg:h-full flex flex-col p-10 justify-between border-r-[2px] border-[#f1f5f9] ">
+                <div class="flex flex-col items-center  lg:items-start">
+                    <h1 class=" text-3xl lg:text-3xl  font-bold  text-center  lg:text-start ">Tinytaskers Signup</h1>
+                    <h1
+                        class="text-lg   lg:text-sm lg:text-sm  text-center  lg:text-start text-[#94a3b8] mt-3 w-[70%]">
+                        Please login to access your files and get access to resources</h1>
+                </div>
+
+                <img src="{% static 'taskapp/images/images.png' %}" height="200" width="200"
+                    class="self-start  hidden lg:block" />
+            </div>
+            <div class=" self-center w-[90%] lg:w-[50%] h-auto  lg:h-full  flex flex-col p-10  ">
+                <form action="{% url 'signup' %}" method="post" class="w-full flex flex-col">
+                    {% csrf_token %}
+
+                    {{ form.non_field_errors }}
+                    <div class="flex flex-col mt-2">
+
+                        <input name="username" placeholder="Enter your username"
+                            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg h-[50px] text-lg   lg:text-sm " style="color: #6b7280;" />
+                        <!-- {{ form.username }}-->
+                    </div>
+                    <div class="flex flex-col mt-2">
+
+                        <input name="email" placeholder="Enter your Email"
+                            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+
+                    </div>
+                    <div class="flex flex-col mt-2">
+
+                        <input name="phone_number" placeholder="Enter your Phone Number"
+                            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "  style="color: #6b7280;"/>
+
+                    </div>
+                  
+
+                    <div class=" mt-4   flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg   text-lg h-[50px] lg:text-sm justify-between p-2 pl-0">
+                            <!-- {{ form.password }}-->
+                            <input name="password1" id="password-input" type="password" placeholder="Enter your password"
+                                class="border-0 bg-transparent text-lg lg:text-sm password-input"  style="outline: none;color: #6b7280;"  />
+                            <span class="toggle-password"
+                                onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </span>
+                        </div>
+         
+
+                  
+
+                        <div class="password-input mt-4 flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg   text-3xl h-[50px] lg:text-sm justify-between p-2 pl-0">
+                            <!-- {{ form.password }}-->
+                            <input name="password2" id="password-input" type="password" placeholder="Re Enter your password"
+                                class="border-0 bg-transparent text-lg lg:text-sm outline-none password-input" style="outline: none;color: #6b7280;"  />
+                            <span class="toggle-password"
+                                onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </span>
+                        </div>
+         
+                
+                    <button class="bg-[#1e293b] text-white h-[50px] rounded-lg mt-5 :text-lg"
+                        type="submit" value="Signup">Register</button>
+
+
+
+                    <!-- {% include 'googlesign.html' %} -->
+
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <script>
+      
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById('password-input');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        }
+
+    </script>
+</body>
+
+
+
+
+
+
+{% endblock %}
+
+{% block footer %}
+
+{% endblock %}

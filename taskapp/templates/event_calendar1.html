@@ -1,0 +1,362 @@
+{% extends 'header.html' %}
+
+{% block content %}
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar</title>
+
+    <!-- Include FullCalendar CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
+
+    <!-- Include jQuery and FullCalendar JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: white;
+            margin-top: 20%;
+            padding: 0px;
+        }
+
+        #EventCalendar {
+            max-width: 95%;
+            margin:  auto;
+            max-width: 1200px; /* Limit maximum width */
+            height: 600px; /* Adjust height as needed */
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+            overflow: auto; /* Enable scrolling if needed */
+        }
+
+        h2 {
+            background-color:#3e818d;;
+            color: #fff;
+            padding: 20px;
+            margin: 0;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .fc-toolbar {
+            padding: 10px;
+            background-color: #3e818d;
+            color: #fff;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .fc-prev-button, .fc-next-button, .fc-today-button {
+            background-color: white;
+        }
+
+        .fc-prev-button:hover, .fc-next-button:hover, .fc-today-button:hover {
+            background-color: #3e818d;
+        }
+
+        .fc-event {
+            background-color: #3e818d;
+            color: #fff;
+            border: 1px solid #3e818d;
+            border-radius: 3px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .fc-event-title {
+            font-weight: normal;
+        }
+
+        .fc-time {
+            display: none; /* Hide default time display */
+        }
+
+        .fc-day-grid .fc-day {
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .fc-day-grid {
+            width: 100%; /* Adjust the day column size */
+        }
+
+        @media (max-width: 768px) {
+            /* Adjust styles for smaller screens */
+            #EventCalendar {
+                margin: 20% auto 10px;
+                height: auto; /* Adjust height for smaller screens */
+            }
+
+            h2 {
+                padding: 15px;
+                font-size: 1.5rem;
+            }
+
+            .fc-toolbar {
+                padding: 5px;
+            }
+
+            .fc-event {
+                padding: 3px;
+                font-size: 0.9rem;
+                z-index: -1;
+            }
+        }
+
+        .fc-event {
+            position: relative; /* Set the position to relative */
+        }
+
+        .fc-attendance-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px;
+            background-color: white; /* White background color for the container */
+            border: 2px solid #ccc; /* Border around the container */
+            border-radius: 4px; /* Border radius for rounded corners */
+            z-index: 1;
+        }
+
+        .fc-attendance-mark {
+            position: absolute; /* Set the position to absolute */
+            top: 0; /* Position at the top */
+            right: 0; /* Position at the right */
+            padding: 5px; /* Add padding for better visibility */
+            color: inherit; /* Inherit text color */
+            font-size: 16px; /* Adjust font size as needed */
+            line-height: 1; /* Ensure line height is 1 */
+            z-index: 1;
+        }
+
+        /* Style for attended event */
+        .fc-attended {
+            color: green; /* Green color for attended event */
+        }
+
+        /* Style for absent event */
+        .fc-absent {
+            color: red; /* Red color for absent event */
+        }
+        h1, h3 {
+            color: black;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+
+
+        }
+        .button-container button {
+            background-color: #5c6bc0;
+            margin-top: 0px;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+
+        }
+        .button-container button:hover {
+            background-color: #3949ab;
+        }
+        .event {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .event h3 {
+            margin-top: 0;
+            color: #5c6bc0;
+        }
+
+        .event p {
+            margin: 5px 0;
+        }
+
+
+
+
+
+    </style>
+</head>
+<body>
+    <div id="EventCalendar"></div>
+    <h3></h3>
+    <div class="button-container">
+        <button onclick="filterEvents('all')">All</button>
+        {% for child in children %}
+            <button onclick="filterEvents('{{ child.id }}')">{{ child.name }}</button>
+        {% endfor %}
+    </div>
+
+    <h1 id="eventsHeading">Events for Today</h1>
+    <div id="eventList">
+        <!-- Event list will be populated here -->
+    </div>
+
+    <!-- Buttons for filtering events by child -->
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            $('#EventCalendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,agendaWeek,agendaDay'
+                },
+                events: {
+                    url: '/get_events/',
+                    method: 'GET',
+                    success: function (event_list) {
+                        console.log('Fetched events successfully:', event_list);
+                    },
+                    failure: function () {
+                        alert('Error fetching events!');
+                    }
+                },
+                dayClick: function(date, jsEvent, view) {
+                    console.log('Clicked date:', date.format());
+                    fetchEventsForDate(date);
+                },
+                eventRender: function (event, element) {
+                    console.log('Rendering event:', event, element);
+                    $.ajax({
+                        url: '/get_attendance_data/',
+                        method: 'GET',
+                        data: {
+                            'event_id': event.event_id,
+                            'child_id': event.child_id,
+                            'date': event.start.format('YYYY-MM-DD')
+                        },
+                        success: function(response) {
+                            var attended = response.attended;
+                            var absent = response.absent;
+                            var attendanceStatus = '';
+                            var attendanceMarksHtml = '<div class="fc-attendance-container">';
+                            if (attended) {
+
+                                attendanceMarksHtml += '<span class="fc-attendance-mark fc-attended">&#10004;</span>'; // Tick mark
+                            } else if (absent) {
+
+                                attendanceMarksHtml += '<span class="fc-attendance-mark fc-absent">&#10008;</span>'; // Cross mark
+                            }
+
+                            element.data('attendance-status', attendanceStatus);
+                            element.append(attendanceMarksHtml);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching attendance data:', error);
+                        }
+                    });
+                    getColorForChild(event.child_name, function (color) {
+                        element.css('background-color', color);
+                    });
+                    element.find('.fc-time').remove();
+                    element.find('.fc-title').html('<b>' + event.title + '</b><br>' + event.start.format('hh:mm A') + ' - ' + event.end.format('hh:mm A'));
+                    element.click(function() {
+                        fetchEventsForDate(event.start);
+                    });
+                }
+            });
+
+            // Fetch events for the current date on page load
+            fetchEventsForDate(moment());
+
+            function fetchEventsForDate(date) {
+                $.ajax({
+                    url: '/get_events_for_date/',
+                    method: 'GET',
+                    data: {
+                        'date': date.format('YYYY-MM-DD')
+                    },
+                    success: function(response) {
+                        displayEvents(response.events, date);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error fetching events for date:', error);
+                    }
+                });
+            }
+
+            function displayEvents(events, date) {
+                var eventList = $('#eventList');
+                var eventsHeading = $('#eventsHeading');
+                eventList.empty();
+                if (events.length > 0) {
+                    eventsHeading.text('Events for ' + date.format('MMMM DD, YYYY'));
+                    events.forEach(function(event) {
+            var eventHtml = '<div class="event child-' + event.child + '">';
+            eventHtml += '<h3>' + event.title + '</h3>';
+            eventHtml += '<h3>' + event.childname + '</h3>';
+            eventHtml += '<p><strong>Start Time:</strong> ' + event.start + '</p>';
+            eventHtml += '<p><strong>End Time:</strong> ' + event.end + '</p>';
+            eventHtml += '<p><strong>Attendance:</strong> ' + event.attendance_status + '</p>';
+
+
+
+
+
+            eventHtml += '</div>';
+            eventList.append(eventHtml);
+        });
+                } else {
+                    eventsHeading.text('Events for ' + date.format('MMMM DD, YYYY'));
+                    eventList.append('<p>No events for the selected date.</p>');
+                }
+            }
+
+            function getColorForChild(childName, callback) {
+                $.ajax({
+                    url: '/get_child_color/',
+                    method: 'POST',
+                    data: {
+                        'child_name': childName,
+                    },
+                    success: function (response) {
+                        callback(response.color_code);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching child color:', error);
+                        callback('#3e818d'); // Default color
+                    }
+                });
+            }
+
+            // Filter events by child ID or show all events
+            window.filterEvents = function (childId) {
+                var events = document.getElementsByClassName('event');
+                for (var i = 0; i < events.length; i++) {
+                    var event = events[i];
+                    if (childId === 'all') {
+                        event.style.display = 'block';
+                    } else {
+                        if (event.classList.contains('child-' + childId)) {
+                            event.style.display = 'block';
+                        } else {
+                            event.style.display = 'none';
+                        }
+                    }
+                }
+            }
+
+            // Display all events by default
+            filterEvents('all');
+        });
+    </script>
+
+<p> add event</p>
+</body>
+
+{% endblock %}
+{% block footer %}
+{% include 'fu.html' %}
+{% endblock %}
