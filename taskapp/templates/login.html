@@ -53,12 +53,12 @@
                         for="{{ form.username.id_for_label }}">Password</label>
 
                     <div
-                        class="password-input mt-12  lg:mt-4 flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  h-[100px] text-3xl  lg:h-[50px] lg:text-sm justify-between p-2 pl-0">
+                        class="relative password-input mt-12  lg:mt-4 flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  h-[100px] text-3xl  lg:h-[50px] lg:text-sm justify-between ">
                         <!-- {{ form.password }}-->
                         <input name="password" id="password-input" type="password" placeholder="Enter your password"
-                            class="border-0 bg-transparent text-sm outline-none password-input"
-                            style="outline: none;color: #6b7280;" />
-                        <span class="toggle-password"
+                        class=" bg-[#f8fafc] w-full border-2 border-[#f1f5f9]  rounded-lg h-[100px] text-3xl  lg:h-[50px] lg:text-sm "
+                        style="color: #6b7280;" />
+                        <span class="toggle-password absolute  h-full flex flex-col justify-center  " style="right: 5;z-index: 4;"
                             onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')">
                             <i class="fa fa-eye" aria-hidden="true"></i>
                         </span>

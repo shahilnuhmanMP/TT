@@ -110,7 +110,7 @@
         position: relative;
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: start;
         justify-content: space-between;
         /* Add position relative */
     }
@@ -352,7 +352,7 @@
         <i class="fas fa-plus"></i>
     </div>
     <div class="fixed-tach-icon" onclick="window.location.href='/dashboard/'">
-        <i class="fas fa-tachometer"></i>
+        <img src="{% static 'taskapp/images/report.png' %}" height="30" width="30"/>
     </div>
 
     <script>
@@ -467,7 +467,7 @@
                     } else if (paymentEntry) {
                         paymentInfo = `<p>Paid: $${paymentEntry.paid_amount}</p>`;
                     } else {
-                        paymentInfo = `<button  style="background-color:#f87171;color:white;font-size:11px" class=" bg-[#f87171] p-1 font-bold  rounded-md text-[#f87171]" onclick="window.location.href='/event/${event.id}/fee_payment/'">Pay Fee ${event.fee_amount}</button>`;
+                        paymentInfo = `<button  style="background-color:#f87171;color:white;font-size:11px" class=" bg-[#f87171] p-1 font-bold  rounded-md text-[#f87171] hover:scale-110" onclick="window.location.href='/event/${event.id}/fee_payment/'">Pay Fee ${event.fee_amount}</button>`;
                     }
 
                     const attendanceStatus = event.attendance_status.toLowerCase();
@@ -476,56 +476,51 @@
                     const cancelledClass = isCancelled ? 'cancelled' : '';
 
                     const eventHtml = `
-                <div  class="event child-${event.child} ${cancelledClass}  " style="background-color:white;border-left:7px solid ${event.color}" data-event-id="${event.id}" data-child-id="${event.child}">
+                <div  class="event child-${event.child} ${cancelledClass}     " style="background-color:white;border-left:7px solid ${event.color}" data-event-id="${event.id}" data-child-id="${event.child}">
              
                    <div class="flex flex-col items-start">
                     <p class=" text-[15px] font-[600]" style="color:${event.color}"> ${event.start} - ${event.end} </p>
                     <h3 class="text-black font-bold">${event.title} For ${event.childname}</h3>
                      ${paymentInfo}
                    </div>
+                     <div class="eventstateclass" id="eventcardState${event.id}" style="display:flex;flex-direction:row;border-radius:10px">
+                                <span class="fc-attendance-mark fc-attended ${attendanceClass.includes('marked-attended') ? 'marked' : ''}"><img src="{% static 'taskapp/images/checkk.png' %}" class="bg-white rounded-lg p-[6px]  hover:bg-[#fcd34d]" height='30' width='30'/></span>
+                                <span class="fc-attendance-mark fc-absent ${attendanceClass.includes('marked-absent') ? 'marked' : ''}"><img src="{% static 'taskapp/images/remove.png' %}" class="bg-white rounded-lg p-1  hover:bg-[#fcd34d]" height='30' width='30'/></span>
+                                <span class="fc-cancelled-mark ${isCancelled ? 'marked' : ''}"><img src="{% static 'taskapp/images/delete.png' %}" class="bg-white rounded-lg p-1  hover:bg-[#fcd34d]" height='30' width='30'/></span>
+                     </div>
                     
-                    <div class="flex justify-center items-center h-[100%] p-[5px]"  onclick="eventCardArrowClicked(${event.id},event)" >
-                    <img src="{% static 'taskapp/images/right-arrow.png' %}" class="bg-white rounded-lg p-[6px]" height='30' width='30'/>
-                          <div class="eventstateclass" id="eventcardState${event.id}" style="display:none;flex-direction:column;height:100%;box-shadow:2px 2px 3px gray;border-radius:10px">
-                                <span class="fc-attendance-mark fc-attended ${attendanceClass.includes('marked-attended') ? 'marked' : ''}"><img src="{% static 'taskapp/images/checkk.png' %}" class="bg-white rounded-lg p-[6px]" height='30' width='30'/></span>
-                                <span class="fc-attendance-mark fc-absent ${attendanceClass.includes('marked-absent') ? 'marked' : ''}"><img src="{% static 'taskapp/images/remove.png' %}" class="bg-white rounded-lg p-1" height='30' width='30'/></span>
-                                <span class="fc-cancelled-mark ${isCancelled ? 'marked' : ''}"><img src="{% static 'taskapp/images/delete.png' %}" class="bg-white rounded-lg p-1" height='30' width='30'/></span>
-                         </div>
-                    </div>
+              
                   
                    
                 </div>`;
                     eventList.innerHTML += eventHtml;
                 });
+                
+                // <div class="flex justify-center items-center h-[100%] p-[5px]"  onclick="eventCardArrowClicked(${event.id},event)" >
+                //     <img src="{% static 'taskapp/images/right-arrow.png' %}" class="bg-white rounded-lg p-[6px]" height='30' width='30'/>
+                //           <div class="eventstateclass" id="eventcardState${event.id}" style="display:none;flex-direction:column;height:100%;box-shadow:2px 2px 3px gray;border-radius:10px">
+                //                 <span class="fc-attendance-mark fc-attended ${attendanceClass.includes('marked-attended') ? 'marked' : ''}"><img src="{% static 'taskapp/images/checkk.png' %}" class="bg-white rounded-lg p-[6px]" height='30' width='30'/></span>
+                //                 <span class="fc-attendance-mark fc-absent ${attendanceClass.includes('marked-absent') ? 'marked' : ''}"><img src="{% static 'taskapp/images/remove.png' %}" class="bg-white rounded-lg p-1" height='30' width='30'/></span>
+                //                 <span class="fc-cancelled-mark ${isCancelled ? 'marked' : ''}"><img src="{% static 'taskapp/images/delete.png' %}" class="bg-white rounded-lg p-1" height='30' width='30'/></span>
+                //          </div>
+                //     </div>
             } else {
                 eventList.innerHTML += '<p>No events for the selected date.</p>';
             }
             addAttendanceListeners();
             addCancellationListeners();
         }
-        function eventCardArrowClicked(id, event) {
-            event.stopPropagation();
-            var ele = document.getElementById("eventcardState" + id);
-            if (ele.style.display === 'none') {
-                ele.style.display = 'flex';
-            } else {
-                ele.style.display = 'none';
-            }
+        // function eventCardArrowClicked(id, event) {
+        //     event.stopPropagation();
+        //     var ele = document.getElementById("eventcardState" + id);
+        //     if (ele.style.display === 'none') {
+        //         ele.style.display = 'flex';
+        //     } else {
+        //         ele.style.display = 'none';
+        //     }
 
-        }
-        document.body.addEventListener('click', function (event) {
-
-            var ele = document.getElementsByClassName("eventstateclass");
-            for (var i = 0; i < ele.length; i++) {
-
-                ele[i].style.display = 'none';
-            }
-
-
-
-        });
-
-
+        // }
+      
 
         function addCancellationListeners() {
             const cancellationMarks = document.querySelectorAll('.fc-cancelled-mark');

@@ -520,45 +520,42 @@
                         </div>
                     </div>
 
-                    <div class="flex justify-center items-center h-[100%] p-[5px]"
-                        onclick="eventCardArrowClicked('{{event.id}}')">
-                        <img src="{% static 'taskapp/images/right-arrow.png' %}" class="bg-white rounded-lg p-[6px]"
-                            height='30' width='30' />
-                        <div class="eventstateclass" id="eventcardState{{event.id}}"
-                            style="display:none;flex-direction:column;height:100%;box-shadow:2px 2px 3px gray;border-radius:10px">
+                
+                        <div class="" id="eventcardState{{event.id}}"
+                            style=" display: flex; flex-direction:row;border-radius:10px">
                             <img onclick="editEvent('{{ event.id }}')" src="{% static 'taskapp/images/edit.png' %}"
-                                class="bg-white rounded-lg p-[6px] w-[55px] lg:w-[35px] h-[40px] lg:h-[30px]" />
+                                class="bg-white rounded-lg p-[6px] w-[55px] lg:w-[35px] h-[40px] lg:h-[30px] hover:bg-[#fcd34d]" />
                             <img onclick="deleteEvent('{{ event.id }}')" src="{% static 'taskapp/images/trash.png' %}"
-                                class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px]  h-[40px]  lg:h-[30px]" />
+                                class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px]  h-[40px]  lg:h-[30px] hover:bg-[#fcd34d]" />
 
                         </div>
-                    </div>
+              
                 </div>
                 {% endfor %}
             </div>
         </div>
         <script>
-            function eventCardArrowClicked(id) {
-                event.stopPropagation();
-                var ele = document.getElementById("eventcardState" + id);
-                if (ele.style.display === 'none') {
-                    ele.style.display = 'flex';
-                } else {
-                    ele.style.display = 'none';
-                }
+            // function eventCardArrowClicked(id) {
+            //     event.stopPropagation();
+            //     var ele = document.getElementById("eventcardState" + id);
+            //     if (ele.style.display === 'none') {
+            //         ele.style.display = 'flex';
+            //     } else {
+            //         ele.style.display = 'none';
+            //     }
 
-            }
-            document.body.addEventListener('click', function (event) {
+            // }
+            // document.body.addEventListener('click', function (event) {
 
-                var ele = document.getElementsByClassName("eventstateclass");
-                for (var i = 0; i < ele.length; i++) {
+            //     var ele = document.getElementsByClassName("eventstateclass");
+            //     for (var i = 0; i < ele.length; i++) {
 
-                    ele[i].style.display = 'none';
-                }
+            //         ele[i].style.display = 'none';
+            //     }
 
 
 
-            });
+            // });
 
         </script>
 

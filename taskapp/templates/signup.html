@@ -6,8 +6,10 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Tinytaskers Signup</title>
 {% tailwind_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 <style>
     body {
 
@@ -92,12 +94,13 @@
                     </div>
                   
 
-                    <div class=" mt-4   flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg   text-lg h-[50px] lg:text-sm justify-between p-2 pl-0">
+                    <div class=" relative mt-4   flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg   text-lg h-[50px] lg:text-sm justify-between ">
                             <!-- {{ form.password }}-->
                             <input name="password1" id="password-input" type="password" placeholder="Enter your password"
-                                class="border-0 bg-transparent text-lg lg:text-sm password-input"  style="outline: none;color: #6b7280;"  />
-                            <span class="toggle-password"
-                                onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')">
+                            class=" bg-[#f8fafc] w-full border-2 border-[#f1f5f9]  rounded-lg h-[100px] text-3xl  lg:h-[50px] lg:text-sm "
+                            style="color: #6b7280;"   />
+                            <span class="toggle-password absolute  h-full flex flex-col justify-center  " style="right: 5;z-index: 4;"
+                                onclick="togglePasswordVisibility('password-input')">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </span>
                         </div>
@@ -105,12 +108,13 @@
 
                   
 
-                        <div class="password-input mt-4 flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg   text-3xl h-[50px] lg:text-sm justify-between p-2 pl-0">
+                        <div class=" relative password-input mt-4 flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg   text-3xl h-[50px] lg:text-sm justify-between ">
                             <!-- {{ form.password }}-->
-                            <input name="password2" id="password-input" type="password" placeholder="Re Enter your password"
-                                class="border-0 bg-transparent text-lg lg:text-sm outline-none password-input" style="outline: none;color: #6b7280;"  />
-                            <span class="toggle-password"
-                                onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')">
+                            <input name="password2" id="password-input2" type="password" placeholder="Re Enter your password"
+                            class=" bg-[#f8fafc] w-full border-2 border-[#f1f5f9]  rounded-lg h-[100px] text-3xl  lg:h-[50px] lg:text-sm "
+                            style="color: #6b7280;"  />
+                            <span class="toggle-password absolute  h-full flex flex-col justify-center  " style="right: 5;z-index: 4;"
+                                onclick="togglePasswordVisibility('password-input2')">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </span>
                         </div>
@@ -134,8 +138,8 @@
 
     <script>
       
-        function togglePasswordVisibility() {
-            var passwordInput = document.getElementById('password-input');
+        function togglePasswordVisibility(id) {
+            var passwordInput = document.getElementById(id);
 
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';

@@ -204,12 +204,17 @@
                 <!-- Display existing children in tiles -->
                 <div class="child-tiles w-full mt-5 flex flex-col items-center  lg:items-start" >
                     {% for child in user_children %}
-                        <div class="child-tile flex  flex-row shadow-xl w-[90%] rounded-xl items-center mt-3 p-3 ">
-                          <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
+                        <div class="child-tile flex  flex-row shadow-xl w-[90%] rounded-xl items-center justify-between mt-3 p-3 ">
+                          <div  class="flex flex-row items-center">
+                            <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
                             <h3 class="font-bold">{{ child.name }}</h3>
+                          </div>
+                      
                             <!-- <button button class="delete-button"    onclick="confirmDelete('{{ child.name }}', '/children/{{ child.id }}/')">Delete</button> -->
 
                          <!-- Add more details if needed -->
+                         <img onclick="confirmDelete('{{ child.name }}', '/children/{{ child.id }}/')" src="{% static 'taskapp/images/trash.png' %}"
+                         class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px]  h-[40px]  lg:h-[30px]  hover:bg-[#fcd34d]" />
                         </div>
                     {% endfor %}
                 </div>
@@ -236,9 +241,13 @@
               <div class="child-tiles w-full mt-5 flex flex-col items-center  lg:items-start ">
 
                 {% for person in trusted_people %}
-                  <div class="child-tile flex flex-row shadow-xl w-[90%] rounded-xl items-center mt-3 p-3 ">
-                    <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
-                    <h4 class="font-bold">{{ person.name }}- {{ person.relation }} - {{ person.phone_number }}</h4>
+                  <div class="child-tile flex flex-row shadow-xl w-[90%] rounded-xl justify-between items-center mt-3 p-3 ">
+                    <div class="flex flex-row items-center">
+                      <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
+                      <h4 class="font-bold">{{ person.name }}- {{ person.relation }} - {{ person.phone_number }}</h4>
+                    </div>
+                    <img  onclick="confirmDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')" src="{% static 'taskapp/images/trash.png' %}"
+                    class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px]  h-[35px]  lg:h-[30px] hover:bg-[#fcd34d]" />
                     <!-- <button class="delete-button" onclick="confirmDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')"">Delete</button> -->
                   </div>
                 {% endfor %}

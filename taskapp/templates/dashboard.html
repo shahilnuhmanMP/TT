@@ -48,9 +48,9 @@
     }
 
     .child-button {
-        margin: 5px;
+        margin-right: 10px;
         padding: 10px 20px;
-        background-color: #007bff;
+        background-color: black;
         color: white;
         border: none;
         border-radius: 5px;
@@ -59,6 +59,7 @@
 
     .child-button.selected {
         background-color: #0056b3;
+        color: white;
     }
     .gradient-shadow {
 
@@ -83,7 +84,7 @@
     {% csrf_token %}
 
 
-    <div class="flex flex-col  items-start  w-full  lg:w-[450px] ">
+    <!-- <div class="flex flex-col  items-start  w-full  lg:w-[450px] ">
         <label for="monthYear" class="mr-3 font-bold">Select child :</label>
         <div  class="  bg-white  border-2 border-[#6b7280] text-[#e2e8f0] rounded-lg h-[40px] text-lg   lg:text-sm  w-full  lg:w-[250px] " style="color: #6b7280;">
             <select name="selectedChild" id="selectedChild" class="bg-transparent w-full" style="border: none;">
@@ -93,22 +94,26 @@
                 {% endfor %}
             </select>
         </div>
-    </div>
+    </div> -->
  
    
 
-    <!-- <div>
-        {% for child_option in children %}
-            <button type="button" class="child-button {% if child and child_option.id == child.id %}selected{% endif %}" onclick="selectChild('{{ child_option.id }}')">{{ child_option.name }}</button>
-        {% endfor %}
-    </div> -->
+    <div class="flex flex-col items-start">
+        <label  class="mr-3 font-bold">Select child :</label>
+        <div class="flex flex-row">
+            {% for child_option in children %}
+            <button type="button" class="child-button {% if child and child_option.id == child.id %}selected{% endif %} bg-black" onclick="selectChild('{{ child_option.id }}')">{{ child_option.name }}</button>
+             {% endfor %}
+        </div>
+      
+    </div> 
 
     <input type="hidden" name="child_id" id="childInput" value="{% if child %}{{ child.id }}{% endif %}">
 
   
      <div class="flex flex-col  items-start  justify-center mt-5  lg:mt-0  w-full  lg:w-[350px]  ">
         
-        <label for="monthYear" class="mr-3  inter">Select Month and Year:</label>
+        <label for="monthYear" class="mr-3  font-bold">Select Month and Year:</label>
         <div class="flex flex-col lg:flex-row items-start  lg:items-center w-full ">
             <div  class=" flex flex-row justify-center items-center  bg-white   border-2 border-[#6b7280] text-[#e2e8f0] mr-3 rounded-lg h-[40px] text-lg   lg:text-sm w-full  lg:w-[250px] " style="color: #6b7280;">
                 <select name="monthYear" id="monthYear" class="bg-transparent w-full" style="border: none;">
@@ -151,12 +156,13 @@
             <script>
 
                 var ctx = document.getElementById('attendanceChart-{{ data.event.id }}').getContext('2d');
+                console.log("value:{{data.event_spend}}" )
                 var myChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
-                        labels: ['Total Classes '+{{data.total_classes}}, 'Attended Days '+{{data.attended_days}}, 'Absent Days '+{{data.absent_days}}, 'Event Spend ' ],
+                        labels: ['Total Classes '+{{data.total_classes}}, 'Attended Days '+{{data.attended_days}}, 'Absent Days '+{{data.absent_days}},/* 'Event Spend ' */],
                         datasets: [{
-                            data: [ {{data.total_classes}} , {{data.attended_days}} , {{data.absent_days}} ,  {{data.event_spend}} ],
+                            data: [ {{data.total_classes}} , {{data.attended_days}} , {{data.absent_days}} , /* {{data.event_spend}}*/ ],
                             backgroundColor: [
                                 '#62B2FD',
                                 '#9BDFC4',
@@ -220,6 +226,11 @@
             return [];
         }
 
+      function  selectChild(id)
+      {
+        document.getElementById('childInput').value = id;
+        document.getElementById('childForm').submit();
+      }
 
 const selectElement = document.getElementById('selectedChild');
 
@@ -230,8 +241,7 @@ selectElement.addEventListener('change', function() {
     console.log("triggered")
     console.log('Selected Value:', selectedValue);
     console.log('Selected Text:', selectedText);
-    document.getElementById('childInput').value = selectedValue;
-    document.getElementById('childForm').submit();
+    
 
    
 });
@@ -306,15 +316,17 @@ selectElement.addEventListener('change', function() {
             margin-top: 20px;
         }
         .child-button {
-            background-color: #4CAF50;
-            color: white;
+            background-color: white;
+            color: black;
             padding: 10px 20px;
+            font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
+            box-shadow: 2px 2px 5px gainsboro;
             transition: background-color 0.3s ease;
         }
         .child-button:hover {
-            background-color: #45a049;
+            background-color: #85e4e4;
         }
         .month-selector {
             margin-bottom: 20px;
