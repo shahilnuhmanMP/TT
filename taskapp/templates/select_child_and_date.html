@@ -650,45 +650,52 @@
         }
 
         function submitAttendance(event) {
-            event.stopPropagation(); // Stop event propagation to prevent unintended behavior
+    event.stopPropagation(); // Stop event propagation to prevent unintended behavior
 
-            const eventId = event.target.closest('.event').dataset.eventId;
-            const childId = event.target.closest('.event').dataset.childId;
-            const selectedOption = event.target.classList.contains('fc-attended') ? 'attended' : 'absent';
-            const localDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
-            const markElement = event.target;
-            const isMarked = markElement.classList.contains('marked');
-            console.log(selectedOption)
+    const markElement = event.target.closest('.fc-attendance-mark');
+    const eventId = markElement.closest('.event').dataset.eventId;
+    const childId = markElement.closest('.event').dataset.childId;
 
-            $.ajax({
-                url: '/submit_attendance/',
-                method: 'POST',
-                data: {
-                    'event_id': eventId,
-                    'child_id': childId,
-                    'selected_option': isMarked ? '' : selectedOption, // Send empty string to revoke attendance
-                    'date': localDate.toISOString().split('T')[0],
-                    'csrfmiddlewaretoken': '{{ csrf_token }}'
-                },
-                success: function (response) {
-                    if (response.status === 'success') {
-                        alert(response.message);
-                        markElement.classList.toggle('marked');
-                        if (selectedOption === 'attended') {
-                            markElement.nextElementSibling.classList.remove('marked');
-                        } else if (selectedOption === 'absent') {
-                            markElement.previousElementSibling.classList.remove('marked');
-                        }
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error submitting attendance:', error);
+    // Debugging: Log the markElement and its classes
+    console.log('Clicked element:', markElement);
+    console.log('Classes on clicked element:', markElement.classList);
+
+    const selectedOption = markElement.classList.contains('fc-attended') ? 'attended' : 'absent';
+    const localDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
+    const isMarked = markElement.classList.contains('marked');
+
+    // Debugging: Log the selectedOption and isMarked
+    console.log('selectedOption:', selectedOption);
+    console.log('isMarked:', isMarked);
+
+    $.ajax({
+        url: '/submit_attendance/',
+        method: 'POST',
+        data: {
+            'event_id': eventId,
+            'child_id': childId,
+            'selected_option': isMarked ? '' : selectedOption, // Send empty string to revoke attendance
+            'date': localDate.toISOString().split('T')[0],
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                alert(response.message);
+                markElement.classList.toggle('marked');
+                if (selectedOption === 'attended') {
+                    markElement.nextElementSibling.classList.remove('marked');
+                } else if (selectedOption === 'absent') {
+                    markElement.previousElementSibling.classList.remove('marked');
                 }
-            });
+            } else {
+                alert('Error: ' + response.message);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error submitting attendance:', error);
         }
-
+    });
+}
         window.filterEvents = function (childId) {
             selectedChildId = childId;
             document.querySelector('.date-item.selected') && fetchEventsForDate(new Date(document.querySelector('.date-item.selected').dataset.date));
