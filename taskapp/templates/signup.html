@@ -19,49 +19,60 @@
         flex-direction: column;
         justify-content: start;
 
-        background-color: #f0f2f5;
-        overflow-y: hidden;
+        background-color: rgb(220, 238, 220);
     }
 
- 
-  
-
-
-
-    .eye
-    {
+    .eye {
         background-image: url("https://cdn-icons-png.flaticon.com/128/709/709612.png");
-        height:20px;
-        width:20px;
+        height: 20px;
+        width: 20px;
     }
 
-   
+    @media (max-width:1020px) {
+        body {
+            background-color: white;
+        }
+    }
 
+    .eye {
+        background-image: url("https://cdn-icons-png.flaticon.com/128/709/709612.png");
+        height: 20px;
+        width: 20px;
+    }
+
+    .google-icon-wrap {
+        display: flex;
+        align-items: center;
+    }
+
+    .google-icon-wrap .fa-google {
+        font-size: 24px;
+        /* Adjust the size as needed */
+        margin-right: 8px;
+        /* Adjust the spacing as needed */
+    }
 </style>
 
 <body>
 
 
-    <div class="h-full w-full flex items-start justify-center bg-white lg:bg-opacity-0  mt-14">
-
-        <img src="{% static 'taskapp/images/loginSide.png' %}" height="900" width="900"
-        class="self-start  flex lg:hidden absolute self-end z-3" />
-        <div
-            class=" h-full  lg:h-[80%] w-full  lg:w-[70%] bg-opacity-0  lg:bg-white  flex flex-col lg:flex-row justify-center  rounded-xl z-0">
+    <div class=" w-full flex items-start justify-center bg-white lg:bg-opacity-0  mt-14">
+        <div class=" h-full  lg:h-[80%] w-full  lg:w-[70%] bg-opacity-0  lg:bg-white  flex flex-col lg:flex-row justify-center  rounded-xl z-0"
+            style="min-height: 700px; margin-top: 2%;">
             <div
-                class=" w-full lg:w-[50%]  h-auto  lg:h-full flex flex-col p-10 justify-between border-r-[2px] border-[#f1f5f9] ">
-                <div class="flex flex-col items-center  lg:items-start">
-                    <h1 class=" text-6xl lg:text-3xl  font-bold  text-center  lg:text-start ">
-                        <h1 class=" text-3xl lg:text-3xl  font-bold  text-center  lg:text-start ">Tinytaskers Signup</h1>
-                    <h1
-                        class="text-lg   lg:text-sm lg:text-sm  text-center  lg:text-start text-[#94a3b8] mt-3 w-full lg:w-[70%]">
-                        Please login to access your files and get access to resources</h1>
+                class="w-full lg:w-[50%] h-auto lg:h-full flex flex-col p-10 justify-between border-r-[2px] border-[#f1f5f9]">
+                <div class="flex flex-col items-center lg:items-start">
+                    <h1 class="text-6xl lg:text-3xl font-bold text-center lg:text-start" style="color: #3E818C;">Tinytaskers Signup</h1>
+                    <h1 class="text-4xl lg:text-sm text-center lg:text-start text-[#94a3b8] mt-3 w-[70%]" style="color: black;">Please sign in
+                        to
+                        access your files and get access to resources</h1>
                 </div>
-
-                <img src="{% static 'taskapp/images/loginSide.png' %}" height="400" width="400"
-                class="self-start  hidden lg:block" />
+                <img src="{% static 'taskapp/images/login.gif' %}"
+                    class="w-full h-auto lg:w-[400px] lg:h-[400px] self-start" />
             </div>
-            <div class=" self-center w-[90%] lg:w-[50%] h-auto  lg:h-full  flex flex-col p-10 pt-0  lg:pt-20  " style="background-color: #3E818C;">
+
+            <div class=" self-center w-[90%] lg:w-[50%] h-auto  lg:h-full  flex flex-col p-10 pt-0  lg:pt-20  "
+                style="background-color: #3E818C;">
                 <form action="{% url 'signup' %}" method="post" class="w-full flex flex-col">
                     {% csrf_token %}
 
@@ -69,60 +80,72 @@
                     <div class="flex flex-col mt-2">
 
                         <input name="username" placeholder="Enter your username"
-                            class=" mt-2 bg- white w-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg h-[50px] text-lg   lg:text-sm " style="color: #6b7280;" />
-                         {% comment %} <h2 class="font-bold">User Name</h2> {% endcomment %}
-                         {% comment %} {{ form.username }} {% endcomment %}
+                            class=" mt-2 bg- white w-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg h-[50px] text-lg   lg:text-sm "
+                            style="color: #6b7280;" />
+                        {% comment %} <h2 class="font-bold">User Name</h2> {% endcomment %}
+                        {% comment %} {{ form.username }} {% endcomment %}
 
                     </div>
                     <div class="flex flex-col mt-2">
 
                         <input name="email" placeholder="Enter your Email"
-                            class=" mt-2 bg- whitew-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+                            class=" mt-2 bg- whitew-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
+                            style="color: #6b7280;" />
 
                     </div>
                     <div class="flex flex-col mt-2">
 
-                        <input name="phone_number" placeholder="Enter your Phone Number" pattern="[0-9]{10}" minlength="10" maxlength="10"
-                            class=" mt-2 bg- whitew-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "  style="color: #6b7280;"/>
+                        <input name="phone_number" placeholder="Enter your Phone Number" pattern="[0-9]{10}"
+                            minlength="10" maxlength="10"
+                            class=" mt-2 bg- whitew-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
+                            style="color: #6b7280;" />
 
                     </div>
-                  
 
-                    <div  class="flex flex-col">
-                    <div  class="relative password-input mt-5 text-[#e2e8f0]  lg:mt-4 flex flex-row items-center bg- whitew-full border-2 border-[#B6C7AA]  rounded-lg  h-[50px] text-3xl  lg:h-[50px] lg:text-sm justify-between ">
+
+                    <div class="flex flex-col">
+                        <div
+                            class="relative password-input mt-5 text-[#e2e8f0]  lg:mt-4 flex flex-row items-center bg- whitew-full border-2 border-[#B6C7AA]  rounded-lg  h-[50px] text-3xl  lg:h-[50px] lg:text-sm justify-between ">
                             <!-- {{ form.password1 }}-->
-                            <input name="password1" id="password-input" type="password" placeholder="Enter your password"
-                            class="bg-white w-full border-0 text-lg  lg:text-sm h-full rounded-lg text-black"  />
-                            <span class="toggle-password absolute  h-full flex flex-col justify-center  " style="right: 5;z-index: 4;"
-                                onclick="togglePasswordVisibility('password-input')">
-                                <img class="eye" id="eye" src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png" aria-hidden="true"></img>
+                            <input name="password1" id="password-input" type="password"
+                                placeholder="Enter your password"
+                                class="bg-white w-full border-0 text-lg  lg:text-sm h-full rounded-lg text-black" />
+                            <span class="toggle-password absolute  h-full flex flex-col justify-center  "
+                                style="right: 5;z-index: 4;" onclick="togglePasswordVisibility('password-input')">
+                                <img class="eye" id="eye" src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
+                                    aria-hidden="true"></img>
                             </span>
                         </div>
                         <h5 id="uspas"></h5>
                     </div>
-         
 
-                  
-                    <div  class="flex flex-col ites-center">
-                        <div class="relative password-input mt-5  lg:mt-4 flex flex-row items-center bg- whitew-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg  h-[50px] text-3xl  lg:h-[50px] lg:text-sm justify-between ">
+
+
+                    <div class="flex flex-col ites-center">
+                        <div
+                            class="relative password-input mt-5  lg:mt-4 flex flex-row items-center bg- whitew-full border-2 border-[#B6C7AA] text-[#e2e8f0] rounded-lg  h-[50px] text-3xl  lg:h-[50px] lg:text-sm justify-between ">
                             <!-- {{ form.password2 }}-->
-                            <input name="password2" id="password-input2" type="password" placeholder="Re Enter your password" class="bg-white w-full border-0 text-lg  lg:text-sm h-full rounded-lg text-black"   />
-                            <span class="toggle-password absolute  h-full flex flex-col justify-center   " style="right: 5;z-index: 4;"
-                                onclick="togglePasswordVisibility('password-input2')">
-                                <img class="eye" id="eye2"  src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png" aria-hidden="true"></img>
+                            <input name="password2" id="password-input2" type="password"
+                                placeholder="Re Enter your password"
+                                class="bg-white w-full border-0 text-lg  lg:text-sm h-full rounded-lg text-black" />
+                            <span class="toggle-password absolute  h-full flex flex-col justify-center   "
+                                style="right: 5;z-index: 4;" onclick="togglePasswordVisibility('password-input2')">
+                                <img class="eye" id="eye2" src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
+                                    aria-hidden="true"></img>
                             </span>
                         </div>
                         <h5 id="uspas"></h5>
                     </div>
-         
-                
+
+
                     <button class="bg-[#1e293b] text-white h-[50px] rounded-lg :text-lg" style="margin-top: 80px;"
                         type="submit" value="Signup">Register</button>
 
 
 
-                    <!-- {% include 'googlesign.html' %} -->
-
+                    <div class="google-icon-wrap">
+                        {% include 'googlesign.html' %}
+                    </div>
 
                 </form>
             </div>
@@ -134,126 +157,126 @@
 
 
 
- 
-<script>
-    // Function to validate form inputs before submission
-    function validateForm() {
-        // Get form elements
-        const username = document.querySelector('input[name="username"]').value.trim();
-        const email = document.querySelector('input[name="email"]').value.trim();
-        const phoneNumber = document.querySelector('input[name="phone_number"]').value.trim();
-        const password1 = document.querySelector('input[name="password1"]').value.trim();
-        const password2 = document.querySelector('input[name="password2"]').value.trim();
-        
-        // Regular expression for email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        // Initialize error variable
-        let isValid = true;
+    <script>
+        // Function to validate form inputs before submission
+        function validateForm() {
+            // Get form elements
+            const username = document.querySelector('input[name="username"]').value.trim();
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const phoneNumber = document.querySelector('input[name="phone_number"]').value.trim();
+            const password1 = document.querySelector('input[name="password1"]').value.trim();
+            const password2 = document.querySelector('input[name="password2"]').value.trim();
 
-        // Clear previous error messages
-        const errorMessages = document.querySelectorAll('.error-message');
-        errorMessages.forEach(msg => msg.remove());
+            // Regular expression for email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        // Validate username (required field)
-        if (!username) {
-            showError(document.querySelector('input[name="username"]'), 'Username is required.');
-            isValid = false;
+            // Initialize error variable
+            let isValid = true;
+
+            // Clear previous error messages
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(msg => msg.remove());
+
+            // Validate username (required field)
+            if (!username) {
+                showError(document.querySelector('input[name="username"]'), 'Username is required.');
+                isValid = false;
+            }
+
+            // Validate email (required and valid format)
+            if (!email) {
+                showError(document.querySelector('input[name="email"]'), 'Email is required.');
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                showError(document.querySelector('input[name="email"]'), 'Invalid email format.');
+                isValid = false;
+            }
+
+            // Validate phone number (required field)
+            if (!phoneNumber) {
+                showError(document.querySelector('input[name="phone_number"]'), 'Phone number is required.');
+                isValid = false;
+            }
+
+            // Validate password (required and match)
+            if (!password1) {
+                showpassError(document.querySelector('input[name="password1"]'), 'Password is required.');
+                isValid = false;
+            }
+
+            // Validate password confirmation (required and match)
+            if (!password2) {
+                showpassError(document.querySelector('input[name="password2"]'), 'Please confirm your password.');
+                isValid = false;
+            } else if (password1 !== password2) {
+                showpassError(document.querySelector('input[name="password2"]'), 'Passwords do not match.');
+                isValid = false;
+            }
+
+            // Additional custom validations
+            if (password1.toLowerCase().includes(username.toLowerCase())) {
+                showpassError(document.querySelector('input[name="password1"]'), 'The password is too similar to the username.');
+                isValid = false;
+            }
+
+
+
+            return isValid;
         }
 
-        // Validate email (required and valid format)
-        if (!email) {
-            showError(document.querySelector('input[name="email"]'), 'Email is required.');
-            isValid = false;
-        } else if (!emailRegex.test(email)) {
-            showError(document.querySelector('input[name="email"]'), 'Invalid email format.');
-            isValid = false;
+        // Function to display error messages
+        function showError(input, message) {
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'error-message text-red-500 text-sm mt-1';
+            errorMessage.innerText = message;
+            input.parentNode.appendChild(errorMessage);
         }
 
-        // Validate phone number (required field)
-        if (!phoneNumber) {
-            showError(document.querySelector('input[name="phone_number"]'), 'Phone number is required.');
-            isValid = false;
+        function showpassError(input, message) {
+            const errorMessage = document.getElementById("uspas")
+            errorMessage.className = 'error-message text-red-500 text-sm mt-1';
+            errorMessage.innerText = message;
+
         }
 
-        // Validate password (required and match)
-        if (!password1) {
-            showpassError(document.querySelector('input[name="password1"]'), 'Password is required.');
-            isValid = false;
+        // Event listener to validate form on submission
+        document.querySelector('form').addEventListener('submit', function (event) {
+            if (!validateForm()) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+
+        // Function to toggle password visibility
+        function togglePasswordVisibility(id) {
+            var passwordInput = document.getElementById(id);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+
+                var ele = document.getElementById('eye')
+                var ele2 = document.getElementById('eye2')
+
+                if (id == "password-input")
+                    ele.src = "https://cdn-icons-png.flaticon.com/128/709/709612.png"
+                else
+                    ele2.src = "https://cdn-icons-png.flaticon.com/128/709/709612.png"
+
+
+            } else {
+                passwordInput.type = 'password';
+                var ele = document.getElementById('eye')
+                var ele2 = document.getElementById('eye2')
+                if (id == "password-input")
+                    ele.src = "https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
+                else
+                    ele2.src = "https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
+
+
+            }
         }
 
-        // Validate password confirmation (required and match)
-        if (!password2) {
-            showpassError(document.querySelector('input[name="password2"]'), 'Please confirm your password.');
-            isValid = false;
-        } else if (password1 !== password2) {
-            showpassError(document.querySelector('input[name="password2"]'), 'Passwords do not match.');
-            isValid = false;
-        }
-
-        // Additional custom validations
-        if (password1.toLowerCase().includes(username.toLowerCase())) {
-            showpassError(document.querySelector('input[name="password1"]'), 'The password is too similar to the username.');
-            isValid = false;
-        }
-
-      
-
-        return isValid;
-    }
-
-    // Function to display error messages
-    function showError(input, message) {
-        const errorMessage = document.createElement('div');
-        errorMessage.className = 'error-message text-red-500 text-sm mt-1';
-        errorMessage.innerText = message;
-        input.parentNode.appendChild(errorMessage);
-    }
-
-    function showpassError(input, message) {
-        const errorMessage = document.getElementById("uspas")
-        errorMessage.className = 'error-message text-red-500 text-sm mt-1';
-        errorMessage.innerText = message;
-       
-    }
-
-    // Event listener to validate form on submission
-    document.querySelector('form').addEventListener('submit', function(event) {
-        if (!validateForm()) {
-            event.preventDefault(); // Prevent form submission if validation fails
-        }
-    });
-
-    // Function to toggle password visibility
-    function togglePasswordVisibility(id) {
-        var passwordInput = document.getElementById(id);
-
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            
-            var ele=document.getElementById('eye')
-            var ele2=document.getElementById('eye2')
-
-            if(id=="password-input")
-            ele.src="https://cdn-icons-png.flaticon.com/128/709/709612.png"
-            else
-            ele2.src="https://cdn-icons-png.flaticon.com/128/709/709612.png"
-
-
-        } else {
-            passwordInput.type = 'password';
-             var ele=document.getElementById('eye')
-             var ele2=document.getElementById('eye2')
-             if(id=="password-input")
-             ele.src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
-             else
-             ele2.src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
- 
-           
-        }
-    }
-
-</script>
+    </script>
 
 
 </body>
