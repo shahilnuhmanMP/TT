@@ -50,13 +50,14 @@
 <body  class=" h-full w-full">
 
   <!--For showing Model when adding community and children  -->
-  <div id="comModal" class="h-full w-full bg-black absolute flex justify-center items-center " style="display: none; background-color: rgba(0, 0, 0, 0.5);">
+  <div id="comModal" class="h-full w-full bg-black absolute flex justify-center items-center  lg:mt-0 " style="display: none; background-color: rgba(0, 0, 0, 0.5);">
     <div class="h-[60%] w-[100%]  lg:w-[40%] bg-white rounded-xl flex flex-col p-4">
       <div class="flex flex-row justify-between">
           <h1 class="font-bold text-xl">Add Trusted Person</h1>
           <h1 onclick="closeComModal()" class="font-bold">X</h1>
       </div>
       <div class="mt-5">
+     
  
         <form method="post" action="{% url 'add_trusted_person' %}">
             {% csrf_token %}
@@ -69,11 +70,27 @@
             <input name="relation" placeholder="Relation"
             class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
 
-            <!-- <label for="{{ form.phone_country_code.id_for_label }}">Country Code</label>
+            {% comment %} <label for="{{ form.phone_country_code.id_for_label }}">Country Code</label> {% endcomment %}
+            <div class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
+            style="color: #6b7280;">
 
-            {{ form.phone_country_code }} -->
-            <input name="phone_country_code" placeholder="Country Code"
-            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
+            <select id="phone_country_code" name="phone_country_code"
+            style="background-color: transparent;width: 100%;border: none;">
+            <option>+IN</option>
+            <option>+CA</option>
+            <option>+GB</option>
+            <option>+CN</option>
+            <option>+FR</option>
+            <option>+DE</option>
+            <option>+AU</option>
+            <option>+JP</option>
+            <option>+RU</option>
+            <option>+BR</option>
+            
+           </select>
+          </div>
+            {% comment %} <input name="phone_country_code" placeholder="Country Code"
+            class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/> {% endcomment %}
 
 
 
@@ -83,6 +100,12 @@
           
             <button type="submit"  class="bg-[blue] text-white p-2 font-bold rounded-lg mt-5">Add Trusted Person</button>
         </form>
+        <script>
+          const countrycodeList=["+IN","+US","+CA","+GB","+CN","+FR","+DE","+AU","+JP","+RU","+BR"];
+
+          var ele=document.getElementById("phone_country_code");
+          ele.innerHTML=<option value="hai">hai</option>
+        </script>
       </div>
 
     </div>
@@ -153,12 +176,12 @@
             <div class=" flex flex-row items-center mt-3 ">
                 <label for="id_color" class="font-bold mr-4">Color:</label>
                 <div class="color-plate flex flex-row justify-center" name="color">
-                  <div class="color" style="background-color: rgba(254, 188, 200, 1);" onclick="selectColor('rgba(254, 188, 200, 1)', this)"></div>
-                  <div class="color" style="background-color: rgba(255, 238, 147, 1);" onclick="selectColor('rgba(255, 238, 147, 1)', this)"></div>
-                  <div class="color" style="background-color: rgba(173, 247, 182, 1);" onclick="selectColor('rgba(173, 247, 182, 1)', this)"></div>
-                  <div class="color" style="background-color: rgba(189, 178, 255, 1);" onclick="selectColor('rgba(189, 178, 255, 1)', this)"></div>
-                  <div class="color" style="background-color: rgba(151, 236, 241, 1);" onclick="selectColor('rgba(151, 236, 241, 1)', this)"></div>
-                  <div class="color" style="background-color: rgba(255, 193, 7, 1);" onclick="selectColor('rgba(255, 193, 7, 1)', this)"></div>
+                  <div class="color" style="background-color: #F4CE14;" onclick="selectColor('#F4CE14', this)"></div>
+                  <div class="color" style="background-color: #E4003A;" onclick="selectColor('#E4003A', this)"></div>
+                  <div class="color" style="background-color: #C738BD;" onclick="selectColor('#C738BD', this)"></div>
+                  <div class="color" style="background-color: #FFB44F;" onclick="selectColor('#FFB44F', this)"></div>
+                  <div class="color" style="background-color: #003285" onclick="selectColor('#003285', this)"></div>
+                  <div class="color" style="background-color: #399918;" onclick="selectColor('#399918', this)"></div>
   
               </div>
             </div>
@@ -187,11 +210,11 @@
   <!--  -->
 
 
-  <div  style=" align-items: center; " class="h-full w-full mt-20 flex flex-col lg:flex-row">
+  <div  style=" align-items: center; " class="h-full w-full mt-20 flex flex-col lg:flex-row ">
 
 
 
-        <div class="flex flex-col items-start w-full  lg:w-[50%] h-full p-4 lg:p-10 ">
+        <div class="flex flex-col items-start w-full  lg:w-[50%] h-full p-4 lg:p-10 mt-[50px] lg:mt-0 ">
 
                 <div class="flex flex-row items-center">
                   <h2 class="text-black font-bold  text-3xl mr-3">Manage Children</h2>
@@ -210,11 +233,11 @@
                             <h3 class="font-bold">{{ child.name }}</h3>
                           </div>
                       
-                            <!-- <button button class="delete-button"    onclick="confirmDelete('{{ child.name }}', '/children/{{ child.id }}/')">Delete</button> -->
+                            {% comment %} <button button class="delete-button"    onclick="confirmDelete('{{ child.name }}', '{{ child.id }}')">Delete</button> {% endcomment %}
 
                          <!-- Add more details if needed -->
-                         <img onclick="confirmDelete('{{ child.name }}', '/children/{{ child.id }}/')" src="{% static 'taskapp/images/trash.png' %}"
-                         class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px]  h-[40px]  lg:h-[30px]  hover:bg-[#fcd34d]" />
+                         <img onclick="confirmDelete('{{ child.name }}', '{{ child.id }}')" src="{% static 'taskapp/images/trash.png' %}"
+                         class="bg-white rounded-lg p-1 w-[40px] lg:w-[35px]  h-[40px]  lg:h-[30px]  hover:bg-[#fcd34d]" />
                         </div>
                     {% endfor %}
                 </div>
@@ -246,9 +269,10 @@
                       <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
                       <h4 class="font-bold">{{ person.name }}- {{ person.relation }} - {{ person.phone_number }}</h4>
                     </div>
-                    <img  onclick="confirmDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')" src="{% static 'taskapp/images/trash.png' %}"
-                    class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px]  h-[35px]  lg:h-[30px] hover:bg-[#fcd34d]" />
-                    <!-- <button class="delete-button" onclick="confirmDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')"">Delete</button> -->
+                    <img  onclick="confirmCDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')" src="{% static 'taskapp/images/trash.png' %}"
+                    class="bg-white rounded-lg p-1 w-[45px] lg:w-[35px]  h-[35px]  lg:h-[30px] hover:bg-[#fcd34d]" />
+                   
+                    {% comment %} <button class="delete-button" onclick="confirmDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')"">Delete</button> {% endcomment %}
                   </div>
                 {% endfor %}
               </div>
@@ -273,7 +297,7 @@
             
 
         <script>
-          function confirmDelete(itemName, url) {
+          function confirmCDelete(itemName, url) {
             if (confirm(`Do you want to delete ${itemName}?`)) {
               // If user confirms, send a DELETE request to the API
               fetch(url, {

@@ -7,38 +7,27 @@
     <!-- Link to Font Awesome for the icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .fbody {
+        body {
             display: flex;
-            min-height: 100px;
-            
+            min-height: 100vh;
             flex-direction: column;
-            
             margin: 0;
-            width: 100%;
-            
-        
         }
 
-      
-        .footer {
-            background-color: #333;
+        .content {
+            flex: 1;
+        }
+
+        footer {
+            background-color:#3E818C;
             color: white;
             text-align: center;
-        
+            padding: 10px 0;
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 65px;
-         
-            align-self: flex-end;
-            position: absolute;
-            bottom: 0;
-
-
-     
-            text-align: center; /* Optional: Center align footer content */
-            
         }
 
         footer a {
@@ -66,17 +55,19 @@
         }
     </style>
 </head>
-
-   
-    <div class="footer">
+<body>
+    <div class="content">
+        <!-- Main content of the page goes here -->
+    </div>
+    <footer>
         <div>
             <a href="{% url 'about_us' %}">About Us</a>
             <a href="{% url 'contact_view' %}">Contact Us</a>
         </div>
         <div class="social-icons">
-            <a href="https://wa.me/9526382865" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://wa.me/9207450586" target="_blank"><i class="fab fa-whatsapp"></i></a>
             <a href="https://www.instagram.com/your-profile" target="_blank"><i class="fab fa-instagram"></i></a>
         </div>
-    </div>
-
+    </footer>
+</body>
 </html>

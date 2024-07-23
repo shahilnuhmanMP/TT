@@ -93,9 +93,9 @@ class ProfileForm(UserChangeForm):
         model = get_user_model()
         fields = ['username', 'email', 'phone_number']
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': ' mt-2 bg-white w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg h-[50px] text-lg   lg:text-sm','style':'color: #6b7280'}),
+            'email': forms.EmailInput(attrs={'class': ' mt-2 bg-white w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg h-[50px] text-lg   lg:text-sm','style':'color: #6b7280'}),
+            'phone_number': forms.TextInput(attrs={'class': ' mt-2 bg-white w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg h-[50px] text-lg   lg:text-sm','style':'color: #6b7280'}),
         }
 
     def clean_current_password(self):

@@ -50,11 +50,39 @@ box-shadow:
     30px 6px 50px rgba(235, 153, 144, 0.8);
 
 }
+
+.explore-wrap{
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 400px;
+    height: auto;
+    margin-left: 150px;
+    margin-bottom: 10px;
+    gap:100px
+}
+
+@media (max-width: 1015px) {
+    .main-div{
+        background-color: red;
+        margin-top: 1000px !important;
+    }
+}
+
+@media (max-width: 827px) {
+    .main-div{
+        background-color: red;
+        margin-top: 1700px !important;
+    }
+}
+
+
+
+
     </style>
     {% tailwind_css %}
 </head>
 
-<body class="h-full " style="background-color: red;margin-top: 100px;">
+<body class="h-full " style="background-color: red;margin-top: 200px;">
     {% if not user.is_authenticated %}
     <div class="header-container">
         <h2 class="landing">
@@ -68,26 +96,15 @@ box-shadow:
     </div>
     {% else %}
     <!--        <div>-->
-    <!--            {% if not user_children %}-->
-    <!--                <p>Please add your child's details to continue:</p>-->
-    <!--                <button><a href="/add_child/">Add Child Details</a></button>-->
-    <!--            {% else %}-->
-    <!--                {% if not events %}-->
-    <!--                    <p>No activities added for your child. Add activities to continue:</p>-->
-    <!--                    <button><a href="/calendar/">Add Activities</a></button>-->
-    <!--                {% else %}-->
-    <!--                    &lt;!&ndash; Display all activities here &ndash;&gt;-->
-    <!--                {% endif %}-->
-    <!--            {% endif %}-->
-    <!--        </div>-->
 
-    <div class="h-auto lg:h-[50%]  flex flex-col justify-center mt-20 ">
+
+    <div class="h-auto main-div lg:h-[50%]  flex flex-col justify-center   mt-[230px] lg:mt-60 ">
         <div class="h-auto w-full flex flex-col lg:flex-row justify-around items-center " >
 
 
             
             <div class="card rounded-lg shadow-lg mb-3 lg:mb-0 hover:scale-110">
-                <div style="height: 40%;background-color: #3E818D;">
+                <div style="height: 40%;background-color: #3E818D;" class="rounded-tr-xl rounded-tl-xl">
 
                 </div>
                 <div
@@ -112,7 +129,7 @@ box-shadow:
            
 
             <div class="card rounded-lg shadow-lg mb-5 lg:mb-0 hover:scale-110">
-                <div style="height: 40%;background-color: #3E818D;">
+                <div style="height: 40%;background-color: #3E818D;" class="rounded-tr-xl rounded-tl-xl">
 
                 </div>
                 <div
@@ -136,7 +153,7 @@ box-shadow:
 
 
             <div class="card rounded-lg shadow-lg mb-3 lg:mb-0 hover:scale-110">
-                <div style="height: 40%;background-color: #3E818D;">
+                <div style="height: 40%;background-color: #3E818D;" class="rounded-tr-xl rounded-tl-xl">
 
                 </div>
                 <div
@@ -158,37 +175,6 @@ box-shadow:
 
             </div>
 
-
-
-
-            <!--                <div class="col">-->
-            <!--                    <div class="card h-100">-->
-            <!--                        <a href="calendar" class="card-link">-->
-            <!--                            <div class="card-body">-->
-            <!--                                <h5 class="card-title"><i class="fas fa-plus-circle"></i> Add Activity</h5>-->
-            <!--                                <p class="card-text">Add and Assign Activities</p>-->
-            <!--                            </div>-->
-            <!--                        </a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--                <div class="col">-->
-            <!--                    <div class="card h-100">-->
-            <!--                        <a href="eventcalendar" class="card-link">-->
-            <!--                            <div class="card-body">-->
-            <!--                                <h5 class="card-title"><i class="fas fa-calendar"></i> Calendar</h5>-->
-            <!--                            </div>-->
-            <!--                        </a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
-            <!--                <div class="col">-->
-            <!--                    <div class="card h-100">-->
-            <!--                        <a href="events1" class="card-link">-->
-            <!--                            <div class="card-body">-->
-            <!--                                <h5 class="card-title"><i class="fas fa-arrow-circle-right"></i> Mark Fees</h5>-->
-            <!--                            </div>-->
-            <!--                        </a>-->
-            <!--                    </div>-->
-            <!--                </div>-->
         </div>
         {% if providers %}
         <div class="provider-container" style="margin-top: 20px; margin-bottom: 10px;">
@@ -222,11 +208,52 @@ box-shadow:
         </div>
         {% endif %}
     </div>
-    <!-- Fixed Add Activity Icon -->
-    <!--        <div class="fixed-add-icon" onclick="window.location.href='/calendar/'">-->
-    <!--            <i class="fas fa-plus"></i>-->
-    <!--        </div>-->
+   
     {% endif %}
-</body>
+
+ <div style="height: 100px; text-align: start; width: 80%; margin-top: 60px; margin-left: 50px; font-size: 28px; font-weight: 700; margin-bottom: 30px;">Explore activities</div>
+
+    <div class="explore-wrap">
+    <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="{% static 'taskapp/images/firstfamily.jpg' %}" alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="{% static 'taskapp/images/secondfamily.jpeg' %}" alt="Card image cap" height="10px">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="{% static 'taskapp/images/thirdfamily.jpg' %}"  alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="{% static 'taskapp/images/fouthfamily.jpeg' %}"   alt="Card image cap">
+        <div class="card-body">
+          <h5 class="card-title">Card title</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+</div
+>   
+
+
+         
+    </body>
 
 {% endblock %}

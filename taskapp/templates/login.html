@@ -16,12 +16,19 @@
         /* Dark text color */
         overflow: hidden;
     }
+
+    .eye
+    {
+        background-image: url("https://cdn-icons-png.flaticon.com/128/709/709612.png");
+        height:20px;
+        width:20px;
+    }
 </style>
 
 <div class="h-full w-full flex items-center justify-center bg-white lg:bg-opacity-0 m-1  lg:mt-2">
 
-    <img src="{% static 'taskapp/images/images.png' %}" height="900" width="900"
-        class="self-start  flex lg:hidden absolute self-end z-3 opacity-[0.4]" />
+    <img src="{% static 'taskapp/images/loginSide.png' %}" height="900" width="900"
+        class="self-start  flex lg:hidden absolute self-end z-3" />
     <div
         class=" h-full  lg:h-[80%] w-full  lg:w-[70%] bg-opacity-0  lg:bg-white  flex flex-col lg:flex-row justify-center  rounded-xl z-0">
         <div
@@ -32,54 +39,54 @@
                     Please login to access your files and get access to resources</h1>
             </div>
 
-            <img src="{% static 'taskapp/images/images.png' %}" height="200" width="200"
+            <img src="{% static 'taskapp/images/loginSide.png' %}" height="400" width="400"
                 class="self-start  hidden lg:block" />
         </div>
-        <div class=" self-center w-[90%] lg:w-[50%] h-auto  lg:h-full  flex flex-col p-10  ">
+        <div class=" self-center w-[90%] lg:w-[50%] h-auto  lg:h-full  flex flex-col p-10  " style="background-color: #3E818C;">
             <form action="{% url 'login' %}" method="post" class="w-full flex flex-col">
                 {% csrf_token %}
 
                 {{ form.non_field_errors }}
                 <div class="flex flex-col mt-4">
-                    <label class="font-bold text-[#1e293b] text-4xl lg:text-lg"
+                    <label class="font-bold text-4xl lg:text-lg" style="color: white;"
                         for="{{ form.username.id_for_label }}">Username</label>
                     <input name="username" placeholder="Enter your username"
-                        class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9]  rounded-lg h-[100px] text-3xl  lg:h-[50px] lg:text-sm "
+                        class=" mt-2 bg-white w-full border-2 border-black  rounded-lg h-[100px] text-3xl  lg:h-[50px] lg:text-sm "
                         style="color: #6b7280;" />
                     <!-- {{ form.username }}-->
                 </div>
-                <div class="flex flex-col mt-4">
-                    <label class="font-bold text-[#1e293b] text-4xl lg:text-lg"
+                <div class="flex flex-col  mt-14 lg:mt-4">
+                    <label class="font-bold text-[#1e293b] text-4xl lg:text-lg" style="color: white;"
                         for="{{ form.username.id_for_label }}">Password</label>
 
                     <div
-                        class="relative password-input mt-12  lg:mt-4 flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  h-[100px] text-3xl  lg:h-[50px] lg:text-sm justify-between ">
+                        class="relative password-input mt-5  lg:mt-4 flex flex-row items-center bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  h-[100px] text-3xl  lg:h-[50px] lg:text-sm justify-between ">
                         <!-- {{ form.password }}-->
                         <input name="password" id="password-input" type="password" placeholder="Enter your password"
-                        class=" bg-[#f8fafc] w-full border-2 border-[#f1f5f9]  rounded-lg h-[100px] text-3xl  lg:h-[50px] lg:text-sm "
-                        style="color: #6b7280;" />
+                        class=" w-full rounded-lg h-[100px] text-3xl  lg:h-[50px] lg:text-sm "
+                        style="color: black; background-color: white;" />
                         <span class="toggle-password absolute  h-full flex flex-col justify-center  " style="right: 5;z-index: 4;"
                             onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')">
-                            <i class="fa fa-eye" aria-hidden="true"></i>
+                            <img class="eye" id="eye" src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png" aria-hidden="true"></img>
                         </span>
                     </div>
                 </div>
 
-                <button class="bg-[#1e293b] text-white h-[100px] lg:h-[50px] rounded-lg mt-5 text-4xl lg:text-lg"
+                <button class="bg-[#1e293b] text-white h-[100px] lg:h-[50px] rounded-lg text-4xl lg:text-lg" style="margin-top: 80px;"
                     type="submit">Login</button>
-                <a href="{% url 'password_reset' %}" class=" self-center mt-5 text-[#94a3b8] text-4xl lg:text-sm">Forgot
+                <a href="{% url 'password_reset' %}" class=" self-center mt-5 text-white     font-bold text-5xl lg:text-lg lg:text-sm">Forgot
                     your password?</a>
                 <div class="flex flex-row w-full items-center justify-around mt-8  lg:mt-3">
                     <div class=" h-[5px] lg:h-[1px] bg-[#e2e8f0] w-[40%]"></div>
-                    <h1 class="text-[#e2e8f0]  text-4xl lg:text-sm">Or</h1>
+                    <h1 class="text-white  text-4xl lg:text-sm">Or</h1>
                     <div class="h-[5px] lg:h-[1px] bg-[#e2e8f0] w-[40%]"></div>
                 </div>
 
 
                 <!-- {% include 'googlesign.html' %} -->
 
-                <p class="signup text-center text-[#94a3b8] mt-3  text-4xl lg:text-sm ">Don't Have an Account ? <a
-                        class="text-[#1e293b] font-bold" href="{% url 'signup' %}">Signup Here</a></p>
+                <p class="signup text-center text-white mt-3  font-bold  text-4xl lg:text-sm ">Don't Have an Account ? <a
+                        class="text-white font-bold" href="{% url 'signup' %}">Signup Here</a></p>
             </form>
         </div>
 
@@ -93,8 +100,12 @@
 
         if (passwordInput.type === 'password') {
             passwordInput.type = 'text';
+            var ele=document.getElementById('eye')
+            ele.src="https://cdn-icons-png.flaticon.com/128/709/709612.png"
         } else {
             passwordInput.type = 'password';
+             var ele=document.getElementById('eye')
+            ele.src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
         }
     }
 

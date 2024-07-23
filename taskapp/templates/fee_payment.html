@@ -1,16 +1,15 @@
 {% extends 'header.html' %}
-
+{% load static tailwind_tags %}
 {% block content %}
 
 <title>Fee Payment</title>
+{% tailwind_css %}
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        margin: 0;
-        padding: 20px;
-    }
+ 
+    body{
+        background: linear-gradient(149deg, rgba(255, 255, 255, 1) 0%, rgba(234, 255, 253, 1) 45%, rgba(255, 255, 255, 1) 100%);
 
+    }
     h1 {
         text-align: center;
         color: #333;
@@ -42,15 +41,7 @@
         font-size: 16px;
     }
 
-    input[type="submit"] {
-        background-color: #4CAF50;
-        color: white;
-        cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #45a049;
-    }
+  
 
     #month,
     #quarterly {
@@ -130,6 +121,20 @@
     .dropdown-content label:hover {
         background-color: #f1f1f1;
     }
+
+    .paybox
+    {
+        height:300px;
+        width:400px;
+    }
+    @media (max-width: 768px) {
+        .paybox
+        {
+            height:300px;
+            width:800px;
+        }
+    }
+    
 </style>
 <script>
     function togglePaymentDateInput(feeType) {
@@ -182,25 +187,30 @@
     });
 </script>
 
-<body>
-<h1>Fee Payment for {{ event.summary }} - {{ event.child.name }}</h1>
+<body class="flex flex-col w-full h-full">
+
+<h1 class="mt-[100px] font-bold text-3xl" >Fee Payment for {{ event.summary }} - {{ event.child.name }}</h1>
 
     {% if error %}
         <p class="error">{{ error }}</p>
     {% endif %}
 
-    <form method="post" id="fee-payment-form">
+    <form method="post" id="fee-payment-form" class="rounded-xl   mt-10  paybox ">
         {% csrf_token %}
-        <div class="option-container" id="occurrence">
-            <label for="payment_date" class="toggle-label">Select Occurrence:</label>
-            <select name="payment_date" id="occurrence_date">
+        <div class=" flex flex-col text-start " style="align-items:start" id="occurrence">
+            <label for="payment_date  " class="toggle-label">Select Occurrence:</label>
+        <div  class=" mt-2 bg-[#E7F0DC] w-full border-2 border-[#fB6C7AA]  rounded-lg h-[50px] text-3xl  lg:h-[50px] lg:text-sm "
+        style="color: #6b7280;" >
+
+            <select name="payment_date" id="occurrence_date" class="bg-transparent w-full h-full border-0">
                 {% for occurrence in occurrences %}
                     <option value="{{ occurrence }}" {% if occurrence in paid_dates %}disabled{% endif %}>{{ occurrence }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div class="option-container" id="month" style="display:none;">
-            <label for="payment_month" class="toggle-label">Select Month:</label>
+        </div>
+        <div class="flex flex-col items-start" id="month" style="display:none;">
+            <label for="payment_month" class="toggle-label text-start bg-black">Select Month:</label>
             <select name="payment_month" id="payment_month">
                 {% for month in occurrence_months %}
                     <option value="{{ month }}" {% if month in paid_dates %}disabled{% endif %}>{{ month }}</option>
@@ -222,17 +232,22 @@
             </div>
             <input type="hidden" name="selected_months" id="selected_months">
         </div>
-
-        <label for="paid_amount">Paid Amount:</label>
-        <input type="number" name="paid_amount" id="paid_amount" step="0.01" required>
+        <div class="flex flex-col items-start">
+            <label class=" items-start mt-2" for="paid_amount">Paid Amount:</label>
+            <input name="paid_amount" id="paid_amount" placeholder="Paid Amount" type="number" step="0.01" required
+            class=" mt-2 bg-[#E7F0DC] w-full border-2 border-[#fB6C7AA]  rounded-lg h-[50px] text-3xl  lg:h-[50px] lg:text-sm "
+            style="color: #6b7280;" />
+        </div>
+      
+        {% comment %} <input type="number" name="paid_amount" id="paid_amount" step="0.01" required> {% endcomment %}
         <br>
 
-        <input type="submit" value="Submit">
+        <input type="submit" class="bg-[blue] text-white" value="Submit">
     </form>
 
     {% if sorted_payment_entries %}
-        <div class="tile">
-            <h2>Paid Fees Details</h2>
+        <div class="tile" style="box-shadow:2px 2px 5px grey">
+            <h2 class="font-bold " style="font-size:20px;width:400px;">Paid Fees Details</h2>
             {% for entry in sorted_payment_entries %}
                 <p><strong>Date:</strong> {{ entry.payment_date }} - <strong>Amount:</strong> {{ entry.paid_amount }}</p>
             {% endfor %}

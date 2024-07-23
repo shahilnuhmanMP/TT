@@ -8,18 +8,19 @@
 {% tailwind_css %}
 <!-- Include jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flowbite@2.4.1/dist/flowbite.min.js"></script>
 <style>
     body {
-        font-family: 'Helvetica', sans-serif;
-        background: rgb(255, 255, 255);
+        font-family: 'Arial', sans-serif;
+        background-color: white;
+        margin-top: 100px;
         background: linear-gradient(149deg, rgba(255, 255, 255, 1) 0%, rgba(234, 255, 253, 1) 45%, rgba(255, 255, 255, 1) 100%);
-        overflow: hidden;
         padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
-        height: 100%;
-    }
 
+    }
 
     #EventCalendar {
         max-width: 95%;
@@ -28,9 +29,12 @@
         /* Limit maximum width */
         height: 600px;
         /* Adjust height as needed */
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+        background-color: #f9f9f9;
+        /* Lighter background for a cleaner look */
+        border-radius: 12px;
+        /* Slightly larger border radius for smoother corners */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Soft shadow for a lifted effect */
         overflow: auto;
         /* Enable scrolling if needed */
     }
@@ -40,7 +44,14 @@
         color: #fff;
         padding: 20px;
         margin: 0;
-        border-radius: 8px 8px 0 0;
+        border-radius: 12px 12px 0 0;
+        /* Match the container's border radius */
+        text-align: center;
+        /* Center align the text */
+        font-family: 'Roboto', sans-serif;
+        /* Modern font */
+        font-size: 24px;
+        /* Larger font size */
     }
 
     .calendar-container {
@@ -53,38 +64,99 @@
     .calendar-slider {
         display: flex;
         overflow-x: auto;
-        width: 100%;
+        width: 111% !important;
+        padding: 8px;
+        /* Add padding for better spacing */
+        background-color: #f3e6f3;
+        border-radius: 10px;
     }
 
     .date-item {
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 70px;
-        padding: 10px;
+        justify-content: center;
+        width: 80px;
+        /* Slightly smaller width */
+        height: 80px;
+        /* Increase height for better proportion */
+        padding: 20px;
+        /* Decrease padding for better spacing */
         margin: 5px;
-        border-radius: 80%;
+        border-radius: 20px;
         cursor: pointer;
+        background-color: #fff;
+        /* White background for a clean look */
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+        /* Modern font */
+        font-size: 14px;
+        /* Smaller font size */
+        transition: background-color 0.3s, color 0.3s;
+        /* Smooth transition for hover effects */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Subtle shadow for depth */
+    }
+
+    .date-item:hover {
+        background-color: #f0f0f0;
+        /* Light grey hover effect */
     }
 
     .date-item.current {
         background-color: #3e818d;
         color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        /* Slightly stronger shadow for the current date */
     }
 
     .date-item.selected {
         background-color: #5c6bc0;
         color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        /* Slightly stronger shadow for the selected date */
+    }
+
+    button img {
+        width: 30px;
+        /* Ensure button images are of consistent size */
+        height: 30px;
+    }
+
+    button {
+        background: none;
+        /* Remove default button background */
+        border: none;
+        /* Remove default button border */
+        cursor: pointer;
+        /* Add pointer cursor */
+        padding: 5px;
+        /* Add padding for better clickability */
+        transition: transform 0.2s;
+        /* Smooth transition for hover effect */
+    }
+
+    button:hover {
+        transform: scale(1.1);
+        /* Slightly enlarge button on hover */
+    }
+
+    #month-year {
+        font-family: 'Roboto', sans-serif;
+        /* Modern font */
+        font-size: 20px;
+        /* Slightly larger font size */
+        color: #333;
+        /* Darker text color for better readability */
     }
 
     .button-container {
-
+        display: flex;
+        flex-direction: row;
         gap: 10px;
         margin-bottom: 20px;
-        margin-top: 0px;
         flex-wrap: wrap;
-
-        padding-left: 40px;
+        justify-content: end;
 
     }
 
@@ -102,32 +174,35 @@
     }
 
     .event {
-
-        border-radius: 15px;
+        background-color: white;
+        border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         margin-bottom: 20px;
-        padding: 10px;
+        padding: 20px;
         position: relative;
-        display: flex;
-        flex-direction: row;
-        align-items: start;
-        justify-content: space-between;
         /* Add position relative */
     }
 
+    .event h3 {
+        margin-top: 0;
+        color: #5c6bc0;
+    }
+
+    .event p {
+        margin: 5px 0;
+    }
 
     #eventList {
-        max-width: 100%;
+        max-width: 90%;
         margin: auto;
     }
 
     .fc-attendance-container {
-        position: absolute;
+
         top: 10px;
         right: 10px;
         display: flex;
-        flex-direction: row;
-
+        gap: 5px;
     }
 
     .fc-attendance-mark {
@@ -161,79 +236,105 @@
         opacity: 1;
     }
 
-    .calendardiv {
-        margin-bottom: 0px;
-      
+    .event-grid-item {
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        height: 100px;
+        /* Additional styling for grid items */
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
 
         /* Adjust styles for smaller screens */
         .calendar-container {
             margin: 40px;
             height: auto;
-
             /* Adjust height for smaller screens */
         }
 
-
-
-        .date-item {
-            width: 50px;
-            padding: 5px;
-            margin: 2px;
-        }
-
         .button-container {
-            margin-top: 50px;
-            padding-left: 10px;
+            flex-direction: row;
         }
 
-        .calendardiv {
-            margin-bottom: 50px;
-  
+        .calendar-slider {
+            width: 700px !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .calendar-slider {
+            width: 500px !important;
         }
 
-        .fixed-add-icon {
-            position: fixed;
-            bottom: 20%;
-            right: 20px;
-            width: 70px;
-            height: 70px;
-            background-color: #4996e7;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            z-index: 1000;
+        /* Ensure this media query comes after the 968px one to take precedence */
+    }
+
+    @media (max-width: 568px) {
+        .calendar-slider {
+            width: 400px !important;
         }
 
-        .fixed-tach-icon {
-            position: fixed;
-            bottom: 25%;
-            right: 20px;
-            width: 70px;
-            height: 70px;
-            background-color: #22d9b8;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            z-index: 1000;
+        /* Ensure this media query comes after the 968px one to take precedence */
+    }
+
+    @media (max-width: 408px) {
+        .calendar-slider {
+            width: 300px !important;
         }
+
+        /* Ensure this media query comes after the 968px one to take precedence */
+    }
+
+    .calendar-slider {
+        width: 600px;
+    }
+
+    .date-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 60px;
+        padding: 20px;
+        /* Adjusted padding */
+        margin: 5px;
+        border-radius: 10px;
+        /* Adjusted border radius */
+        cursor: pointer;
+        background-color: white;
+        font-weight: bold;
+        font-family: 'Roboto', sans-serif;
+        /* Modern font */
+        font-size: 12px;
+        /* Smaller font size */
+        transition: background-color 0.3s, color 0.3s;
+        /* Smooth transition for hover effects */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Subtle shadow for depth */
+    }
+
+    .date-item.current {
+        background-color: #3e818d;
+        color: white;
+    }
+
+    .date-item.selected {
+        background-color: #5c6bc0;
+        color: white;
+    }
+
+    #eventList {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        /* Adjust the gap between grid items */
     }
 
     .fixed-add-icon {
         position: fixed;
-        bottom: 10%;
+        top: 200;
         right: 20px;
         width: 70px;
         height: 70px;
@@ -251,7 +352,7 @@
 
     .fixed-tach-icon {
         position: fixed;
-        bottom: 25%;
+        top: 280px;
         right: 20px;
         width: 70px;
         height: 70px;
@@ -271,88 +372,88 @@
         background-color: #0056b3;
     }
 
-    .selected {
 
+/* For WebKit browsers (Chrome, Safari) */
+.calendar-slider::-webkit-scrollbar {
+    height: 8px;
+}
 
+.calendar-slider::-webkit-scrollbar-track {
+    background: #f3e6f3;
+    border-radius: 10px;
+}
 
-        color: #3E818D;
-        font-weight: bold;
+.calendar-slider::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
 
+.calendar-slider::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
-    }
+/* For Firefox */
+.calendar-slider {
+    scrollbar-width: thin;
+    scrollbar-color: #e9d5d5 #f3e6f3;
+}
 
-    .scrollable-div {
+.calendar-slider::-webkit-scrollbar-corner {
+    background: transparent;
+}
 
-        overflow: auto;
-        /* Enable scrolling */
-        scrollbar-width: none;
-        /* Firefox */
-        -ms-overflow-style: none;
-        /* IE and Edge */
-    }
-
-    .scrollable-div::-webkit-scrollbar {
-        display: none;
-        /* Chrome, Safari, Opera */
-    }
-
-    /* Optional: Add padding to see scrollable content */
-    .scrollable-content {}
+#eventlistheader{
+    font-size: 22px;
+    background-color: #3E818C;
+    color: white;
+    margin-bottom: 30px !important;
+}
 </style>
 
-<body class=" mt-10 lg:mt-[20px]">
-    <div class="button-container flex flex-row justify-between   " style="margin-top: 130px;margin-right: 40px;">
-        <h1 class="text-[#3E818D] text-3xl lg:text-3xl font-bold" style="color: #3E818D;">Events</h1>
-        <button class=" w-[50px] flex justify-center items-center" style="background-color: #3E818D;" onclick="filterEvents('all')">All</button>
+<body>
+
+    <div class="flex w-full flex-col items-center">
+        <div class="calendar-container w-[100%] lg:w-[70%]" style="margin-top:200px;">
+            <div class="flex flex-row items-center justify-center w-full">
+                <button id="prev-button"><img src="{% static 'taskapp/images/back.png' %}"
+                        class="h-[30px] w-[30px]" /></button>
+                <span class="font-bold mr-3 ml-3 text-sm lg:text-3xl" id="month-year"></span>
+                <button id="next-button"><img src="{% static 'taskapp/images/forward.png' %}"
+                        class="h-[30px] w-[30px]" /></button>
+            </div>
+            <div class="calendar-slider mt-5" id="calendar-dates"></div>
+            <div id="selected-date"></div>
+        </div>
+    </div>
+
+
+
+    <div class="button-container w-[98%] flex flex-row justify-end">
+        <button class="bg-black" onclick="filterEvents('all')">All</button>
         {% for child in children %}
         <button onclick="filterEvents('{{ child.id }}')">{{ child.name }}</button>
         {% endfor %}
     </div>
 
-    <div class="flex flex-col  lg:flex-row  h-full w-full">
-        <div class="calendardiv flex flex-col h-[350px] w-[100%] lg:w-[40%]     items-start pl-10 pr-10  ">
 
 
-            <div class="bg-white p-8 rounded-2xl shadow-2xl w-full md:w-[90%] h-[100%]">
-                <div class="flex justify-between items-center mb-4">
-                    <button id="prevMonthBtn"
-                        class="px-2 py-1 text-lg rounded-md text-[#67e8f9] font-bold hover:bg-gray-200">&lt;</button>
-                    <h2 id="currentMonthYear" class="text-sm font-semibold text-gray-800 bg-white"></h2>
-                    <button id="nextMonthBtn"
-                        class="px-2 py-1 text-lg rounded-md text-[#67e8f9] font-bold hover:bg-gray-200">&gt;</button>
-                </div>
-                <div id="calendar" class="grid grid-cols-7 gap-2 text-center h-[80%]">
-                </div>
-                <div class="mt-4">
-                    <!-- <p id="selectedDate" class="text-sm font-semibold text-gray-600"></p> -->
-                </div>
+    <div class="flex flex-col items-center w-full justify-center">
+        <h1 id="eventlistheader"
+            class="bg-white p-3 text-start font-bold w-[100%] lg:w-[70%] rounded-tl-lg rounded-tr-lg mb-2"></h1>
+        <div class="flex w-full  overflow-y-scroll" style="scroll-bar:none">
+            <div id="eventList" class="  w-[100%] lg:w-[70%]   " style="margin-bottom:100px">
+                <!-- Event list will be populated here -->
             </div>
-
-
-
         </div>
-        <div class="flex h-[350px] w-[100%] lg:w-[50%] flex-col items-start ">
-            <h1 id="eventlistheader"
-                class="bg-white p-3 text-start font-bold w-[100%] rounded-tl-lg rounded-tr-lg mb-2"></h1>
-            <div class="flex h-[400px] w-[100%] flex-col items-start    overflow-scroll scrollable-div">
-
-                <div id="eventList" class="w-full h-[100%] flex flex-col flex-start ">
-                    <!-- Event list will be populated here -->
-                </div>
-            </div>
-
-        </div>
-
 
     </div>
-
 
 
     <div class="fixed-add-icon" onclick="window.location.href='/calendar/'">
         <i class="fas fa-plus"></i>
     </div>
     <div class="fixed-tach-icon" onclick="window.location.href='/dashboard/'">
-        <img src="{% static 'taskapp/images/report.png' %}" height="30" width="30"/>
+        <img src="{% static 'taskapp/images/report.png' %}" height="30" width="30" />
     </div>
 
     <script>
@@ -435,18 +536,9 @@
 
         function displayEvents(events, date) {
             eventList.innerHTML = '';
-            const eventsHeading = document.createElement('h2');
-            eventsHeading.style.backgroundColor = "white"
-            eventsHeading.style.color = "black"
-            eventsHeading.style.display = "flex"
-            eventsHeading.style.justifyContent = "start"
-            eventsHeading.style.alignItems = "start"
-            eventsHeading.style.fontWeight = "bold"
-            eventsHeading.textContent = `Events for ${formatDate(date).dayName} ${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
-            // eventList.appendChild(eventsHeading);
+            const eventsHeading = document.getElementById("eventlistheader");
+            eventsHeading.textContent = `Events for ${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
 
-            var eventhead = document.getElementById("eventlistheader");
-            eventhead.textContent = `Events for  ${formatDate(date).dayName} ${date.toLocaleString('default', { month: 'long' })} ${date.getDate()}, ${date.getFullYear()}`;
 
             if (events.length > 0) {
                 events.forEach(function (event) {
@@ -463,11 +555,11 @@
                             const entryDate = new Date(entry.payment_date);
                             return entryDate.getFullYear() === date.getFullYear() && entryDate.getMonth() === date.getMonth();
                         });
-                        paymentInfo = `<p>Paid: $${monthlyPaymentEntry.paid_amount}</p>`;
+                        paymentInfo = `<p>Paid: Rs ${monthlyPaymentEntry.paid_amount}</p>`;
                     } else if (paymentEntry) {
-                        paymentInfo = `<p>Paid: $${paymentEntry.paid_amount}</p>`;
+                        paymentInfo = `<p>Paid: Rs ${paymentEntry.paid_amount}</p>`;
                     } else {
-                        paymentInfo = `<button  style="background-color:#f87171;color:white;font-size:11px" class=" bg-[#f87171] p-1 font-bold  rounded-md text-[#f87171] hover:scale-110" onclick="window.location.href='/event/${event.id}/fee_payment/'">Pay Fee ${event.fee_amount}</button>`;
+                        paymentInfo = `<button style="background-color:#f87171;color:white;font-size:11px" class="bg-[#f87171] p-1 font-bold rounded-md text-[#f87171] hover:scale-110" onclick="window.location.href='/event/${event.id}/fee_payment/'">Pay Fee ${event.fee_amount}</button>`;
                     }
 
                     const attendanceStatus = event.attendance_status.toLowerCase();
@@ -476,51 +568,33 @@
                     const cancelledClass = isCancelled ? 'cancelled' : '';
 
                     const eventHtml = `
-                <div  class="event child-${event.child} ${cancelledClass}     " style="background-color:white;border-left:7px solid ${event.color}" data-event-id="${event.id}" data-child-id="${event.child}">
-             
-                   <div class="flex flex-col items-start">
-                    <p class=" text-[15px] font-[600]" style="color:${event.color}"> ${event.start} - ${event.end} </p>
-                    <h3 class="text-black font-bold">${event.title} For ${event.childname}</h3>
-                     ${paymentInfo}
-                   </div>
-                     <div class="eventstateclass" id="eventcardState${event.id}" style="display:flex;flex-direction:row;border-radius:10px">
-                                <span class="fc-attendance-mark fc-attended ${attendanceClass.includes('marked-attended') ? 'marked' : ''}"><img src="{% static 'taskapp/images/checkk.png' %}" class="bg-white rounded-lg p-[6px]  hover:bg-[#fcd34d]" height='30' width='30'/></span>
-                                <span class="fc-attendance-mark fc-absent ${attendanceClass.includes('marked-absent') ? 'marked' : ''}"><img src="{% static 'taskapp/images/remove.png' %}" class="bg-white rounded-lg p-1  hover:bg-[#fcd34d]" height='30' width='30'/></span>
-                                <span class="fc-cancelled-mark ${isCancelled ? 'marked' : ''}"><img src="{% static 'taskapp/images/delete.png' %}" class="bg-white rounded-lg p-1  hover:bg-[#fcd34d]" height='30' width='30'/></span>
-                     </div>
-                    
-              
-                  
-                   
-                </div>`;
+            <div class="event event-grid-item child-${event.child} ${cancelledClass} flex flex-row p-4 shadow-lg rounded-lg" style="background-color: #effcfd; border:1px solid #3E818D;border-left: 7px solid ${event.color}" data-event-id="${event.id}" data-child-id="${event.child}">
+    <div class="flex flex-col items-start w-[70%]">
+        <p class="text-[15px] font-[600]" style="color: ${event.color}">${event.start} - ${event.end}</p>
+        <h3 class="text-black font-bold">${event.title} For ${event.childname}</h3>
+        ${paymentInfo}
+    </div>
+    <div class="fc-attendance-container w-[30%] flex flex-row justify-end items-start space-x-2">
+        <span class="fc-attendance-mark fc-attended ${attendanceClass.includes('marked-attended') ? 'marked' : ''}">
+            <i class="fas fa-check-circle text-green-500"></i>
+        </span>
+        <span class="fc-attendance-mark fc-absent ${attendanceClass.includes('marked-absent') ? 'marked' : ''}">
+            <i class="fas fa-times-circle text-red-500"></i>
+        </span>
+        <span class="fc-cancelled-mark ${isCancelled ? 'marked' : ''}">
+            <i class="fas fa-minus-circle text-gray-500"></i>
+        </span>
+    </div>
+</div>
+`
                     eventList.innerHTML += eventHtml;
                 });
-                
-                // <div class="flex justify-center items-center h-[100%] p-[5px]"  onclick="eventCardArrowClicked(${event.id},event)" >
-                //     <img src="{% static 'taskapp/images/right-arrow.png' %}" class="bg-white rounded-lg p-[6px]" height='30' width='30'/>
-                //           <div class="eventstateclass" id="eventcardState${event.id}" style="display:none;flex-direction:column;height:100%;box-shadow:2px 2px 3px gray;border-radius:10px">
-                //                 <span class="fc-attendance-mark fc-attended ${attendanceClass.includes('marked-attended') ? 'marked' : ''}"><img src="{% static 'taskapp/images/checkk.png' %}" class="bg-white rounded-lg p-[6px]" height='30' width='30'/></span>
-                //                 <span class="fc-attendance-mark fc-absent ${attendanceClass.includes('marked-absent') ? 'marked' : ''}"><img src="{% static 'taskapp/images/remove.png' %}" class="bg-white rounded-lg p-1" height='30' width='30'/></span>
-                //                 <span class="fc-cancelled-mark ${isCancelled ? 'marked' : ''}"><img src="{% static 'taskapp/images/delete.png' %}" class="bg-white rounded-lg p-1" height='30' width='30'/></span>
-                //          </div>
-                //     </div>
             } else {
                 eventList.innerHTML += '<p>No events for the selected date.</p>';
             }
             addAttendanceListeners();
             addCancellationListeners();
         }
-        // function eventCardArrowClicked(id, event) {
-        //     event.stopPropagation();
-        //     var ele = document.getElementById("eventcardState" + id);
-        //     if (ele.style.display === 'none') {
-        //         ele.style.display = 'flex';
-        //     } else {
-        //         ele.style.display = 'none';
-        //     }
-
-        // }
-      
 
         function addCancellationListeners() {
             const cancellationMarks = document.querySelectorAll('.fc-cancelled-mark');
@@ -530,7 +604,6 @@
                 });
             });
         }
-
 
         function submitCancellation(event) {
             event.stopPropagation();
@@ -568,6 +641,7 @@
 
         function addAttendanceListeners() {
             const attendanceMarks = document.querySelectorAll('.fc-attendance-mark');
+
             attendanceMarks.forEach(mark => {
                 mark.addEventListener('click', function (event) {
                     submitAttendance(event);
@@ -584,6 +658,7 @@
             const localDate = new Date(selectedDate.getTime() - selectedDate.getTimezoneOffset() * 60000);
             const markElement = event.target;
             const isMarked = markElement.classList.contains('marked');
+            console.log(selectedOption)
 
             $.ajax({
                 url: '/submit_attendance/',
@@ -626,125 +701,12 @@
 
         generateDates(currentMonthStart, 30);
         fetchEventsForDate(today);
+
+        var currentdatee = document.getElementsByClassName("current");
+        const calenderscrollDiv = document.getElementById('calendar-dates');
+        const xOffset = currentdatee[0].offsetLeft - currentdatee[0].scrollLeft - 300;
+        calenderscrollDiv.scrollLeft = xOffset;
     </script>
-
-    <!-- Calender code -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const currentDate = new Date();
-            let currentMonth = currentDate.getMonth();
-            let currentYear = currentDate.getFullYear();
-            let selectedDate = null; // Variable to store selected date
-
-            const monthNames = ["January", "February", "March", "April", "May", "June",
-                "July", "August", "September", "October", "November", "December"];
-
-            const calendarElement = document.getElementById('calendar');
-            const prevMonthBtn = document.getElementById('prevMonthBtn');
-            const nextMonthBtn = document.getElementById('nextMonthBtn');
-            const currentMonthYearElement = document.getElementById('currentMonthYear');
-            const selectedDateElement = document.getElementById('selectedDate');
-
-            function generateCalendar(month, year) {
-                calendarElement.innerHTML = ''; // Clear previous content
-
-                // Calculate the number of days in the current month
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-                // Find the first day of the month (0 - Sunday, 1 - Monday, etc.)
-                const firstDayOfMonth = new Date(year, month, 1).getDay();
-
-                // Generate the grid
-                for (let i = 0; i < firstDayOfMonth; i++) {
-                    calendarElement.innerHTML += '<div class="text-sm text-gray-400 ">-</div>';
-                }
-
-                for (let day = 1; day <= daysInMonth; day++) {
-                    const date = new Date(year, month, day);
-                    const isCurrentDay = isSameDay(date, currentDate);
-                    const isSelected = selectedDate && isSameDay(date, selectedDate);
-
-                    let classes = 'text-sm cursor-pointer';
-                    if (isCurrentDay) {
-                        classes += ' text-[#ef4444]';
-                        fetchEventsForDate(date);
-                    }
-                    if (isSelected) {
-                        classes += ' selected';
-                    }
-
-                    // Add event listener to select date
-                    const dateString = getDateString(date); // Format: YYYY-MM-DD
-                    calendarElement.innerHTML += `<div class="${classes} flex justify-center items-center " data-date="${dateString}">${day}</div>`;
-                }
-
-                currentMonthYearElement.textContent = `${monthNames[month]} ${year}`;
-            }
-
-            // Helper function to compare if two dates are the same day
-            function isSameDay(date1, date2) {
-                return date1.getFullYear() === date2.getFullYear() &&
-                    date1.getMonth() === date2.getMonth() &&
-                    date1.getDate() === date2.getDate();
-            }
-
-            // Helper function to get YYYY-MM-DD string from date
-            function getDateString(date) {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero indexed
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-
-            // Initial calendar generation
-            generateCalendar(currentMonth, currentYear);
-
-            // Event listeners for navigation buttons
-            prevMonthBtn.addEventListener('click', function () {
-                currentMonth--;
-                if (currentMonth < 0) {
-                    currentMonth = 11;
-                    currentYear--;
-                }
-                generateCalendar(currentMonth, currentYear);
-            });
-
-            nextMonthBtn.addEventListener('click', function () {
-                currentMonth++;
-                if (currentMonth > 11) {
-                    currentMonth = 0;
-                    currentYear++;
-                }
-                generateCalendar(currentMonth, currentYear);
-            });
-
-            // Event delegation for date selection
-            calendarElement.addEventListener('click', function (event) {
-                const target = event.target;
-                if (target.classList.contains('text-sm')) {
-                    // Remove selected class from previously selected date
-                    const prevSelected = calendarElement.querySelector('.selected');
-                    if (prevSelected) {
-                        prevSelected.classList.remove('selected');
-                    }
-
-                    // Add selected class to the clicked date
-                    target.classList.add('selected');
-
-                    // Update selectedDate variable
-                    const dateString = target.dataset.date;
-                    selectedDate = new Date(dateString);
-
-                    fetchEventsForDate(selectedDate);
-
-
-                    // Display selected date
-                    selectedDateElement.textContent = `Selected Date: ${selectedDate.toLocaleDateString()}`;
-                }
-            });
-        });
-    </script>
-
 
 </body>
 

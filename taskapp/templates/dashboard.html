@@ -164,9 +164,9 @@
                         datasets: [{
                             data: [ {{data.total_classes}} , {{data.attended_days}} , {{data.absent_days}} , /* {{data.event_spend}}*/ ],
                             backgroundColor: [
-                                '#62B2FD',
-                                '#9BDFC4',
-                                '#F99BAB',
+                                '#F4CE14',
+                                '#E4003A',
+                                '#C738BD',
                                 '#FFB44F',
                             ],
                             borderColor:
@@ -391,6 +391,7 @@ selectElement.addEventListener('change', function() {
 
         const childNames = Object.keys(childSpends);
         const childSpendData = Object.values(childSpends);
+        console.log(childSpendData);
 
         function updateSummary(month) {
             let totalSpent = 0;
@@ -416,7 +417,51 @@ selectElement.addEventListener('change', function() {
         }
 
         updateSummary('total');
-
+        const colors=[
+        '#F4CE14',
+        '#E4003A',
+        '#C738BD',
+        '#FFB44F',
+        '#3FA9F5',
+        '#8CC63F',
+        '#FF3E96',
+        '#9A59B5',
+        '#FF8C1A',
+        '#0072BC',
+        '#E3B0A8',
+        '#57A773',
+        '#F2635F',
+        '#A6CEE3',
+        '#1F78B4',
+        '#B2DF8A',
+        '#33A02C',
+        '#FB9A99',
+        '#E31A1C',
+        '#FDBF6F',
+        '#FF7F00',
+        '#FFC0CB',
+        '#00FFFF',
+        '#7FFFD4',
+        '#FFD700',
+        '#FF4500',
+        '#DA70D6',
+        '#808080',
+        '#ADFF2F',
+        '#CD5C5C',
+        '#4682B4',
+        '#FF69B4',
+        '#8A2BE2',
+        '#32CD32',
+        '#FA8072',
+        '#40E0D0',
+        '#DAA520',
+        '#00FF00',
+        '#FF6347',
+        '#FF8C00',
+        '#4B0082',
+        '#FFFF00'
+    ]
+    
         const spendCtx = document.getElementById('spendChart').getContext('2d');
         const spendChart = new Chart(spendCtx, {
             type: 'doughnut',
@@ -425,12 +470,9 @@ selectElement.addEventListener('change', function() {
                 datasets: [{
                     label: 'Total Spends by Event',
                     data: spendData,
-                    backgroundColor: [     '#62B2FD',
-                                '#9BDFC4',
-                                '#F99BAB',
-                                '#FFB44F',
-                                '#9F97F7'
-                            ],
+                    backgroundColor:colors,
+
+
                     // borderColor: eventNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
                     cutout: '65%', 
                     borderWidth: 0
@@ -457,7 +499,7 @@ selectElement.addEventListener('change', function() {
                 }
             }
         });
-
+      
         const childSpendCtx = document.getElementById('childSpendChart').getContext('2d');
         const childSpendChart = new Chart(childSpendCtx, {
             type: 'doughnut',
@@ -466,8 +508,8 @@ selectElement.addEventListener('change', function() {
                 datasets: [{
                     label: 'Total Spends by Child',
                     data: childSpendData,
-                    backgroundColor: childNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 0.2)`),
-                    // borderColor: childNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
+                    backgroundColor: colors,
+                     borderColor: childNames.map((_, i) => `rgba(${(i * 20) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
                     cutout: '65%', 
                     borderWidth: 0
                 }]

@@ -1,9 +1,7 @@
-{% extends 'header.html' %}
-{% load static tailwind_tags %}
-{% block content %}
+{% extends 'header.html' %} {% load static tailwind_tags %} {% block content %}
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Tiny Taskers Calendar</title>
 
 <!-- FullCalendar dependencies -->
@@ -11,554 +9,964 @@
 <script src="https://cdn.jsdelivr.net/npm/moment@2.27.0/moment.min.js"></script>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        margin-top: 30px;
-        padding: 0;
-        box-sizing: border-box;
-        text-align: center;
+  body {
+    font-family: Arial, sans-serif;
+    margin-top: 30px;
+    padding: 0;
+    box-sizing: border-box;
+    text-align: center;
 
-        background: linear-gradient(149deg, rgba(255, 255, 255, 1) 0%, rgba(234, 255, 253, 1) 45%, rgba(255, 255, 255, 1) 100%);
+    background: linear-gradient(
+      149deg,
+      rgba(255, 255, 255, 1) 0%,
+      rgba(234, 255, 253, 1) 45%,
+      rgba(255, 255, 255, 1) 100%
+    );
+  }
+
+  #scheduleEventButton {
+    display: block;
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  #eventFormModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+  }
+
+  #eventFormContent {
+    background: white;
+    padding: 30px;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .event-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 5px;
+  }
+
+  .event-tile {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    width: 200px;
+    text-align: center;
+  }
+
+  .event-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .scrollable-container {
+    overflow-y: scroll;
+    height: 400px;
+  }
+
+  .scrollable-container::-webkit-scrollbar {
+    width: 8px; /* Adjust the width of the scrollbar */
+  }
+
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the scrollbar handle */
+    border-radius: 4px; /* Roundness of the scrollbar handle */
+  }
+
+  .scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar handle on hover */
+  }
+
+  @media (max-width: 768px) {
+    #eventFormContent1 {
+      margin: 20% auto 10px;
+      height: auto;
     }
-
-    #scheduleEventButton {
-        display: block;
-        margin: 20px auto;
-        padding: 10px;
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    #eventFormModal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
-        z-index: 2;
-    }
-
-    #eventFormContent {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        border: 2px solid #ddd;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-        max-width: 600px;
-
-    }
-
-    .close {
-        color: #aaa;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .close:hover,
-    .close:focus {
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .event-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        margin-top: 5px;
-    }
-
-    .event-tile {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 10px;
-        margin: 10px;
-        width: 200px;
-        text-align: center;
-    }
-
-    .event-header {
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    .event-details {}
-
-    @media (max-width: 768px) {
-        #eventFormContent1 {
-            margin: 20% auto 10px;
-            height: auto;
-        }
-    }
+  }
 </style>
 {% tailwind_css %}
 
-<body class="mt-[20px] lg:mt-[100px]">
-    <div class="flex flex-col lg:flex-row  p-3  lg:p-10">
-
-
-        <div id="eventFormContent1" class=" w-full lg:w-[50%]">
-            <h2 class="text-3xl font-bold text-start">Add Event</h2>
-            <form id="eventFormContent" class="mt-5" method="post" action="{% url 'save_event' %}">
-                {% csrf_token %}
-                <input type="hidden" id="eventId" name="eventId">
-
-                <div class="flex flex-col items-start">
-
-                    <label for="child " class="font-bold">Select Child:</label>
-
-                    <div class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;">
-
-                        <select id="child " name="child"
-                            style="background-color: transparent;width: 100%;border: none;">
-                            {% for child in user_children %}
-                            <option value="{{ child.id }}">{{ child.name }}</option>
-                            {% endfor %}
-                        </select><br>
-                    </div>
-
-
-                    <label for="trustedPerson" class="font-bold mt-2">Select Trusted Person:</label>
-
-                    <div class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;">
-
-                        <select id="trustedPerson" name="trustedPerson"
-                            style="background-color: transparent;width: 100%;border: none;">
-                            <option value=0>Me ({{ user.username }})</option>
-                            {% for person in trusted_people %}
-                            <option value="{{ person.id }}">{{ person.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <br>
-
-                    <label for="child " class="font-bold">Event Title:</label>
-                    <input name="summary" id="summary" placeholder="Event title"
-                        class=" bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;" />
-
-                    <label for="startDateTime" class="font-bold mt-2">Start Date and Time:</label>
-                    <input type="datetime-local" id="startDateTime" name="startDateTime" required
-                        class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;" /><br>
-
-                    <label for="endTime" class="font-bold">End Time:</label>
-                    <input type="time" id="endTime" name="endTime" required
-                        class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;"><br>
-
-                    <label for="repeat" class="font-bold">Repeat:</label>
-                    <div class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;">
-
-                        <select id="repeat" name="repeat" required
-                            style="background-color: transparent;width: 100%;border: none;">
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="custom">Custom</option>
-                        </select><br>
-                    </div>
-
-
-
-
-
-                    <div id="customRepeat" style="display:none;">
-                        <label>Custom Repeat:</label>
-                        <div>
-                            <label for="occurrenceDays">Select Occurrence Days:</label>
-                            <div id="occurrenceDays"></div>
-                        </div>
-                    </div>
-
-                    <label for="recurrenceEnd " class="font-bold mt-2">Recurrence Ends:</label>
-                    <div class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;">
-
-                        <select id="recurrenceEnd" name="recurrenceEnd"
-                            style="background-color: transparent;width: 100%;border: none;">
-                            <option value="never">Choose</option>
-                            <option value="afterDate">After a particular date</option>
-                            <option value="afterOccurrences">After a particular number of occurrences</option>
-                        </select>
-                    </div>
-
-
-
-                    <div id="afterDateDiv" style="display:none;">
-                        <label for="afterDateInput ">After Date:</label>
-                        <input type="date" id="afterDateInput" name="afterDateInput">
-                    </div>
-                    <div id="afterOccurrencesDiv" style="display:none;">
-                        <label for="afterOccurrencesInput">After Occurrences:</label>
-                        <input type="number" id="afterOccurrencesInput" name="afterOccurrencesInput" min="1">
-                    </div>
-
-                    <label for="feeAmount" class="font-bold mt-2">Fee Amount:</label>
-                    <input type="text" id="feeAmount" name="fee_amount" placeholder="Fee Amount"
-                        class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm w-full "
-                        style="color: #6b7280; "><br>
-
-                    <label for="feeDate" class="font-bold">Fee Date:</label>
-                    <div class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm "
-                        style="color: #6b7280;">
-
-                        <select id="feeDate" name="fee_date"
-                            style="background-color: transparent;width: 100%;border: none;">
-                            <option value="each_event">Per Class</option>
-                            <option value="monthly">Monthly</option>
-                            <option value="Quarterly">Quarterly</option>
-                        </select>
-                    </div>
-
-
-
-                </div>
-                <input type="button" value="Schedule Event" id="scheduleEventButton" onclick="scheduleEvent()">
-            </form>
+<body class="mt-[20px] lg:mt-[90px]">
+  <div
+    id="Modal"
+    class="h-full w-full bg-black absolute flex justify-center items-start p-2 lg:p-0"
+    style="display: none; background-color: rgba(0, 0, 0, 0.5)"
+  >
+    <div
+      class="h-[300px] w-[100%] mt-[150px] lg:mt-[60px] lg:w-[40%] bg-white rounded-xl flex flex-col p-4"
+    >
+      <div class="flex flex-row justify-between">
+        <h1 class="font-bold text-xl">Select Child</h1>
+        <h1 onclick="closeModal('Modal')" class="font-bold">X</h1>
+      </div>
+      <div
+        id="modalContent"
+        class="flex flex-row mt-10"
+        style="flex-wrap: wrap"
+      >
+        {% for child in user_children %}
+        <div
+          onclick="selectchild('{{ child.name }}','{{ child.id }}')"
+          class="flex flex-row items-center justify-center w-[100px] bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3 mt-2"
+        >
+          <h1>{{child.name}}</h1>
         </div>
 
-
-        <div id="calendar"></div>
-
-        <script>
-            const baseUrl = "{% url 'save_event' %}";
-        </script>
-
-        <script>
-            // Initialize the occurrence days checkboxes
-            const occurrenceDaysDiv = document.getElementById('occurrenceDays');
-            ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].forEach(day => {
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.name = 'occurrenceDay';
-                checkbox.value = day;
-                checkbox.id = `occurrenceDay_${day}`;
-                const label = document.createElement('label');
-                label.htmlFor = `occurrenceDay_${day}`;
-                label.appendChild(document.createTextNode(day));
-                occurrenceDaysDiv.appendChild(checkbox);
-                occurrenceDaysDiv.appendChild(label);
-            });
-
-            // Display occurrence days based on the selected repeat option
-            document.getElementById('repeat').addEventListener('change', function () {
-                const customRepeatDiv = document.getElementById('customRepeat');
-                if (this.value === 'custom') {
-                    customRepeatDiv.style.display = 'block';
-                } else {
-                    customRepeatDiv.style.display = 'none';
-                }
-            });
-
-            // Display options based on the selected recurrence end option
-            document.getElementById('recurrenceEnd').addEventListener('change', function () {
-                const afterDateDiv = document.getElementById('afterDateDiv');
-                const afterOccurrencesDiv = document.getElementById('afterOccurrencesDiv');
-                if (this.value === 'afterDate') {
-                    afterDateDiv.style.display = 'block';
-                    afterOccurrencesDiv.style.display = 'none';
-                } else if (this.value === 'afterOccurrences') {
-                    afterDateDiv.style.display = 'none';
-                    afterOccurrencesDiv.style.display = 'block';
-                } else {
-                    afterDateDiv.style.display = 'none';
-                    afterOccurrencesDiv.style.display = 'none';
-                }
-            });
-
-            // Function to open the form modal
-            function openFormModal() {
-                document.getElementById('eventFormModal').style.display = 'flex';
-            }
-
-            // Function to close the form modal
-            function closeFormModal() {
-                document.getElementById('eventFormModal').style.display = 'none';
-            }
-
-            // Function to edit an event
-            function editEvent(eventId) {
-                $.ajax({
-                    type: 'GET',
-                    url: `/api/events/${eventId}/`,
-                    success: function (response) {
-                        const event = response;
-                        console.log(event);
-
-                        document.getElementById('eventId').value = event.id;
-                        document.getElementById('child').value = event.child;
-
-                        if (event.trusted_person) {
-                            document.getElementById('trustedPerson').value = event.trusted_person;
-                        } else {
-                            document.getElementById('trustedPerson').value = 0; // Assuming 0 is for 'Me'
-                        }
-
-                        document.getElementById('summary').value = event.summary;
-                        // Format start date and time correctly
-                        const startDateTime = new Date(event.start_datetime);
-                        document.getElementById('startDateTime').value = startDateTime.toISOString().slice(0, 16);
-
-                        // Format end time correctly
-                        const endTime = new Date(event.end_datetime);
-                        const formattedEndTime = `${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
-                        document.getElementById('endTime').value = formattedEndTime;
-
-                        document.getElementById('repeat').value = event.repeat;
-
-                        if (event.repeat === 'custom') {
-                            document.getElementById('customRepeat').style.display = 'block';
-                            event.custom_repeat_days.forEach(day => {
-                                document.getElementById(`occurrenceDay_${day}`).checked = true;
-                            });
-                        } else {
-                            document.getElementById('customRepeat').style.display = 'none';
-                        }
-
-                        document.getElementById('recurrenceEnd').value = event.recurrence_end_option;
-                        if (event.recurrence_end_option === 'afterDate') {
-                            document.getElementById('afterDateDiv').style.display = 'block';
-                            document.getElementById('afterDateInput').value = event.recurrence_end_date;
-                        } else if (event.recurrence_end_option === 'afterOccurrences') {
-                            document.getElementById('afterOccurrencesDiv').style.display = 'block';
-                            document.getElementById('afterOccurrencesInput').value = event.recurrence_occurrences;
-                        } else {
-                            document.getElementById('afterDateDiv').style.display = 'none';
-                            document.getElementById('afterOccurrencesDiv').style.display = 'none';
-                        }
-
-                        document.getElementById('feeAmount').value = event.fee_amount;
-                        document.getElementById('feeDate').value = event.fee_date;
-
-                        openFormModal();
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        // Handle error
-                    }
-                });
-            }
-
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-
-            const csrftoken = getCookie('csrftoken');
-
-            $.ajaxSetup({
-                beforeSend: function (xhr, settings) {
-                    if (!(/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type)) && !this.crossDomain) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                }
-            });
-
-            // Function to schedule or edit an event
-            function scheduleEvent() {
-                const eventId = document.getElementById('eventId').value;
-                const summary = document.getElementById('summary').value;
-                const startDateTime = document.getElementById('startDateTime').value;
-                const endTime = document.getElementById('endTime').value;
-                const repeat = document.getElementById('repeat').value;
-                const customRepeatDays = Array.from(document.querySelectorAll('input[name="occurrenceDay"]:checked')).map(day => day.value);
-                const recurrenceEndOption = document.getElementById('recurrenceEnd').value;
-                const afterDateInput = document.getElementById('afterDateInput').value;
-                const afterOccurrencesInput = document.getElementById('afterOccurrencesInput').value;
-                const childId = document.getElementById('child').value;
-                const trustedPersonId = document.getElementById('trustedPerson').value;
-                const feeAmount = document.getElementById('feeAmount').value;
-                const feeDate = document.getElementById('feeDate').value;
-
-                if (!summary || !startDateTime || !endTime || !repeat || !feeAmount || !feeDate || !trustedPersonId || !childId) {
-                    alert("All fields are mandatory.");
-                    return;
-                }
-
-                const startDate = new Date(startDateTime);
-                const endDate = new Date(`${startDateTime.split('T')[0]}T${endTime}`);
-                if (endDate < startDate) {
-                    alert("Start Date and Time cannot be greater than End Date and Time.");
-                    return;
-                }
-
-                if (recurrenceEndOption === 'afterDate') {
-                    if (!afterDateInput) {
-                        alert("Please select a valid After Date.");
-                        return;
-                    }
-                    if (new Date(afterDateInput) < endDate) {
-                        alert("After Date cannot be less than End Date and Time.");
-                        return;
-                    }
-                }
-
-                if (recurrenceEndOption === 'afterOccurrences' && (!afterOccurrencesInput || afterOccurrencesInput <= 0)) {
-                    alert("Please enter a valid number of occurrences.");
-                    return;
-                }
-
-                const eventData = {
-                    summary: summary,
-                    startDateTime: startDateTime,
-                    endTime: endTime,
-                    repeat: repeat,
-                    customRepeatDays: customRepeatDays,
-                    recurrenceEndOption: recurrenceEndOption,
-                    recurrenceEndDate: (recurrenceEndOption === 'afterDate') ? afterDateInput : null,
-                    recurrenceOccurrences: (recurrenceEndOption === 'afterOccurrences') ? afterOccurrencesInput : null,
-                    childId: childId,
-                    trustedPersonId: trustedPersonId,
-                    fee_amount: feeAmount,
-                    fee_date: feeDate,
-                };
-                console.log(eventData, 'ayakkumpo')
-
-                const method = eventId ? 'PUT' : 'POST';
-                const url = eventId ? `/api/events/${eventId}/` : baseUrl;
-
-                $.ajax({
-                    type: method,
-                    url: url,
-                    data: JSON.stringify(eventData),
-                    contentType: 'application/json;charset=utf-8',
-                    success: function (response) {
-                        alert('Event saved successfully!');
-                        location.reload();
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        // Handle error
-                    }
-                });
-            }
-
-            function deleteEvent(eventId) {
-                console.log("del", eventId)
-                const confirmDelete = confirm('Are you sure you want to delete this event?');
-
-                if (confirmDelete) {
-                    deleteEvent1(eventId);
-                    console.log("del2", eventId, '${eventId}')
-                }
-            }
-
-            function deleteEvent1(eventId) {
-                const csrftoken = $('[name=csrfmiddlewaretoken]').val();
-
-                $.ajax({
-                    type: 'DELETE',
-                    url: `/api/events/${eventId}/`,
-                    headers: {
-                        'X-CSRFToken': csrftoken
-                    },
-                    success: function (response) {
-                        console.log(response);
-                        alert('Event deleted successfully!');
-                        location.reload();
-                    },
-                    error: function (error) {
-                        console.error(error);
-                        // Handle error
-                    }
-                });
-            }
-
-
-        </script>
-
-        <div class="flex flex-col w-full lg:w-[50%] items-start">
-
-
-            <h2 class="text-3xl font-bold">Scheduled Events</h2>
-            <div class="flex flex-col w-full mt-5">
-                {% for event in events %}
-                <div style="background-color:white;border-left:7px solid {{ event.child.color_code }}"
-                    class="rounded-xl  mb-3 flex flex-row items-start justify-between p-2 pl-4">
-
-                    <div class="flex flex-col w-full">
-                        <p class="event-header w-[40%] text-start">{{ event.summary }} for {{ event.child.name }}</p>
-                        <div class="event-details flex flex-row items-center justify-between w-full">
-
-                            <div class="flex items-center">
-                                {% if event.repeat == "custom" %}
-                                <img src="{% static 'taskapp/images/repeat.png' %}" class="h-[20px] w-[20px]" />
-                                <p> {{ event.custom_repeat_days | join:", " }}</p>
-                                {% else %}
-                                <img src="{% static 'taskapp/images/repeat.png' %}" class="h-[20px] w-[20px] mr-2" />
-                                <p class="font-bold text-[blue]"> {{ event.repeat }}</p>
-                                {% endif %}
-                                <!-- <button onclick="editEvent('{{ event.id }}')">Edit</button>
-                                <button onclick="deleteEvent('{{ event.id }}')">Delete</button> -->
-                            </div>
-
-
-                        </div>
-                    </div>
-
-                
-                        <div class="" id="eventcardState{{event.id}}"
-                            style=" display: flex; flex-direction:row;border-radius:10px">
-                            <img onclick="editEvent('{{ event.id }}')" src="{% static 'taskapp/images/edit.png' %}"
-                                class="bg-white rounded-lg p-[6px] w-[55px] lg:w-[35px] h-[40px] lg:h-[30px] hover:bg-[#fcd34d]" />
-                            <img onclick="deleteEvent('{{ event.id }}')" src="{% static 'taskapp/images/trash.png' %}"
-                                class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px]  h-[40px]  lg:h-[30px] hover:bg-[#fcd34d]" />
-
-                        </div>
-              
-                </div>
-                {% endfor %}
-            </div>
-        </div>
-        <script>
-            // function eventCardArrowClicked(id) {
-            //     event.stopPropagation();
-            //     var ele = document.getElementById("eventcardState" + id);
-            //     if (ele.style.display === 'none') {
-            //         ele.style.display = 'flex';
-            //     } else {
-            //         ele.style.display = 'none';
-            //     }
-
-            // }
-            // document.body.addEventListener('click', function (event) {
-
-            //     var ele = document.getElementsByClassName("eventstateclass");
-            //     for (var i = 0; i < ele.length; i++) {
-
-            //         ele[i].style.display = 'none';
-            //     }
-
-
-
-            // });
-
-        </script>
-
+        {% endfor %}
+      </div>
     </div>
+  </div>
+
+  <div
+    id="Modal2"
+    class="h-full w-full bg-black absolute flex justify-center items-start p-2 lg:p-0"
+    style="display: none; background-color: rgba(0, 0, 0, 0.5)"
+  >
+    <div
+      class="h-[500px] w-[100%] mt-[150px] lg:mt-[60px] lg:w-[40%] bg-white rounded-xl flex flex-col p-4"
+    >
+      <div class="flex flex-row justify-between">
+        <h1 class="font-bold text-xl">Select Trusted Person</h1>
+        <h1 onclick="closeModal('Modal2')" class="font-bold">X</h1>
+      </div>
+      <div
+        id="modalContent"
+        class="flex flex-row mt-10"
+        style="flex-wrap: wrap"
+      >
+        <div
+          onclick="selectTperson('{{user.username}}','0')"
+          class="flex flex-row items-center justify-center mt-2 w-[100px] bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
+        >
+          <h1>{{ user.username }}</h1>
+        </div>
+
+        {% for person in trusted_people %}
+        <div
+          onclick="selectTperson('{{ person.name }}','{{person.id}}')"
+          class="flex flex-row items-center justify-center mt-2 w-[100px] bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
+        >
+          <h1>{{person.name}}</h1>
+        </div>
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="Modal3"
+    class="h-full w-full bg-black absolute flex justify-center items-start p-2 lg:p-0"
+    style="display: none; background-color: rgba(0, 0, 0, 0.5)"
+  >
+    <div
+      class="h-[400px] w-[100%] mt-[150px] lg:mt-[60px] lg:w-[40%] bg-white rounded-xl flex flex-col p-4"
+    >
+      <div class="flex flex-row justify-between">
+        <h1 class="font-bold text-xl">Select Occurrence Days</h1>
+        <h1 onclick="closeModal('Modal3')" class="font-bold">X</h1>
+      </div>
+      <div
+        id="modalContent"
+        class="flex flex-row mt-10 h-full"
+        style="flex-wrap: wrap"
+      >
+        <div
+          id="occurrenceDays"
+          class="flex flex-col mt-2 justify-space-around items-start w-full"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col lg:flex-row justify-between h-auto p-10 lg:p-20">
+    <div id="eventFormContent1" class="w-full lg:w-[50%]">
+      <h2
+        class="text-3xl font-bold text-start mt-5 md:mt-20 lg:mt-0"
+        style="color: #3e818c"
+      >
+        Schedule the event
+      </h2>
+      <form
+        id="eventFormContent"
+        class="mt-5 w-full"
+        style="width: 100%"
+        method="post"
+        action="{% url 'save_event' %}"
+      >
+        {% csrf_token %}
+        <input type="hidden" id="eventId" name="eventId" />
+
+        <div class="flex flex-col items-start w-full">
+          <div class="flex flex-col lg:flex-row justify-between w-full mt-5">
+            <div
+              class="flex flex-col items-start w-full lg:w-[100%] mr-5 lg:mr-0"
+            >
+              <input
+                name="summary"
+                id="summary"
+                placeholder="Event Title"
+                class="bg-[white] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
+                style="color: #6b7280; height: 70px; border: 1px solid #3e818c;"
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col justify-between w-full mt-2">
+            <div class="flex items-start w-full lg:w-[45%]">
+              <div
+                onclick="openModal('Modal2')"
+                class="mt-2 text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm mr-2.5"
+                style="color: #6b7280"
+              >
+                <input id="tpersonId" value="" style="display: none" />
+                <input
+                  id="trustedPerson"
+                  value="Trusted Person"
+                  name="child"
+                  style="
+                    color: black;
+                    width: 100%;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
+                  "
+                />
+              </div>
+              <div
+                onclick="openModal('Modal')"
+                class="mt-2 bg-[#D9D9D9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
+                style="color: #6b7280; margin-left: 20px"
+              >
+                <input id="childId" value="" style="display: none" />
+                <input
+                  id="child"
+                  value="Select child"
+                  name="child"
+                  style="
+                    color: black;
+                    width: 100%;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
+                  "
+                />
+
+                {% comment %}
+                <select
+                  id="child"
+                  name="child"
+                  style="
+                    background-color: transparent;
+                    width: 100%;
+                    border: none;
+                  "
+                >
+                  {% for child in user_children %}
+                  <option value="{{ child.id }}">{{ child.name }}</option>
+                  {% endfor %}
+                </select>
+                {% endcomment %}
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col items-start w-full lg:w-[45%] mr-5 lg:mr-0"
+            ></div>
+          </div>
+
+          <div class="flex flex-col lg:flex-row justify-between w-full mt-5">
+            <div
+              class="flex flex-row items-start w-full lg:w-[30%] mr-5 lg:mr-0 mt-2 lg:mt-1"
+            >
+              <div>
+                <input
+                  type="datetime-local"
+                  id="startDateTime"
+                  name="startDateTime"
+                  placeholder="s"
+                  required
+                  class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
+                  style="
+                    color: black;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
+                  "
+                />
+              </div>
+
+              <div class="ms-5">
+                <input
+                  type="time"
+                  id="endTime"
+                  name="endTime"
+                  required
+                  class="bg-[#f8fafc] w-full ms-2 border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
+                  style="
+                    color: black;
+                    width: 100%;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
+                    margin-left: 20px;
+                  "
+                />
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col items-start w-full lg:w-[50%] mr-5 lg:mr-0 mt-2 lg:mt-5"
+            >
+              <div
+                class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
+                style="
+                  color: black;
+                  border-radius: 5px;
+                  border: 1px solid #aab1b6;
+                  background-color: #d9d9d9;
+                  width: 240px;
+                "
+              >
+                <select
+                  id="repeat"
+                  name="repeat"
+                  required
+                  style="
+                    background-color: #d9d9d9;
+                    width: 100%;
+                    border: none;
+                    border-radius: 5px;
+                  "
+                >
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="custom">Custom</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col lg:flex-row justify-between w-full mt-5">
+            <div
+              class="flex flex-col items-start w-full lg:w-[45%] mr-5 lg:mr-0"
+            >
+              {% comment %}
+              <div id="customRepeat" style="display: none">
+                <div>
+                  <label for="occurrenceDays">Select Occurrence Days:</label>
+                  <div id="occurrenceDays"></div>
+                </div>
+              </div>
+              {% endcomment %}
+            </div>
+            <div
+              class="flex flex-col items-start w-full lg:w-[45%] mr-5 lg:mr-0"
+            ></div>
+          </div>
+
+          <div class="flex flex-col lg:flex-row justify-between w-full">
+            <div
+              class="flex flex-col items-start w-full lg:w-[45%] mr-5 lg:mr-0"
+            >
+              <input
+                type="text"
+                id="feeAmount"
+                name="fee_amount"
+                placeholder="Fee Amount"
+                class=" w-full border-2 border-[#f1f5f9] rounded-lg text-lg h-[40px] lg:text-sm w-full"
+                style="
+                  color: black;
+                  border-radius: 5px;
+                  border: 1px solid #aab1b6;
+                  background-color: #d9d9d9;
+                  width: 310px;
+                  margin-right: 20px;
+                "
+              />
+            </div>
+            <div
+              class="flex flex-col items-start w-full mr-5 lg:mr-0 mt-2 lg:mt-0"
+            >
+              <div class="" style="color: black">
+                <select
+                  id="feeDate"
+                  name="fee_date"
+                  style="
+                    color: black;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
+                    width: 240px;
+                  "
+                >
+                  <option value="each_event">Per Class</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="Quarterly">Quarterly</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-col w-full mt-2">
+            <div class="flex flex-col items-start w-full lg:w-[45%] lg:mr-0">
+              <div class="mt-2" style="color: #6b7280">
+                <select
+                  id="recurrenceEnd"
+                  name="recurrenceEnd"
+                  style="
+                    color: black;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
+                    width: 85%;
+                    margin-left: -50px;
+                  "
+                >
+                  <option value="never">Choose</option>
+                  <option value="afterDate">After a particular date</option>
+                  <option value="afterOccurrences">
+                    After a particular number of occurrences
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div
+              class="flex flex-col items-start w-full lg:w-[45%] mr-5 lg:mr-0"
+            >
+              <div
+                id="afterDateDiv"
+                class="flex flex-col items-start w-full mt-4"
+                style="display: none"
+              >
+                <label
+                  for="afterDateInput "
+                  class="font-bold flex flex-col text-start w-full"
+                  >After Date:</label
+                >
+                <input
+                  class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm w-full"
+                  style= "color: black;
+                  border-radius: 5px;
+                  border: 1px solid #aab1b6;
+                  background-color: #d9d9d9;
+                  "
+                  type="date"
+                  id="afterDateInput"
+                  name="afterDateInput"
+                  
+                />
+              </div>
+
+              <div
+                id="afterOccurrencesDiv"
+                class="flex flex-col items-start mt-4 w-full"
+                style="display: none"
+              >
+                <input
+                  class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm w-full"
+                  style= "color: black;
+                  border-radius: 5px;
+                  border: 1px solid #aab1b6;
+                  background-color: #d9d9d9;
+                  "
+                  type="number"
+                  id="afterOccurrencesInput"
+                  name="afterOccurrencesInput"
+                  min="1"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <input
+          type="button"
+          value="Schedule Event"
+          id="scheduleEventButton"
+          onclick="scheduleEvent()"
+          style="
+            background-color: #3e818c;
+            width: 328;
+            height: 70;
+            border-radius: 8px;
+            color: white;
+            margin-top: 50px;
+          "
+        />
+      </form>
+    </div>
+
+    <div id="calendar"></div>
+
+    <script>
+      const baseUrl = "{% url 'save_event' %}";
+    </script>
+
+    <script>
+      function selectchild(valuee, id) {
+        var ele = document.getElementById("child");
+        var childId = document.getElementById("childId");
+        console.log("data1:" + ele.value);
+        console.log("value=" + valuee);
+
+        childId.value = id;
+        ele.value = valuee;
+        closeModal("Modal");
+      }
+      function selectTperson(value, id) {
+        var ele = document.getElementById("trustedPerson");
+        var tpid = document.getElementById("tpersonId");
+        console.log("data1:" + ele.value);
+        console.log("value=" + value);
+        closeModal("Modal2");
+        tpid.value = id;
+        ele.value = value;
+      }
+
+      function openModal(id) {
+        var ele = document.getElementById(id);
+
+        ele.style.display = "flex";
+      }
+      function closeModal(id) {
+        var ele = document.getElementById(id);
+        ele.style.display = "none";
+      }
+      // Initialize the occurrence days checkboxes
+      const occurrenceDaysDiv = document.getElementById("occurrenceDays");
+      [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ].forEach((day) => {
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.name = "occurrenceDay";
+        checkbox.value = day;
+        checkbox.id = `occurrenceDay_${day}`;
+        const label = document.createElement("label");
+        label.htmlFor = `occurrenceDay_${day}`;
+        label.appendChild(document.createTextNode(day));
+        const occdiv = document.createElement("occdiv");
+        checkbox.style.marginRight = 10;
+        checkbox.style.height = 30;
+        checkbox.style.width = 30;
+        label.style.fontWeight = "bold";
+        occdiv.appendChild(checkbox);
+        occdiv.appendChild(label);
+        occdiv.style.marginTop = 10;
+        occurrenceDaysDiv.appendChild(occdiv);
+      });
+
+      // Display occurrence days based on the selected repeat option
+      document.getElementById("repeat").addEventListener("change", function () {
+        const customRepeatDiv = document.getElementById("customRepeat");
+        if (this.value === "custom") {
+          openModal("Modal3");
+          customRepeatDiv.style.display = "block";
+        } else {
+          customRepeatDiv.style.display = "none";
+        }
+      });
+
+      // Display options based on the selected recurrence end option
+      document
+        .getElementById("recurrenceEnd")
+        .addEventListener("change", function () {
+          const afterDateDiv = document.getElementById("afterDateDiv");
+          const afterOccurrencesDiv = document.getElementById(
+            "afterOccurrencesDiv"
+          );
+          if (this.value === "afterDate") {
+            afterDateDiv.style.display = "block";
+            afterOccurrencesDiv.style.display = "none";
+          } else if (this.value === "afterOccurrences") {
+            afterDateDiv.style.display = "none";
+            afterOccurrencesDiv.style.display = "block";
+          } else {
+            afterDateDiv.style.display = "none";
+            afterOccurrencesDiv.style.display = "none";
+          }
+        });
+
+      // Function to open the form modal
+      function openFormModal() {
+        document.getElementById("eventFormModal").style.display = "flex";
+      }
+
+      // Function to close the form modal
+      function closeFormModal() {
+        document.getElementById("eventFormModal").style.display = "none";
+      }
+
+      // Function to edit an event
+      function editEvent(eventId) {
+        $.ajax({
+          type: "GET",
+          url: `/api/events/${eventId}/`,
+          success: function (response) {
+            const event = response;
+            console.log(event);
+
+            document.getElementById("eventId").value = event.id;
+
+            document.getElementById("child").value = event.child;
+
+            if (event.trusted_person) {
+              document.getElementById("trustedPerson").value =
+                event.trusted_person;
+            } else {
+              document.getElementById("trustedPerson").value = 0; // Assuming 0 is for 'Me'
+            }
+
+            document.getElementById("summary").value = event.summary;
+            // Format start date and time correctly
+            const startDateTime = new Date(event.start_datetime);
+            document.getElementById("startDateTime").value = startDateTime
+              .toISOString()
+              .slice(0, 16);
+
+            // Format end time correctly
+            const endTime = new Date(event.end_datetime);
+            const formattedEndTime = `${endTime
+              .getHours()
+              .toString()
+              .padStart(2, "0")}:${endTime
+              .getMinutes()
+              .toString()
+              .padStart(2, "0")}`;
+            document.getElementById("endTime").value = formattedEndTime;
+
+            document.getElementById("repeat").value = event.repeat;
+
+            if (event.repeat === "custom") {
+              document.getElementById("customRepeat").style.display = "block";
+              event.custom_repeat_days.forEach((day) => {
+                document.getElementById(`occurrenceDay_${day}`).checked = true;
+              });
+            } else {
+              document.getElementById("customRepeat").style.display = "none";
+            }
+
+            document.getElementById("recurrenceEnd").value =
+              event.recurrence_end_option;
+            if (event.recurrence_end_option === "afterDate") {
+              document.getElementById("afterDateDiv").style.display = "block";
+              document.getElementById("afterDateInput").value =
+                event.recurrence_end_date;
+            } else if (event.recurrence_end_option === "afterOccurrences") {
+              document.getElementById("afterOccurrencesDiv").style.display =
+                "block";
+              document.getElementById("afterOccurrencesInput").value =
+                event.recurrence_occurrences;
+            } else {
+              document.getElementById("afterDateDiv").style.display = "none";
+              document.getElementById("afterOccurrencesDiv").style.display =
+                "none";
+            }
+
+            document.getElementById("feeAmount").value = event.fee_amount;
+            document.getElementById("feeDate").value = event.fee_date;
+
+            openFormModal();
+          },
+          error: function (error) {
+            console.error(error);
+            // Handle error
+          },
+        });
+      }
+
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+
+      const csrftoken = getCookie("csrftoken");
+
+      $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+          if (
+            !/^GET|HEAD|OPTIONS|TRACE$/i.test(settings.type) &&
+            !this.crossDomain
+          ) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        },
+      });
+
+      // Function to schedule or edit an event
+      function scheduleEvent() {
+        const eventId = document.getElementById("eventId").value;
+        const summary = document.getElementById("summary").value;
+        const startDateTime = document.getElementById("startDateTime").value;
+        const endTime = document.getElementById("endTime").value;
+        const repeat = document.getElementById("repeat").value;
+
+        const customRepeatDays = Array.from(
+          document.querySelectorAll('input[name="occurrenceDay"]:checked')
+        ).map((day) => day.value);
+        const recurrenceEndOption =
+          document.getElementById("recurrenceEnd").value;
+        const afterDateInput = document.getElementById("afterDateInput").value;
+        const afterOccurrencesInput = document.getElementById(
+          "afterOccurrencesInput"
+        ).value;
+
+        const childId = document.getElementById("childId").value;
+
+        const trustedPersonId = document.getElementById("tpersonId").value;
+        const feeAmount = document.getElementById("feeAmount").value;
+        const feeDate = document.getElementById("feeDate").value;
+
+        if (
+          !summary ||
+          !startDateTime ||
+          !endTime ||
+          !repeat ||
+          !feeAmount ||
+          !feeDate ||
+          !trustedPersonId ||
+          !childId
+        ) {
+          alert("All fields are mandatory.");
+          return;
+        }
+
+        const startDate = new Date(startDateTime);
+        const endDate = new Date(`${startDateTime.split("T")[0]}T${endTime}`);
+        if (endDate < startDate) {
+          alert(
+            "Start Date and Time cannot be greater than End Date and Time."
+          );
+          return;
+        }
+
+        if (recurrenceEndOption === "afterDate") {
+          if (!afterDateInput) {
+            alert("Please select a valid After Date.");
+            return;
+          }
+          if (new Date(afterDateInput) < endDate) {
+            alert("After Date cannot be less than End Date and Time.");
+            return;
+          }
+        }
+
+        if (
+          recurrenceEndOption === "afterOccurrences" &&
+          (!afterOccurrencesInput || afterOccurrencesInput <= 0)
+        ) {
+          alert("Please enter a valid number of occurrences.");
+          return;
+        }
+
+        const eventData = {
+          summary: summary,
+          startDateTime: startDateTime,
+          endTime: endTime,
+          repeat: repeat,
+          customRepeatDays: customRepeatDays,
+          recurrenceEndOption: recurrenceEndOption,
+          recurrenceEndDate:
+            recurrenceEndOption === "afterDate" ? afterDateInput : null,
+          recurrenceOccurrences:
+            recurrenceEndOption === "afterOccurrences"
+              ? afterOccurrencesInput
+              : null,
+          childId: childId,
+          trustedPersonId: trustedPersonId,
+          fee_amount: feeAmount,
+          fee_date: feeDate,
+        };
+        console.log(eventData, "ayakkumpo");
+
+        const method = eventId ? "PUT" : "POST";
+        const url = eventId ? `/api/events/${eventId}/` : baseUrl;
+
+        $.ajax({
+          type: method,
+          url: url,
+          data: JSON.stringify(eventData),
+          contentType: "application/json;charset=utf-8",
+          success: function (response) {
+            alert("Event saved successfully!");
+            location.reload();
+          },
+          error: function (error) {
+            console.error(error);
+            // Handle error
+          },
+        });
+      }
+
+      function deleteEvent(eventId) {
+        console.log("del", eventId);
+        const confirmDelete = confirm(
+          "Are you sure you want to delete this event?"
+        );
+
+        if (confirmDelete) {
+          deleteEvent1(eventId);
+          console.log("del2", eventId, "${eventId}");
+        }
+      }
+
+      function deleteEvent1(eventId) {
+        const csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+        $.ajax({
+          type: "DELETE",
+          url: `/api/events/${eventId}/`,
+          headers: {
+            "X-CSRFToken": csrftoken,
+          },
+          success: function (response) {
+            console.log(response);
+            alert("Event deleted successfully!");
+            location.reload();
+          },
+          error: function (error) {
+            console.error(error);
+            // Handle error
+          },
+        });
+      }
+    </script>
+
+    <div
+      class="flex flex-col w-full lg:w-[50%] items-start lg:pr-10 lg:pl-10 p-2 p-5"
+      style=""
+    >
+      <h2 class="text-3xl font-bold" style="color: #3e818c">Scheduled Events</h2>
+      <div
+        class="flex flex-col w-full mt-5 scrollable-container"
+        style="overflow-y: scroll; height: 400px"
+      >
+        {% for event in events %}
+        <div
+          style="background-color:white;border:1px solid #3e818c;border-left:7px solid {{ event.child.color_code }};"
+          class="rounded-xl mb-3 flex flex-row items-start justify-between p-2 pl-4"
+        >
+          <div class="flex flex-col w-full">
+            <p class="event-header w-[40%] text-start">
+              {{ event.summary }} for {{ event.child.name }}
+            </p>
+            <div
+              class="event-details flex flex-row items-center justify-between w-full"
+            >
+              <div class="flex items-center">
+                {% if event.repeat == "custom" %}
+                <img
+                  src="{% static 'taskapp/images/repeat.png' %}"
+                  class="h-[20px] w-[20px]"
+                />
+                <p>{{ event.custom_repeat_days | join:", " }}</p>
+                {% else %}
+                <img
+                  src="{% static 'taskapp/images/repeat.png' %}"
+                  class="h-[20px] w-[20px] mr-2"
+                />
+                <p class="font-bold text-[blue]">{{ event.repeat }}</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div
+            class=""
+            id="eventcardState{{event.id}}"
+            style="
+              display: flex;
+              flex-direction: row;
+              border-radius: 10px;
+              height: 100px;
+            "
+          >
+            <img
+              onclick="editEvent('{{ event.id }}')"
+              src="{% static 'taskapp/images/edit.png' %}"
+              class="bg-white rounded-lg p-[6px] w-[55px] lg:w-[35px] h-[40px] lg:h-[30px] hover:bg-[#fcd34d]"
+            />
+            <img
+              onclick="deleteEvent('{{ event.id }}')"
+              src="{% static 'taskapp/images/trash.png' %}"
+              class="bg-white rounded-lg p-1 w-[55px] lg:w-[35px] h-[40px] lg:h-[30px] hover:bg-[#fcd34d]"
+            />
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <script>
+      // function eventCardArrowClicked(id) {
+      //     event.stopPropagation();
+      //     var ele = document.getElementById("eventcardState" + id);
+      //     if (ele.style.display === 'none') {
+      //         ele.style.display = 'flex';
+      //     } else {
+      //         ele.style.display = 'none';
+      //     }
+
+      // }
+      // document.body.addEventListener('click', function (event) {
+
+      //     var ele = document.getElementsByClassName("eventstateclass");
+      //     for (var i = 0; i < ele.length; i++) {
+
+      //         ele[i].style.display = 'none';
+      //     }
+
+      // });
+    </script>
+  </div>
 </body>
-{% endblock %}
+
+{% endblock %} {% block footer %} {% include 'fu.html' %} {% endblock %}
