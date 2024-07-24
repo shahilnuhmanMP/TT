@@ -105,7 +105,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'taskapp',
         'USER': 'postgres',
-        'PASSWORD': 'admin',
+        'PASSWORD': 'root',
         'HOST': 'localhost',  # You can change this to the address of your PostgreSQL server if it's not on your local machine
         'PORT': '5432',
     }
