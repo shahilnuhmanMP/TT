@@ -26,7 +26,9 @@ background-color: white;
         width: 20px;
     }
     .google-icon-wrap {
+
             display: flex;
+            justify-content: center;
             align-items: center;
         }
         .google-icon-wrap .fa-google {
@@ -80,8 +82,8 @@ background-color: white;
                         <span class="toggle-password absolute  h-full flex flex-col justify-center  "
                             style="right: 5;z-index: 4;"
                             onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')">
-                            <img class="eye" id="eye" src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
-                                aria-hidden="true"></img>
+                            <i class="fas fa-eye" style="color:#3E818C;"></i>
+
                         </span>
                     </div>
                 </div>
