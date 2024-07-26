@@ -6,6 +6,9 @@
 
 <head>
   {% tailwind_css %}
+  <script src="https://cdn.jsdelivr.net/npm/@preline/select/dist/select.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/@preline/select/dist/select.min.css" rel="stylesheet">
+
 </head>
 <style>
   body{
@@ -14,7 +17,7 @@
   .child-tile
   {
     background-color:white;
-    border-left:7px solid red;
+    border-left:7px solid #3E818D;
  
     
  
@@ -51,9 +54,9 @@
 
   <!--For showing Model when adding community and children  -->
   <div id="comModal" class="h-full w-full bg-black absolute flex justify-center items-center  lg:mt-0 " style="display: none; background-color: rgba(0, 0, 0, 0.5);">
-    <div class="h-[60%] w-[100%]  lg:w-[40%] bg-white rounded-xl flex flex-col p-4">
+    <div class="h-[50%] w-[100%]  lg:w-[40%] bg-white rounded-xl flex flex-col p-4">
       <div class="flex flex-row justify-between">
-          <h1 class="font-bold text-xl">Add Trusted Person</h1>
+          <h1 class="font-bold text-xl" style="color: #3E818D;">Add Trusted Person</h1>
           <h1 onclick="closeComModal()" class="font-bold">X</h1>
       </div>
       <div class="mt-5">
@@ -98,7 +101,7 @@
             class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;"/>
            
           
-            <button type="submit"  class="bg-[blue] text-white p-2 font-bold rounded-lg mt-5">Add Trusted Person</button>
+            <button type="submit"  class="bg-[#3E818D] text-white p-2 font-bold rounded-lg mt-10">Add Trusted Person</button>
         </form>
         <script>
           const countrycodeList=["+IN","+US","+CA","+GB","+CN","+FR","+DE","+AU","+JP","+RU","+BR"];
@@ -114,7 +117,7 @@
   <div id="childModal" class="h-full w-full bg-black  absolute flex justify-center items-center mt-5 " style="display: none; background-color: rgba(0, 0, 0, 0.5);">
         <div class="h-auto w-[100%]  lg:w-[40%] bg-white rounded-xl flex flex-col p-4">
           <div class="flex flex-row justify-between">
-            <h1 class="font-bold text-xl">Add Child</h1>
+            <h1 class="font-bold text-xl" style="color: #3E818D;">Add Child</h1>
             <h1 onclick="closeChildModal()" class="font-bold">X</h1>
         </div>
         <div class="mt-5">
@@ -134,7 +137,7 @@
             </div>
 
             <div class="mt-3">
-                <label for="id_dob " class="font-bold">Date of Birth:</label>
+                <label for="id_dob " class="font-bold" style="color: #3E818D;">Date of Birth:</label>
             </div>
             <div class="w-full">
                 <input type="date"  name="dob" id="id_dob" required   class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;" />
@@ -158,8 +161,9 @@
             </script>
 
             <div class="mt-3">
-                <label for="id_interests" class="font-bold">Interests:</label>
+                <label for="id_interests" class="font-bold" style="color: #3E818D;">Interests:</label>
             </div>
+            
             <div    class=" mt-2 bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg  text-lg  h-[50px] lg:text-sm " style="color: #6b7280;" >
                 <select  name="interests" id="id_interests" class=" w-full bg-transparent border-0">
                     <option value="music">Music</option>
@@ -174,14 +178,14 @@
 
             <input type="hidden" name="color_code" id="color_code" required>
             <div class=" flex flex-row items-center mt-3 ">
-                <label for="id_color" class="font-bold mr-4">Color:</label>
+                <label for="id_color" class="font-bold mr-4" style="color: #3E818D;">Color:</label>
                 <div class="color-plate flex flex-row justify-center" name="color">
-                  <div class="color" style="background-color: #F4CE14;" onclick="selectColor('#F4CE14', this)"></div>
-                  <div class="color" style="background-color: #E4003A;" onclick="selectColor('#E4003A', this)"></div>
-                  <div class="color" style="background-color: #C738BD;" onclick="selectColor('#C738BD', this)"></div>
-                  <div class="color" style="background-color: #FFB44F;" onclick="selectColor('#FFB44F', this)"></div>
-                  <div class="color" style="background-color: #003285" onclick="selectColor('#003285', this)"></div>
-                  <div class="color" style="background-color: #399918;" onclick="selectColor('#399918', this)"></div>
+                  <div class="color" style="background-color: #B3C8CF;" onclick="selectColor('#F4CE14', this)"></div>
+                  <div class="color" style="background-color: #CCD3CA;" onclick="selectColor('#E4003A', this)"></div>
+                  <div class="color" style="background-color: #f1a3ec;" onclick="selectColor('#C738BD', this)"></div>
+                  <div class="color" style="background-color: #F5E8DD;" onclick="selectColor('#FFB44F', this)"></div>
+                  <div class="color" style="background-color: #B4B4B8" onclick="selectColor('#003285', this)"></div>
+                  <div class="color" style="background-color: #AFC8AD;" onclick="selectColor('#399918', this)"></div>
   
               </div>
             </div>
@@ -201,7 +205,7 @@
             </script>
 
             <div>
-                <button type="submit"  class="bg-[blue] text-white p-2 font-bold rounded-lg mt-5">Add Child</button>
+                <button type="submit"  class="bg-[#3E818D] text-white p-2 font-bold rounded-lg mt-5">Add Child</button>
             </div>
         </form>
         </div>
@@ -210,14 +214,14 @@
   <!--  -->
 
 
-  <div  style=" align-items: center; " class="h-full w-full mt-20 flex flex-col lg:flex-row ">
+  <div  style=" align-items: center; margin-top: 120px; " class="h-full w-full mt-20 flex flex-col lg:flex-row ">
 
 
 
         <div class="flex flex-col items-start w-full  lg:w-[50%] h-full p-4 lg:p-10 mt-[50px] lg:mt-0 ">
 
                 <div class="flex flex-row items-center">
-                  <h2 class="text-black font-bold  text-3xl mr-3">Manage Children</h2>
+                  <h2 class="text-black text-3xl mr-3" style="color: #3E818D;">Manage Children</h2>
                
                   <img onclick="openChildModal()" src="{% static 'taskapp/images/add-button.png' %}" class="h-[30px] w-[30px] mr-5 "/>
              
@@ -236,8 +240,9 @@
                             {% comment %} <button button class="delete-button"    onclick="confirmDelete('{{ child.name }}', '{{ child.id }}')">Delete</button> {% endcomment %}
 
                          <!-- Add more details if needed -->
-                         <img onclick="confirmDelete('{{ child.name }}', '{{ child.id }}')" src="{% static 'taskapp/images/trash.png' %}"
-                         class="bg-white rounded-lg p-1 w-[40px] lg:w-[35px]  h-[40px]  lg:h-[30px]  hover:bg-[#fcd34d]" />
+                         <i onclick="confirmDelete('{{ child.name }}', '{{ child.id }}')" 
+                         class="fas fa-trash bg-white rounded-lg p-1 w-[40px] lg:w-[35px] h-[40px] lg:h-[30px] hover:bg-[#3E818D]"></i>
+                      
                         </div>
                     {% endfor %}
                 </div>
@@ -254,7 +259,7 @@
      
         <div class="flex flex-col w-full  lg:w-[50%] h-full p-4 lg:p-10 ">
               <div class="flex flex-row items-center">
-                <h2 class="text-black font-bold  text-3xl mr-3">Manage Community</h2>
+                <h2 class="text-black  text-3xl mr-3" style="color: #3E818D;" >Manage Community</h2>
           
                     <img onclick="openCommunityModal()" src="{% static 'taskapp/images/add-button.png' %}" class="h-[30px] w-[30px] mr-5 "/>
                 
@@ -269,8 +274,8 @@
                       <img src="{% static 'taskapp/images/user.png' %}" class="h-[60px] w-[60px] mr-5 "/>
                       <h4 class="font-bold">{{ person.name }}- {{ person.relation }} - {{ person.phone_number }}</h4>
                     </div>
-                    <img  onclick="confirmCDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')" src="{% static 'taskapp/images/trash.png' %}"
-                    class="bg-white rounded-lg p-1 w-[45px] lg:w-[35px]  h-[35px]  lg:h-[30px] hover:bg-[#fcd34d]" />
+                    <i onclick="confirmCDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')" 
+                    class="fas fa-trash bg-white rounded-lg p-1 w-[45px] lg:w-[35px] h-[35px] lg:h-[30px] hover:bg-[#fcd34d]"></i>                 
                    
                     {% comment %} <button class="delete-button" onclick="confirmDelete('{{ person.name }}', '/trusted-people/{{ person.id }}/')"">Delete</button> {% endcomment %}
                   </div>
