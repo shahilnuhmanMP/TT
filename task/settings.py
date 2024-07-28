@@ -45,7 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'tailwind',
     'theme',
-    'django_browser_reload'
+    'django_browser_reload',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 
 
 
@@ -67,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "allauth.account.middleware.AccountMiddleware",
     # Other middleware classes...
     'silk.middleware.SilkyMiddleware',
     'django_browser_reload.middleware.BrowserReloadMiddleware',
@@ -191,3 +196,35 @@ EMAIL_HOST_PASSWORD = 'zqnfspfrhqldltlg'
 
 
 
+
+
+GOOGLE_CLIENT_ID = ''
+GOOGLE_CLIENT_SECRET =''
+GOOGLE_REDIRECT_URI = ''
+
+
+
+SIGN_GOOGLE_CLIENT_ID = ''
+SIGN_GOOGLE_CLIENT_SECRET = ''
+SIGN_GOOGLE_REDIRECT_URI = ''
+
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+         'APP': {
+            'client_id': SIGN_GOOGLE_CLIENT_ID,
+            'secret': SIGN_GOOGLE_CLIENT_SECRET,
+            'key': ''
+        }
+    }
+}
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

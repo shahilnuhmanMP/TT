@@ -24,6 +24,7 @@ from .forms import LoginForm, ProfileForm
 from .models import Child, TrustedPerson, Class
 from django.contrib.auth.models import User
 from django.contrib import messages
+from taskapp.models import Contacts
 
 
 def header(request):
@@ -56,8 +57,6 @@ def home(request):
         'now': now,
         'events': events,
     }
-
-
 
     return render(request, 'base.html', context)
 
@@ -140,7 +139,9 @@ def manage_children_view(request):
     print('came inside manage_children_view request')
     user_children = Child.objects.filter(user=request.user)  # Assuming user is associated with Child model
     trusted_people = TrustedPerson.objects.filter(user=request.user)
-    return render(request, 'manage_children.html', {'user_children': user_children, 'trusted_people': trusted_people})
+    print(trusted_people)
+    contact_list = Contacts.objects.filter(user = request.user).values_list('name',flat=True)
+    return render(request, 'manage_children.html', {'user_children': user_children, 'trusted_people': trusted_people,'contacts':contact_list})
 
 
 
@@ -157,7 +158,7 @@ def add_child(request):
 
         if name in existing_child_names:
             messages.error(request, 'A child with this name already exists.')
-            return render(request, 'add_child.html')
+            return render(request, 'manage_children.html')
 
         # Perform your own validation if needed
 
@@ -172,7 +173,7 @@ def add_child(request):
         return redirect('manage_children')  # Redirect to the profile view after adding a child
     else:
         # Handle GET request
-        return render(request, 'add_child.html')
+        return render(request, 'manage_children.html')
 
 from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
@@ -203,11 +204,13 @@ def add_trusted_person(request):
             trusted_person.user = request.user
             trusted_person.save()
             return redirect('manage_children')  # Redirect to the manage_children page after adding a trusted person
+        else:
+            print('error---5',form.errors)
     else:
         form = TrustedPersonForm(initial={'phone_country_code': '+91'})
         # form = TrustedPersonForm()
 
-    return render(request, 'add_trusted_person.html', {'form': form})
+    return render(request, 'manage_children.html', {'form': form})
 
 # @silk_profile(name='My View Profile')
 
@@ -294,6 +297,8 @@ class EventRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
+
+
 @csrf_exempt
 @login_required
 def save_event(request):
@@ -1286,3 +1291,131 @@ def submit_cancellation(request):
             return JsonResponse({'status': 'error', 'message': 'Event not found'})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+
+
+from django.shortcuts import redirect, render
+from django.conf import settings
+from google_auth_oauthlib.flow import Flow
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+import os
+import json
+
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+def google_auth(request):
+    print("bijou")
+    flow = Flow.from_client_secrets_file(
+        '/home/personal/Projects/Tiny/TT/client_secret_872322628185-k93rsledn7nsc16vvmr0evlkkv07828o.apps.googleusercontent.com (1).json',
+        scopes=['https://www.googleapis.com/auth/contacts.readonly'],
+        redirect_uri=settings.GOOGLE_REDIRECT_URI
+    )
+    authorization_url, state = flow.authorization_url(
+        access_type='offline',
+        include_granted_scopes='true'
+    )
+    request.session['state'] = state
+    return redirect(authorization_url)
+
+def google_auth_callback(request):
+    # state = request.session['state']
+    
+    state = request.GET.get('state')
+    flow = Flow.from_client_secrets_file(
+        '/home/personal/Projects/Tiny/TT/client_secret_872322628185-k93rsledn7nsc16vvmr0evlkkv07828o.apps.googleusercontent.com (1).json',
+        scopes=['https://www.googleapis.com/auth/contacts.readonly'],
+        state=state,
+        redirect_uri=settings.GOOGLE_REDIRECT_URI
+    )
+    authorization_response = request.build_absolute_uri()
+    flow.fetch_token(authorization_response=authorization_response)
+    credentials = flow.credentials
+
+    service = build('people', 'v1', credentials=credentials)
+    results = service.people().connections().list(
+        resourceName='people/me',
+        pageSize=1000,
+        personFields='names,phoneNumbers'
+    ).execute()
+    connections = results.get('connections', [])
+
+    contacts = []
+    for person in connections:
+        if 'names' in person and 'phoneNumbers' in person:
+            name = person['names'][0]['displayName']
+            phone_number = person['phoneNumbers'][0]['value']
+            contacts.append({'name': name, 'phone_number': phone_number})
+    user_children = Child.objects.filter(user=request.user)  # Assuming user is associated with Child model
+    trusted_people = TrustedPerson.objects.filter(user=request.user)
+    return render(request, 'manage_children.html', {'contacts': contacts,'user_children': user_children, 'trusted_people': trusted_people,'verified':True})
+
+
+
+
+# views.py
+from django.shortcuts import redirect, render
+
+from django.conf import settings
+from django.contrib.auth import login
+from django.contrib.auth.models import User
+from django.urls import reverse
+from requests_oauthlib import OAuth2Session
+import requests
+from taskapp.models import CustomUser
+
+# Google OAuth2 endpoint constants
+AUTHORIZATION_BASE_URL = 'https://accounts.google.com/o/oauth2/auth'
+TOKEN_URL = 'https://accounts.google.com/o/oauth2/token'
+USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo'
+
+def google_login(request):
+    google = OAuth2Session(
+        settings.SIGN_GOOGLE_CLIENT_ID,
+        redirect_uri=settings.SIGN_GOOGLE_REDIRECT_URI,
+        scope=[ 'email', 'profile','https://www.googleapis.com/auth/contacts.readonly'],
+    )
+    authorization_url, state = google.authorization_url(AUTHORIZATION_BASE_URL, access_type='offline')
+    request.session['oauth_state'] = state
+    return redirect(authorization_url)
+
+def google_callback(request):
+    google = OAuth2Session(
+        settings.SIGN_GOOGLE_CLIENT_ID,
+        state=request.session['oauth_state'],
+        redirect_uri=settings.SIGN_GOOGLE_REDIRECT_URI,
+    )
+    google.fetch_token(TOKEN_URL, client_secret=settings.SIGN_GOOGLE_CLIENT_SECRET, authorization_response=request.build_absolute_uri())
+    user_info = google.get(USER_INFO_URL).json()
+
+    contacts_url = 'https://people.googleapis.com/v1/people/me/connections'
+    contacts_params = {
+        'personFields': 'names,emailAddresses',
+    }
+    contacts_response = google.get(contacts_url, params=contacts_params).json()
+    contact_names = []
+
+    for contact in contacts_response['connections']:
+        names = contact.get('names', [])
+        for name in names:
+            display_name = name.get('displayName')
+            if display_name:
+                contact_names.append(display_name)
+
+    try:
+        user = CustomUser.objects.get(email =user_info['email'],)
+    except CustomUser.DoesNotExist:
+        user = CustomUser.objects.create(
+            username=user_info['given_name'],
+            email=user_info['email'],
+            first_name=user_info.get('given_name', ''),
+            last_name=user_info.get('family_name', ''),
+        )
+        user.set_password(user_info['id'])
+        user.save()
+    user_contact_list = Contacts.objects.filter(user__email = user_info['email']).values_list('name',flat=True)
+    Contacts.objects.bulk_create(
+        [Contacts(user=user,name = contact_name) for contact_name in contact_names if contact_name not in user_contact_list]
+    )
+    login(request,user)
+    return redirect('home')

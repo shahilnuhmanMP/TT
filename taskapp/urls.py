@@ -74,6 +74,14 @@ urlpatterns = [
     path('submit_cancellation/', views.submit_cancellation, name='submit_cancellation'),
 
 
+    path('authenticate_google/', views.google_auth),
+    path('contact_redirect/', views.google_auth_callback, name='google_auth_callback'),
+    # path('sigin_redirect/', views.sigin_redirect, name='sigin_redirect'),
+
+    # urls.py
+
+    path('accounts/google/login/', views.google_login, name='google_login'),
+    path('sigin_redirect/', views.google_callback, name='google_callback'),
 
 ]
 

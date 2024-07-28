@@ -23,6 +23,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     path('silk/', include('silk.urls', namespace='silk')),
     path("__reload__/", include("django_browser_reload.urls")),
+    path('accounts/', include('allauth.urls')),
 
 ]
 

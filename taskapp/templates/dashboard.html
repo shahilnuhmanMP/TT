@@ -1,570 +1,558 @@
-{% extends 'header.html' %}
-{% load static tailwind_tags %}
-{% block content %}
+    {% extends 'header.html' %}
+    {% load static tailwind_tags %}
+    {% block content %}
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Child Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<style>
-    body {
-        font-family: "Inter", sans-serif;
-        
-        margin: 50px;
-        height: 100%;
-        width: 100%;
-        background: linear-gradient(149deg, rgba(255, 255, 255, 1) 0%, rgba(234, 255, 253, 1) 45%, rgba(255, 255, 255, 1) 100%);
-        background-repeat: no-repeat;
-    }
-
-    form {
-        margin-top: 160px;
-        margin-bottom: 20px;
-    }
-
-    h2 {
-        color: #333;
-    }
-
-    .event-card {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 10px;
-        margin-bottom: 15px;
-        background-color: #f9f9f9;
-    }
-
-    .chart-container {
-        position: relative;
-        margin: 10px;
-    }
-
-    .error {
-        color: red;
-        font-weight: bold;
-    }
-
-    .child-button {
-        margin-right: 10px;
-        padding: 10px 20px;
-        background-color: black;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    .child-button.selected {
-        background-color: #0056b3;
-        color: white;
-    }
-    .gradient-shadow {
-
-        text-shadow:
-            0px 0px 50px rgba(161, 218, 255, 0.2),
-            0px 0px 50px rgba(0, 26, 156, 0.4),
-            0px 20px 50px rgba(255, 118, 255, 0.6),
-            30px 6px 50px rgba(255, 51, 28, 0.8);
-
-    }
-    
-
-  
-
-</style>
-{% tailwind_css %}
-<body class="flex flex-col items-start w-full bg-white">
-
-
-
-<form id="childForm" method="post" action="{% url 'dashboard' %}" class="flex flex-col lg:flex-row justify-between items-start w-full ">
-    {% csrf_token %}
-
-
-    <!-- <div class="flex flex-col  items-start  w-full  lg:w-[450px] ">
-        <label for="monthYear" class="mr-3 font-bold">Select child :</label>
-        <div  class="  bg-white  border-2 border-[#6b7280] text-[#e2e8f0] rounded-lg h-[40px] text-lg   lg:text-sm  w-full  lg:w-[250px] " style="color: #6b7280;">
-            <select name="selectedChild" id="selectedChild" class="bg-transparent w-full" style="border: none;">
-               
-                {% for child_option in children %}
-                    <option value="{{ child_option.id}}" {% if child_option.name == child.name %}selected{% endif %}>{{ child_option.name }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    </div> -->
- 
-   
-
-    <div class="flex flex-col items-start">
-        <label  class="mr-3 font-bold">Select child :</label>
-        <div class="flex flex-row">
-            {% for child_option in children %}
-            <button type="button" class="child-button {% if child and child_option.id == child.id %}selected{% endif %} bg-black" onclick="selectChild('{{ child_option.id }}')">{{ child_option.name }}</button>
-             {% endfor %}
-        </div>
-      
-    </div> 
-
-    <input type="hidden" name="child_id" id="childInput" value="{% if child %}{{ child.id }}{% endif %}">
-
-  
-     <div class="flex flex-col  items-start  justify-center mt-5  lg:mt-0  w-full  lg:w-[350px]  ">
-        
-        <label for="monthYear" class="mr-3  font-bold">Select Month and Year:</label>
-        <div class="flex flex-col lg:flex-row items-start  lg:items-center w-full ">
-            <div  class=" flex flex-row justify-center items-center  bg-white   border-2 border-[#6b7280] text-[#e2e8f0] mr-3 rounded-lg h-[40px] text-lg   lg:text-sm w-full  lg:w-[250px] " style="color: #6b7280;">
-                <select name="monthYear" id="monthYear" class="bg-transparent w-full" style="border: none;">
-                    <option value="" selected>All</option>
-                    {% for month_year in month_years %}
-                        <option value="{{ month_year }}" {% if month_year == selected_month_year %}selected{% endif %}>{{ month_year }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="bg-[blue] text-white p-1 rounded-lg pl-4 pr-4 h-[35px] mt-3 lg:mt-0">Submit</button>
-        </div>
-       
-       
-
-     </div>
-
-  
-
-   
-</form>
-
-{% if error %}
-    <p class="error">{{ error }}</p>
-{% endif %}
-<div class="flex flex-col md:flex-row lg:flex-row justify-start mt-20" style="flex-wrap: wrap;">
-{% if child or not child %}
-    {% for data in event_data %}
- 
-
-
-        <div class="flex flex-col items-start  w-full md:w-[30%] lg:w-[30%]  mt-14 mr-0  lg:mr-8    ">
-            <h3 class="font-bold  text-2xl lg:text-xl  ">{{ data.event.summary }}  {{ data.selected_month }}</h3>
-            <!-- <h3>{{ data.child.name }}</h3> -->
-         
-
-            <div class="chart-container" style="width: 100%;height: 100%;">
-                <canvas id="attendanceChart-{{ data.event.id }}" width="100%" height="200"></canvas>
-            </div>
-
-            <script>
-
-                var ctx = document.getElementById('attendanceChart-{{ data.event.id }}').getContext('2d');
-                console.log("value:{{data.event_spend}}" )
-                var myChart = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Total Classes '+{{data.total_classes}}, 'Attended Days '+{{data.attended_days}}, 'Absent Days '+{{data.absent_days}},/* 'Event Spend ' */],
-                        datasets: [{
-                            data: [ {{data.total_classes}} , {{data.attended_days}} , {{data.absent_days}} , /* {{data.event_spend}}*/ ],
-                            backgroundColor: [
-                                '#F4CE14',
-                                '#E4003A',
-                                '#C738BD',
-                                '#FFB44F',
-                            ],
-                            borderColor:
-                            ['transparent','transparent','transparent','transparent'],
-                        
-                            cutout: '65%', 
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                legend: {
-                    position: 'right',  // Place legend on the left
-                    align: 'center', // Center-align the legend vertically
-                    fontSize: 25,
-                    labels: {
-                        boxWidth: 12,   // Width of the color box
-                        padding: 10,
-                        BorderRadius:10,
-                          // Padding between legend items
-                    }
-                }
-            }
-                    }
-                });
-            </script>
-
-        </div>
-  
-    {% endfor %}
-{% endif %}
-</div>
-
-<script>
-     function generateCircleLegend(chart) {
-            var data = chart.data;
-            var labels = data.labels || [];
-
-            if (labels.length) {
-                return labels.map(function(label, index) {
-                    return {
-                        text: label,
-                        fillStyle: data.datasets[0].backgroundColor[index],
-                        hidden: chart.getDatasetMeta(0).data[index].hidden,
-
-                        // Custom circle properties
-                        lineCap: 'round', // Circle shape
-                        lineWidth: 10,
-                        radius: 5,
-                        pointStyle: 'circle'
-                    };
-                });
-            }
-
-            return [];
-        }
-
-      function  selectChild(id)
-      {
-        document.getElementById('childInput').value = id;
-        document.getElementById('childForm').submit();
-      }
-
-const selectElement = document.getElementById('selectedChild');
-
-selectElement.addEventListener('change', function() {
-    const selectedValue = this.value;
-    const selectedText = this.options[this.selectedIndex].text;
-
-    console.log("triggered")
-    console.log('Selected Value:', selectedValue);
-    console.log('Selected Text:', selectedText);
-    
-
-   
-});
-
-
-
-   
-</script>
-<head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Child Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-          
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 0;
+            font-family: "Inter", sans-serif;
+            
+            margin: 50px;
+            height: 100%;
+            width: 100%;
+            /* background: linear-gradient(149deg, rgba(255, 255, 255, 1) 0%, rgba(234, 255, 253, 1) 45%, rgba(255, 255, 255, 1) 100%); */
+            background-repeat: no-repeat;
         }
-        .content {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .summary {
-            display: flex;
-            justify-content: space-around;
+
+        form {
+            margin-top: 160px;
             margin-bottom: 20px;
         }
-        .summary-item {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            flex: 1;
-            margin: 0 10px;
-        }
-        .summary-item h2 {
-            margin: 0;
-            color: #4CAF50;
-        }
-        .summary-item p {
-            margin: 10px 0 0 0;
-            font-size: 18px;
+
+        h2 {
             color: #333;
         }
-        .charts-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
+
+        .event-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
         }
-        .chart {
-            flex: 1 1 45%;
-            max-width: 400px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
+
+        .chart-container {
+            position: relative;
+            margin: 10px;
         }
-        .chart-detail {
-            margin-top: 10px;
-            font-size: 16px;
-            text-align: left;
-        }
-        .child-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .child-button {
-            background-color: white;
-            color: black;
-            padding: 10px 20px;
+
+        .error {
+            color: red;
             font-weight: bold;
+        }
+
+        .child-button {
+            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: black;
+            color: white;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
-            box-shadow: 2px 2px 5px gainsboro;
-            transition: background-color 0.3s ease;
         }
-        .child-button:hover {
-            background-color: #85e4e4;
+
+        .child-button.selected {
+            background-color: #3E818D;
+            color: white;
         }
-        .month-selector {
-            margin-bottom: 20px;
+        .gradient-shadow {
+
+            text-shadow:
+                0px 0px 50px rgba(161, 218, 255, 0.2),
+                0px 0px 50px rgba(0, 26, 156, 0.4),
+                0px 20px 50px rgba(255, 118, 255, 0.6),
+                30px 6px 50px rgba(255, 51, 28, 0.8);
+
         }
+        
+
+    
+
     </style>
-</head>
-<body>
-    <div class="content flex flex-col items-center w-full ">
-        <div class="summary mt-20 w-full  flex-col  lg:flex-row">
-            <div class="shadow-xl  w-[100%]  lg:w-[50%] p-4 rounded-xl">
-                <h2 class="font-bold">Total Spent</h2>
-                <p id="total-spent " class="font-bold">Rs {{ total_spent }}</p>
+    {% tailwind_css %}
+    <body class="flex flex-col items-start w-full bg-white">
+
+
+
+    <form id="childForm" method="post" action="{% url 'dashboard' %}" class="flex flex-col lg:flex-row justify-between items-start w-full ">
+        {% csrf_token %}
+
+        <div class="flex flex-col items-start">
+            <label  class="mr-3 font-bold">Select child :</label>
+            <div class="flex flex-row">
+                {% for child_option in children %}
+                <button type="button" class="child-button {% if child and child_option.id == child.id %}selected{% endif %} " onclick="selectChild('{{ child_option.id }}')">{{ child_option.name }}</button>
+                <button type="button" class="child-button {% if child and child_option.id == child.id %}selected{% endif %} " onclick="selectChild('{{ child_option.id }}')">All</button>
+                {% endfor %}
             </div>
-            <div class=" shadow-xl  w-[100%]  lg:w-[50%]  mt-8   lg:mt-0 p-4 rounded-xl">
-                <h2 class="font-bold">Total Classes</h2>
-                <p id="total-classes " class="font-bold"> {{ total_classes_count }}</p>
+        
+        </div> 
+
+        <input type="hidden" name="child_id" id="childInput" value="{% if child %}{{ child.id }}{% endif %}">
+
+    
+        <div class="flex flex-col  items-start  justify-center mt-5  lg:mt-0  w-full  lg:w-[350px]  ">
+            
+            <label for="monthYear" class="mr-3  font-bold">Select Month and Year:</label>
+            <div class="flex flex-col lg:flex-row items-start  lg:items-center w-full ">
+                <div  class=" flex flex-row justify-center items-center  bg-white   border-2 border-[#6b7280] text-[#e2e8f0] mr-3 rounded-lg h-[40px] text-lg   lg:text-sm w-full  lg:w-[250px] " style="color: #6b7280;">
+                    <select name="monthYear" id="monthYear" class="bg-transparent w-full" style="border: none;">
+                        <option value="" selected>All</option>
+                        {% for month_year in month_years %}
+                            <option value="{{ month_year }}" {% if month_year == selected_month_year %}selected{% endif %}>{{ month_year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class=" text-white p-1 rounded-lg pl-4 pr-4 h-[35px] mt-3 lg:mt-0" style="background-color: #3E818D;">Submit</button>
             </div>
+
+            
+        
+        
+
         </div>
-        <div class="flex flex-col  items-start  lg:items-center w-full  lg:w-[450px] mt-20  ">
-            <label or="month-select" class="mr-3 font-bold">Select Month:</label>
-            <div  class="  bg-white  border-2 border-[#6b7280] text-[#e2e8f0] rounded-lg h-[40px] text-lg   lg:text-sm  w-full  lg:w-[250px] " style="color: #6b7280;">
-                <select  id="month-select" class="bg-transparent w-full" style="border: none;">
-                   
+
+    
+
+    
+    </form>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+    <div class="flex flex-col md:flex-row lg:flex-row justify-start mt-20" style="flex-wrap: wrap; justify-content: space-around;">
+    {% if child or not child %}
+        {% for data in event_data %}
+    
+
+
+            <div class="flex flex-col items-start  w-full md:w-[30%] lg:w-[30%]  mt-14 mr-0  lg:mr-8    ">
+                <h3 class="font-bold  text-2xl lg:text-xl  ">{{ data.event.summary }}  {{ data.selected_month }}</h3>
+                <!-- <h3>{{ data.child.name }}</h3> -->
+            
+
+                <div class="chart-container" style="width: 100%;height: 100%;">
+                    <canvas id="attendanceChart-{{ data.event.id }}" width="100%" height="200"></canvas>
+                </div>
+
+                <script>
+
+                    var ctx = document.getElementById('attendanceChart-{{ data.event.id }}').getContext('2d');
+                    console.log("value:{{data.event_spend}}" )
+                    var myChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Total Classes '+{{data.total_classes}}, 'Attended Days '+{{data.attended_days}}, 'Absent Days '+{{data.absent_days}},/* 'Event Spend ' */],
+                            datasets: [{
+                                data: [ {{data.total_classes}} , {{data.attended_days}} , {{data.absent_days}} , /* {{data.event_spend}}*/ ],
+                                backgroundColor: [
+                                    '#F4CE14',
+                                    '#E4003A',
+                                    '#C738BD',
+                                    '#FFB44F',
+                                ],
+                                borderColor:
+                                ['transparent','transparent','transparent','transparent'],
+                            
+                                cutout: '65%', 
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                    legend: {
+                        position: 'right',  // Place legend on the left
+                        align: 'center', // Center-align the legend vertically
+                        fontSize: 25,
+                        labels: {
+                            boxWidth: 12,   // Width of the color box
+                            padding: 10,
+                            BorderRadius:10,
+                            // Padding between legend items
+                        }
+                    }
+                }
+                        }
+                    });
+                </script>
+
+            </div>
+    
+        {% endfor %}
+    {% endif %}
+    </div>
+
+    <script>
+        function generateCircleLegend(chart) {
+                var data = chart.data;
+                var labels = data.labels || [];
+
+                if (labels.length) {
+                    return labels.map(function(label, index) {
+                        return {
+                            text: label,
+                            fillStyle: data.datasets[0].backgroundColor[index],
+                            hidden: chart.getDatasetMeta(0).data[index].hidden,
+
+                            // Custom circle properties
+                            lineCap: 'round', // Circle shape
+                            lineWidth: 10,
+                            radius: 5,
+                            pointStyle: 'circle'
+                        };
+                    });
+                }
+
+                return [];
+            }
+
+        function  selectChild(id)
+        {
+            document.getElementById('childInput').value = id;
+            document.getElementById('childForm').submit();
+        }
+
+    const selectElement = document.getElementById('selectedChild');
+
+    selectElement.addEventListener('change', function() {
+        const selectedValue = this.value;
+        const selectedText = this.options[this.selectedIndex].text;
+
+        console.log("triggered")
+        console.log('Selected Value:', selectedValue);
+        console.log('Selected Text:', selectedText);
+        
+
+    
+    });
+
+
+
+    
+    </script>
+    <head>
+        <meta charset="UTF-8">
+        <title>Dashboard</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body {
+            
+                background-color: #f0f2f5;
+                margin: 0;
+                padding: 0;
+            }
+            .content {
+                padding: 20px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+            .summary {
+                display: flex;
+                justify-content: space-around;
+                margin-bottom: 20px;
+            }
+            .summary-item {
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                flex: 1;
+                margin: 0 10px;
+            }
+            .summary-item h2 {
+                margin: 0;
+                color: #4CAF50;
+            }
+            .summary-item p {
+                margin: 10px 0 0 0;
+                font-size: 18px;
+                color: #333;
+            }
+            .charts-container {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            .chart {
+                flex: 1 1 45%;
+                max-width: 400px;
+                background-color: white;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+                text-align: center;
+            }
+            .chart-detail {
+                margin-top: 10px;
+                font-size: 16px;
+                text-align: left;
+            }
+            .child-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 20px;
+            }
+            .child-button {
+                background-color: white;
+                color: black;
+                padding: 10px 20px;
+                font-weight: bold;
+                border-radius: 5px;
+                cursor: pointer;
+                box-shadow: 2px 2px 5px gainsboro;
+                transition: background-color 0.3s ease;
+            }
+            .child-button:hover {
+                background-color: #85e4e4;
+            }
+            .month-selector {
+                margin-bottom: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content flex flex-col items-center w-full ">
+            <div class="summary mt-20 w-full  flex-col  lg:flex-row" style="gap: 10px;">
+                <div class="shadow-xl  w-[100%]  lg:w-[50%] p-4 rounded-xl" style="border: 2px solid #85e4e4;">
+                    <h2 class="font-bold">Total Spent</h2>
+                    <p id="total-spent " class="font-bold">Rs {{ total_spent }}</p>
+                </div>
+                <div class=" shadow-xl  w-[100%]  lg:w-[50%]  mt-8   lg:mt-0 p-4 rounded-xl" style="border: 2px solid #85e4e4;">
+                    <h2 class="font-bold">Total Classes</h2>
+                    <p id="total-classes " class="font-bold"> {{ total_classes_count }}</p>
+                </div>
+            </div>
+            <div class="flex flex-col  items-start  lg:items-center w-full  lg:w-[450px] mt-20  ">
+                <label or="month-select" class="mr-3 font-bold">Select Month:</label>
+                <div  class="  bg-white  border-2 border-[#6b7280] text-[#e2e8f0] rounded-lg h-[40px] text-lg   lg:text-sm  w-full  lg:w-[250px] " style="color: #6b7280;">
+                    <select  id="month-select" class="bg-transparent w-full" style="border: none;">
+                    
+                        <option value="total">Total</option>
+                        {% for month in monthly_spends %}
+                            <option value="{{ month }}">{{ month }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <!-- <div class="month-selector">
+                <label for="month-select">Select Month:</label>
+                <select id="month-select">
                     <option value="total">Total</option>
                     {% for month in monthly_spends %}
                         <option value="{{ month }}">{{ month }}</option>
                     {% endfor %}
                 </select>
+            </div> -->
+            <div class="w-full flex  flex-col  md:flex-row lg:flex-row  justify-around  mt-20">
+                <div class="w-full md:w-[30%] lg:w-[30%]">
+                    <h3 class="font-bold  text-2xl">Spends By Activity</h3>
+                    <canvas id="spendChart" class="h-[300px] w-[300px]"></canvas>
+                    <div class="chart-detail mt-20" id="spend-detail"></div>
+                </div>
+                <div class="w-full md:w-[30%] lg:w-[30%]  mt-20 lg:mt-0 ">
+                    <h3 class="font-bold  text-2xl">Spends By Child</h3>
+                    <canvas id="childSpendChart" class="h-[300px] w-[300px]"></canvas>
+                    <div class="chart-detail mt-20" id="child-spend-detail"></div>
+                </div>
             </div>
         </div>
-        <!-- <div class="month-selector">
-            <label for="month-select">Select Month:</label>
-            <select id="month-select">
-                <option value="total">Total</option>
-                {% for month in monthly_spends %}
-                    <option value="{{ month }}">{{ month }}</option>
-                {% endfor %}
-            </select>
-        </div> -->
-        <div class="w-full flex  flex-col  md:flex-row lg:flex-row  justify-around  mt-20">
-            <div class="w-full md:w-[30%] lg:w-[30%]">
-                <h3 class="font-bold  text-2xl">Spends By Activity</h3>
-                <canvas id="spendChart" class="h-[300px] w-[300px]"></canvas>
-                <div class="chart-detail mt-20" id="spend-detail"></div>
-            </div>
-            <div class="w-full md:w-[30%] lg:w-[30%]  mt-20 lg:mt-0 ">
-                <h3 class="font-bold  text-2xl">Spends By Child</h3>
-                <canvas id="childSpendChart" class="h-[300px] w-[300px]"></canvas>
-                <div class="chart-detail mt-20" id="child-spend-detail"></div>
-            </div>
-        </div>
-    </div>
 
-    <script>
-        const eventSpends = {{ event_spends|safe }};
-        const childSpends = {{ child_spends|safe }};
-        const monthlyEventSpends = {{ monthly_event_spends|safe }};
-        const monthlyChildSpends = {{ monthly_child_spends|safe }};
+        <script>
+            const eventSpends = {{ event_spends|safe }};
+            const childSpends = {{ child_spends|safe }};
+            const monthlyEventSpends = {{ monthly_event_spends|safe }};
+            const monthlyChildSpends = {{ monthly_child_spends|safe }};
 
-        const eventNames = Object.keys(eventSpends);
-        const spendData = Object.values(eventSpends);
+            const eventNames = Object.keys(eventSpends);
+            const spendData = Object.values(eventSpends);
 
-        const childNames = Object.keys(childSpends);
-        const childSpendData = Object.values(childSpends);
-        console.log(childSpendData);
+            const childNames = Object.keys(childSpends);
+            const childSpendData = Object.values(childSpends);
+            console.log(childSpendData);
 
-        function updateSummary(month) {
-            let totalSpent = 0;
-            let totalClasses = 0;
-            let eventSpendDetails = "";
-            let childSpendDetails = "";
+            function updateSummary(month) {
+                let totalSpent = 0;
+                let totalClasses = 0;
+                let eventSpendDetails = "";
+                let childSpendDetails = "";
 
-            const currentEventSpends = month === 'total' ? eventSpends : monthlyEventSpends[month] || {};
-            const currentChildSpends = month === 'total' ? childSpends : monthlyChildSpends[month] || {};
+                const currentEventSpends = month === 'total' ? eventSpends : monthlyEventSpends[month] || {};
+                const currentChildSpends = month === 'total' ? childSpends : monthlyChildSpends[month] || {};
 
-            for (let event in currentEventSpends) {
-                totalSpent += currentEventSpends[event];
-                eventSpendDetails += `<div class="flex flex-row"><p class="font-bold w-[200px]">${event} spend is </p><p>: Rs ${currentEventSpends[event].toFixed(2)}</p></div>`;
+                for (let event in currentEventSpends) {
+                    totalSpent += currentEventSpends[event];
+                    eventSpendDetails += `<div class="flex flex-row"><p class="font-bold w-[200px]">${event} spend is </p><p>: Rs ${currentEventSpends[event].toFixed(2)}</p></div>`;
+                }
+
+                for (let child in currentChildSpends) {
+                    totalClasses += currentChildSpends[child];
+                    childSpendDetails += `<div class="flex flex-row"><p class="font-bold w-[200px]">${child} spend is </p><p>: Rs ${currentChildSpends[child].toFixed(2)}</p></div>`;
+                }
+
+                document.getElementById('spend-detail').innerHTML =`<div class="flex flex-row"><p class="font-bold w-[200px]">Event Spends <b>${month}</b> </p><p>: Rs ${totalSpent.toFixed(2)}</p></div>`+ eventSpendDetails;
+                document.getElementById('child-spend-detail').innerHTML =`<div class="flex flex-row"><p class="font-bold w-[200px]"> Child Spends  <b>${month}</b></b> </p><p>: Rs  ${totalClasses}</p></div>` + childSpendDetails; 
             }
 
-            for (let child in currentChildSpends) {
-                totalClasses += currentChildSpends[child];
-                childSpendDetails += `<div class="flex flex-row"><p class="font-bold w-[200px]">${child} spend is </p><p>: Rs ${currentChildSpends[child].toFixed(2)}</p></div>`;
-            }
-
-            document.getElementById('spend-detail').innerHTML =`<div class="flex flex-row"><p class="font-bold w-[200px]">Event Spends <b>${month}</b> </p><p>: Rs ${totalSpent.toFixed(2)}</p></div>`+ eventSpendDetails;
-            document.getElementById('child-spend-detail').innerHTML =`<div class="flex flex-row"><p class="font-bold w-[200px]"> Child Spends  <b>${month}</b></b> </p><p>: Rs  ${totalClasses}</p></div>` + childSpendDetails; 
-        }
-
-        updateSummary('total');
-        const colors=[
-        '#F4CE14',
-        '#E4003A',
-        '#C738BD',
-        '#FFB44F',
-        '#3FA9F5',
-        '#8CC63F',
-        '#FF3E96',
-        '#9A59B5',
-        '#FF8C1A',
-        '#0072BC',
-        '#E3B0A8',
-        '#57A773',
-        '#F2635F',
-        '#A6CEE3',
-        '#1F78B4',
-        '#B2DF8A',
-        '#33A02C',
-        '#FB9A99',
-        '#E31A1C',
-        '#FDBF6F',
-        '#FF7F00',
-        '#FFC0CB',
-        '#00FFFF',
-        '#7FFFD4',
-        '#FFD700',
-        '#FF4500',
-        '#DA70D6',
-        '#808080',
-        '#ADFF2F',
-        '#CD5C5C',
-        '#4682B4',
-        '#FF69B4',
-        '#8A2BE2',
-        '#32CD32',
-        '#FA8072',
-        '#40E0D0',
-        '#DAA520',
-        '#00FF00',
-        '#FF6347',
-        '#FF8C00',
-        '#4B0082',
-        '#FFFF00'
-    ]
-    
-        const spendCtx = document.getElementById('spendChart').getContext('2d');
-        const spendChart = new Chart(spendCtx, {
-            type: 'doughnut',
-            data: {
-                labels: eventNames,
-                datasets: [{
-                    label: 'Total Spends by Event',
-                    data: spendData,
-                    backgroundColor:colors,
+            updateSummary('total');
+            const colors=[
+            '#F4CE14',
+            '#E4003A',
+            '#C738BD',
+            '#FFB44F',
+            '#3FA9F5',
+            '#8CC63F',
+            '#FF3E96',
+            '#9A59B5',
+            '#FF8C1A',
+            '#0072BC',
+            '#E3B0A8',
+            '#57A773',
+            '#F2635F',
+            '#A6CEE3',
+            '#1F78B4',
+            '#B2DF8A',
+            '#33A02C',
+            '#FB9A99',
+            '#E31A1C',
+            '#FDBF6F',
+            '#FF7F00',
+            '#FFC0CB',
+            '#00FFFF',
+            '#7FFFD4',
+            '#FFD700',
+            '#FF4500',
+            '#DA70D6',
+            '#808080',
+            '#ADFF2F',
+            '#CD5C5C',
+            '#4682B4',
+            '#FF69B4',
+            '#8A2BE2',
+            '#32CD32',
+            '#FA8072',
+            '#40E0D0',
+            '#DAA520',
+            '#00FF00',
+            '#FF6347',
+            '#FF8C00',
+            '#4B0082',
+            '#FFFF00'
+        ]
+        
+            const spendCtx = document.getElementById('spendChart').getContext('2d');
+            const spendChart = new Chart(spendCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: eventNames,
+                    datasets: [{
+                        label: 'Total Spends by Event',
+                        data: spendData,
+                        backgroundColor:colors,
 
 
-                    // borderColor: eventNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
-                    cutout: '65%', 
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
+                        // borderColor: eventNames.map((_, i) => `rgba(${(i * 50) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
+                        cutout: '65%', 
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.raw.toFixed(2);
+                                    return label;
                                 }
-                                label += context.raw.toFixed(2);
-                                return label;
                             }
                         }
                     }
                 }
-            }
-        });
-      
-        const childSpendCtx = document.getElementById('childSpendChart').getContext('2d');
-        const childSpendChart = new Chart(childSpendCtx, {
-            type: 'doughnut',
-            data: {
-                labels: childNames,
-                datasets: [{
-                    label: 'Total Spends by Child',
-                    data: childSpendData,
-                    backgroundColor: colors,
-                     borderColor: childNames.map((_, i) => `rgba(${(i * 20) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
-                    cutout: '65%', 
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
+            });
+        
+            const childSpendCtx = document.getElementById('childSpendChart').getContext('2d');
+            const childSpendChart = new Chart(childSpendCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: childNames,
+                    datasets: [{
+                        label: 'Total Spends by Child',
+                        data: childSpendData,
+                        backgroundColor: colors,
+                        borderColor: childNames.map((_, i) => `rgba(${(i * 20) % 255}, ${(i * 80) % 255}, ${(i * 110) % 255}, 1)`),
+                        cutout: '65%', 
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    label += context.raw.toFixed(2);
+                                    return label;
                                 }
-                                label += context.raw.toFixed(2);
-                                return label;
                             }
                         }
                     }
                 }
+            });
+
+            document.getElementById('month-select').addEventListener('change', function(event) {
+                const selectedMonth = event.target.value;
+                let newEventSpends = {};
+                let newChildSpends = {};
+                if (selectedMonth === 'total') {
+                    newEventSpends = eventSpends;
+                    newChildSpends = childSpends;
+                } else {
+                    newEventSpends = monthlyEventSpends[selectedMonth] || {};
+                    newChildSpends = monthlyChildSpends[selectedMonth] || {};
+                }
+
+                updateChart(spendChart, newEventSpends);
+                updateChart(childSpendChart, newChildSpends);
+                updateSummary(selectedMonth);  // Update the summary after changing the month
+            });
+
+            function updateChart(chart, newData) {
+                chart.data.labels = Object.keys(newData);
+                chart.data.datasets[0].data = Object.values(newData);
+                chart.data.datasets[0].backgroundColor = chart.data.labels.map((_, i) => `rgba(${(i * 150) % 255}, ${(i * 180) % 255}, ${(i * 80) % 255}, 0.2)`);
+                chart.data.datasets[0].borderColor = chart.data.labels.map((_, i) => `rgba(${(i * 150) % 255}, ${(i * 180) % 255}, ${(i * 80) % 255}, 1)`);
+                chart.update();
             }
-        });
+        </script>
+    </body>
+    </body>
 
-        document.getElementById('month-select').addEventListener('change', function(event) {
-            const selectedMonth = event.target.value;
-            let newEventSpends = {};
-            let newChildSpends = {};
-            if (selectedMonth === 'total') {
-                newEventSpends = eventSpends;
-                newChildSpends = childSpends;
-            } else {
-                newEventSpends = monthlyEventSpends[selectedMonth] || {};
-                newChildSpends = monthlyChildSpends[selectedMonth] || {};
-            }
-
-            updateChart(spendChart, newEventSpends);
-            updateChart(childSpendChart, newChildSpends);
-            updateSummary(selectedMonth);  // Update the summary after changing the month
-        });
-
-        function updateChart(chart, newData) {
-            chart.data.labels = Object.keys(newData);
-            chart.data.datasets[0].data = Object.values(newData);
-            chart.data.datasets[0].backgroundColor = chart.data.labels.map((_, i) => `rgba(${(i * 150) % 255}, ${(i * 180) % 255}, ${(i * 80) % 255}, 0.2)`);
-            chart.data.datasets[0].borderColor = chart.data.labels.map((_, i) => `rgba(${(i * 150) % 255}, ${(i * 180) % 255}, ${(i * 80) % 255}, 1)`);
-            chart.update();
-        }
-    </script>
-</body>
-</body>
-
-{% endblock %}
-{% block footer %}
-{% include 'fu.html' %}
-{% endblock %}
+    {% endblock %}
+    {% block footer %}
+    {% include 'fu.html' %}
+    {% endblock %}
