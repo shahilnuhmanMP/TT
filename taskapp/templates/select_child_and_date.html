@@ -434,6 +434,13 @@
         <button onclick="filterEvents('{{ child.id }}')">{{ child.name }}</button>
         {% endfor %}
     </div>
+    
+    <div class="button-container w-[98%] flex flex-row justify-end">
+        {% for child in children %}
+        <button class="bg-black" onclick="filterEvents('all')">{{ child.name }}</button>
+        <button onclick="filterEvents('{{ child.id }}')">{{ child.name }}</button>
+        {% endfor %}
+    </div>
 
 
 

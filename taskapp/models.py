@@ -23,6 +23,7 @@ class Child(models.Model):
     color_code = models.CharField(max_length=50 , default='#FFFFFF')
     def __str__(self):
         return self.name
+
 class TrustedPerson(models.Model):
     user = models.ForeignKey(get_user_model(),blank=True, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -103,3 +104,11 @@ class FeePayment(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     payment_entries = models.JSONField(default=list)  # Store payment entries as a list of dictionaries
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+
+
+class Contacts(models.Model):
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together =('user','name')

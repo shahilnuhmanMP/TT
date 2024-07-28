@@ -1,8 +1,7 @@
-
-{% load static tailwind_tags %}
+<!-- {% load static tailwind_tags %} -->
 <!--<!DOCTYPE html>-->
-<html lang="en">
-
+<!-- <html lang="en"> -->
+<!-- 
 <head>
     {% tailwind_css %}
     <title>Sign-in with Google Account</title>
@@ -16,20 +15,17 @@
         authDomain: "psychic-root-399406.firebaseapp.com",
         };
     firebase.initializeApp(config);
-    </script>
+    </script> -->
 
-
-
-
-    <style>
+<!-- <style>
         .button-group {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 20px; /* Adjust as needed */
-        }
+            margin-top: 20px; /* Adjust as needed */ -->
+<!-- } -->
 
-        /* Adjust as needed */
+<!-- /* Adjust as needed */
         .button-group button {
             margin-left: 10px; /* Adjust as needed */
         }
@@ -42,8 +38,8 @@
 
         .g-signin2 .abcRioButton.abcRioButtonLightBlue {
             border-radius: 8px !important;
-            color: black;
-        }
+            color: black; -->
+<!-- }
 
 
         .g-logo {
@@ -56,9 +52,9 @@
 
 <body class="w-full">
     <div class="g-signin2 text" data-onsuccess="onSignIn" data-theme="outline"></div>
-    <div class="g-logo"></div>
+    <div class="g-logo"></div> -->
 
-    <script>
+<!-- <script>
         function onSignIn(googleUser) {
             var id_token = googleUser.getAuthResponse().id_token;
             console.log('ID Token: ' + id_token);
@@ -71,9 +67,9 @@
                     client_id: '165395380569-of14nua8crmk5ecvduuev39st38cklfl.apps.googleusercontent.com',
                 });
             });
-        }
+        } -->
 
-        function signOut() {
+<!-- function signOut() {
             var auth2 = gapi.auth2.getAuthInstance();
             auth2.signOut().then(function () {
                 console.log('User signed out.');
@@ -85,4 +81,16 @@
     </script>
 </body>
 
+</html> -->
+
+<!-- templates/login.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <h2>Login</h2>
+    <a href="{% url 'google_login' %}">Login with Google</a>
+  </body>
 </html>

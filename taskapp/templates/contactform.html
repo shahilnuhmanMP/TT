@@ -15,7 +15,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            box-sizing: border-box;
+
         }
         .contact-form {
             text-align: center;
@@ -97,6 +98,11 @@
             }
         }
 
+        .logo {
+                margin-right: 0 !important;
+            }
+
+
         @media (max-width: 668px) {
             .contact-form {
                 margin: 30% auto 10px;
@@ -111,7 +117,7 @@
             }
         } @media (max-width: 468px) {
             .contact-form {
-                margin: 40% auto 10px;
+                margin: 50% auto 10px;
                 height: auto; 
                 max-width: 83%;
             }
@@ -119,7 +125,7 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- <div class="container"> -->
         <div class="contact-form">
             <h1>Get in touch</h1>
             <div class="icon-container">
@@ -137,8 +143,7 @@
                 
                 <!-- Radio Buttons Section -->
                 <div class="mx-auto max-w-sm" style="display:flex; align-items: center; gap: 30px;  padding:10px; color: rgb(54, 54, 54);">
-                    Is the person is part of 
-                    a company or not
+                   
                     <div class="flex items-center  mb-4" style="display: flex; align-items: center; gap: 10px;" >
                       <input id="radio1" type="radio" name="radio" class="hidden" checked />
                       <label for="radio1" class="flex cursor-pointer" style="text-wrap: nowrap; color: #3E818D; " >
@@ -166,7 +171,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>

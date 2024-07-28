@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import Event
 
 class EventSerializer(serializers.ModelSerializer):
+    username = serializers.ReadOnlyField(source= 'user.username')
+    trusted_person_name =  serializers.ReadOnlyField(source= 'trusted_person.name')
+    child_name = serializers.ReadOnlyField(source= 'child.name')
     class Meta:
         model = Event
         fields = '__all__'
