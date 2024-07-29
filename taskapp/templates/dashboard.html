@@ -88,8 +88,9 @@
             <div class="flex flex-row">
                 {% for child_option in children %}
                 <button type="button" class="child-button {% if child and child_option.id == child.id %}selected{% endif %} " onclick="selectChild('{{ child_option.id }}')">{{ child_option.name }}</button>
-                <button type="button" class="child-button {% if child and child_option.id == child.id %}selected{% endif %} " onclick="selectChild('{{ child_option.id }}')">All</button>
                 {% endfor %}
+                <button type="button" class="child-button  " onclick="selectChild('{{ all }}')">All</button>
+
             </div>
         
         </div> 
@@ -111,16 +112,7 @@
                 </div>
                 <button type="submit" class=" text-white p-1 rounded-lg pl-4 pr-4 h-[35px] mt-3 lg:mt-0" style="background-color: #3E818D;">Submit</button>
             </div>
-
-            
-        
-        
-
-        </div>
-
-    
-
-    
+        </div>    
     </form>
 
     {% if error %}

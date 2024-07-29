@@ -242,22 +242,8 @@
                     {% endif %} -->
         </div>
         
-        <script type="application/json" id="contactsData">
-            
-            {{ contacts|safe }}
-        </script>
-        <script> document.addEventListener('DOMContentLoaded', function() {
-            // Retrieve contacts data from the script tag
-            const contactsDataElement = document.getElementById('contactsData');
-            const contacts = JSON.parse(contactsDataElement.textContent);
-
-            // Store contacts in local storage
-            localStorage.setItem('contacts', JSON.stringify(contacts));
-
-            // Display contacts
-            // displayContacts();
-        });
-        </script>
+    
+       
     </div>
     {% include 'index.html' %}
     {% endif %}

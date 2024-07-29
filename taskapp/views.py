@@ -24,7 +24,6 @@ from .forms import LoginForm, ProfileForm
 from .models import Child, TrustedPerson, Class
 from django.contrib.auth.models import User
 from django.contrib import messages
-from taskapp.models import Contacts
 
 
 def header(request):
@@ -139,9 +138,7 @@ def manage_children_view(request):
     print('came inside manage_children_view request')
     user_children = Child.objects.filter(user=request.user)  # Assuming user is associated with Child model
     trusted_people = TrustedPerson.objects.filter(user=request.user)
-    print(trusted_people)
-    contact_list = Contacts.objects.filter(user = request.user).values_list('name',flat=True)
-    return render(request, 'manage_children.html', {'user_children': user_children, 'trusted_people': trusted_people,'contacts':contact_list})
+    return render(request, 'manage_children.html', {'user_children': user_children, 'trusted_people': trusted_people})
 
 
 
@@ -1130,15 +1127,17 @@ def dashboard_view(request):
                 'event_data': event_data,
             }
             return render(request, 'dashboard.html', context)
-
-    if request.method == 'POST' and not event_data:
+    print(child_id,"child_id")
+    if child_id == "":
+        child=  Child.objects.all()
+    elif request.method == 'POST' and not event_data:
         try:
             child = Child.objects.get(id=child_id)
         except Child.DoesNotExist:
-            child = None
+            child = None     
     else:
         child = Child.objects.filter(user=user).first()
-
+        c
     if child and not event_data:
         events = Event.objects.filter(child=child)
         child_spends_event = {}
@@ -1388,19 +1387,6 @@ def google_callback(request):
     google.fetch_token(TOKEN_URL, client_secret=settings.SIGN_GOOGLE_CLIENT_SECRET, authorization_response=request.build_absolute_uri())
     user_info = google.get(USER_INFO_URL).json()
 
-    contacts_url = 'https://people.googleapis.com/v1/people/me/connections'
-    contacts_params = {
-        'personFields': 'names,emailAddresses',
-    }
-    contacts_response = google.get(contacts_url, params=contacts_params).json()
-    contact_names = []
-
-    for contact in contacts_response['connections']:
-        names = contact.get('names', [])
-        for name in names:
-            display_name = name.get('displayName')
-            if display_name:
-                contact_names.append(display_name)
 
     try:
         user = CustomUser.objects.get(email =user_info['email'],)
@@ -1413,9 +1399,5 @@ def google_callback(request):
         )
         user.set_password(user_info['id'])
         user.save()
-    user_contact_list = Contacts.objects.filter(user__email = user_info['email']).values_list('name',flat=True)
-    Contacts.objects.bulk_create(
-        [Contacts(user=user,name = contact_name) for contact_name in contact_names if contact_name not in user_contact_list]
-    )
     login(request,user)
     return redirect('home')

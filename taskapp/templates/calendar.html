@@ -141,8 +141,22 @@
         >
           <h1>{{child.name}}</h1>
         </div>
+        
 
         {% endfor %}
+        <div
+        class="flex flex-row items-center justify-center mt-2 bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
+      >
+      <a href="#" onclick="navigateToManageChildren(true); return false;">Add Child</a>
+
+      <script>
+        function navigateToManageChildren(child) {
+            const url = `/manage_children?child=${child}`;
+            window.location.href = url;
+        }
+        </script>
+    </div>
+      
       </div>
     </div>
   </div>
@@ -180,6 +194,21 @@
         </div>
 
         {% endfor %}
+
+        <div
+        class="flex flex-row items-center justify-center mt-2 bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
+      >
+      <a href="#" onclick="navigateToManageTrust(true); return false;">Add Trusted Person</a>
+
+      <script>
+        function navigateToManageTrust(trust) {
+          console.log(trust,"yr")
+            const url = `/manage_children?trust=${trust}`;
+            window.location.href = url;
+        }
+        </script>
+    </div>
+      
       </div>
     </div>
   </div>
