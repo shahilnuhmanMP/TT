@@ -82,30 +82,61 @@ box-shadow:
         }
 
         .marquee {
-	overflow-x: clip;
-	white-space: nowrap;
-	position: relative;
-	width: 100%;
+    overflow: hidden;
+    width: 100%;
 }
 
 .marquee-inner {
-	display: flex;
-	align-items: center;
-	gap: 2vw;
-	padding: 12vh 0;
-	will-change: transform;
+    display: flex;
+    align-items: center;
+    padding: 12vh 0;
+    will-change: transform;
+    animation: marquee 15s linear infinite;
 }
 
 .marquee-inner img {
-	height: 100%;
-	transition: transform 0.5s;
-	flex-shrink: 0;
-	width: 20vw;
-	border-radius: 2rem;
+    height: 100%;
+    transition: transform 0.5s;
+    flex-shrink: 0;
+    width: 20vw;
+    border-radius: 2rem;
 }
 
 .marquee-inner img:hover {
-	transform: scale(1.03);
+    transform: scale(1.03);
+}
+
+.marquee-item {
+    flex: 0 0 auto;
+    width: 50%; /* Adjust as needed */
+}
+
+.marquee-item img {
+    width: 80%; /* Adjust as needed */
+    height: 500px; /* Adjust as needed */
+    object-fit: cover; /* Ensures the image covers the entire div without stretching */
+    display: block;
+}
+
+.marquee-item h3,
+.marquee-item p {
+    margin: 0;
+    padding: 5px;
+    text-align: center;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
+@media (max-width: 768px) {
+    .marquee-item img {
+        height: 300px;
+    }
+    .marquee-item {
+        width: 70%;
+    }
 }
 
 
@@ -276,7 +307,6 @@ box-shadow:
             </div>
         </div>
     </div>
-    
 <script>document.addEventListener("DOMContentLoaded", () => {
 	const marquee = document.querySelector(".marquee-inner");
 	const speed = 1; // Scrolling Speed

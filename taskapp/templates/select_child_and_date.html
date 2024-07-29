@@ -8,6 +8,13 @@
 {% tailwind_css %}
 <!-- Include jQuery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+ <!-- Font Awesome CDN -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+ <!-- jQuery CDN -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ <!-- jQuery UI CDN -->
+ <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <style>
     body {
         font-family: 'Arial', sans-serif;
@@ -334,7 +341,7 @@
 
     .fixed-add-icon {
         position: fixed;
-        top: 600;
+        top: 550;
         right: 30px;
         width: 70px;
         height: 70px;
@@ -352,7 +359,7 @@
 
     .fixed-tach-icon {
         position: fixed;
-        top: 680px;
+        top: 630px;
         right: 30px;
         width: 70px;
         height: 70px;
@@ -408,9 +415,40 @@
     color: white;
     margin-bottom: 30px !important;
 }
+
+#date {
+  width: 150px;
+  outline: none;
+  border: 1px solid #aaa;
+  padding: 6px 28px;
+  color: #aaa;
+}
+
+.date-container {
+  position: relative;
+  float: left;
+  .date-text {
+    position: absolute;
+    top: 6px;
+    left: 12px;
+    color: #aaa;
+  }
+  
+  .date-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    /* pointer-events: none; */
+    cursor: pointer;
+    color: #aaa;
+  }
+}
+
+
 </style>
 
 <body>
+
 
     <div class="flex w-full flex-col items-center">
         <div class="calendar-container w-[100%] lg:w-[70%]" style="margin-top:200px;">
@@ -420,9 +458,40 @@
                 <span class="font-bold mr-3 ml-3 text-sm lg:text-3xl" id="month-year"></span>
                 <button id="next-button"><img src="{% static 'taskapp/images/forward.png' %}"
                         class="h-[30px] w-[30px]" /></button>
+                        <button class="btn" id="monthlyViewBtn">
+                            <i class="fas fa-calendar-alt"></i>
+                            Monthly View
+                        </button>
+                        <div id="calendar"></div>
+                        
+                        <script>
+                            $(document).ready(function() {
+                                $("#monthlyViewBtn").click(function() {
+                                    $("#calendar").dialog({
+                                        title: "Monthly Calendar",
+                                        width: 300,
+                                        modal: true,
+                                        open: function() {
+                                            $("#calendar").datepicker({
+                                                changeMonth: true,
+                                                changeYear: true,
+                                                showButtonPanel: true,
+                                                dateFormat: 'MM yy',
+                                                onClose: function(dateText, inst) {
+                                                    $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
             </div>
+
             <div class="calendar-slider mt-5" id="calendar-dates"></div>
             <div id="selected-date"></div>
+            
         </div>
     </div>
 
