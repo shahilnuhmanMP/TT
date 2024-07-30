@@ -9,6 +9,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@preline/select/dist/select.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/@preline/select/dist/select.min.css" rel="stylesheet">
 
+    <!-- Include chosen.js library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+
 </head>
 <style>
   body{
@@ -269,20 +274,48 @@
                     }
                 });
             </script>
+ <!-- Interests Field as dropdown with multiple choices -->
  <div>
-  <label for="id_interests" style="color: #3E818D;">Interests:</label>
+  <label for="id_interests">Interests:</label>
 </div>
-<div class="sd-multiSelect form-group">
-  <select multiple id="current-job-role" class="sd-CustomSelect">
-    <option value="music">Music</option>
-    <option value="sports">Sports</option>
-    <option value="artcraft">Arts & Crafts</option>
-    <option value="movement">Movement</option>
-    <option value="educational">Educational</option>
-    <option value="boardgame">Board Games</option>
-    <option value="weekend">Weekend Activities / Adventure</option>
+<div>
+  <select multiple name="interests" id="id_interests">
+      <option value="music">Music</option>
+      <option value="sports">Sports</option>
+      <option value="artcraft">Arts & Crafts</option>
+      <option value="movement">Movement</option>
+      <option value="educational">Educational</option>
+      <option value="boardgame">Board Games</option>
+      <option value="weekend">Weekend Activities / Adventure</option>
+      <!-- Add more options as needed -->
   </select>
 </div>
+<div>
+  <label for="selected_interests">Selected Interests:</label>
+</div>
+<div>
+  <input type="text" id="selected_interests" readonly>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+<script>
+  $(document).ready(function () {
+      $('#id_interests').chosen({
+          placeholder_text_multiple: 'Select interests',
+          width: '100%',
+          max_selected_options: 10 // Set the maximum number of selected options if needed
+      });
+
+      $('#id_interests').on('change', function() {
+          var selectedOptions = $(this).val();
+          $('#selected_interests').val(selectedOptions.join(', '));
+      });
+
+      // Trigger change event to populate input on page load if there are already selected options
+      $('#id_interests').trigger('change');
+  });
+</script>
 
             <input type="hidden" name="color_code" id="color_code" required>
             <div class=" flex flex-row items-center mt-3 ">
