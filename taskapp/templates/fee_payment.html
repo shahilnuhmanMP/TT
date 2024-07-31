@@ -187,9 +187,9 @@
     });
 </script>
 
-<body class="flex flex-col w-full h-full">
+<body class="flex flex-col w-full mt-[100px]">
 
-<h1 class="mt-[100px] font-bold text-3xl" >Fee Payment for {{ event.summary }} - {{ event.child.name }}</h1>
+<h1 class="mt-[100px] font-bold text-3xl" >Fee Payment {{ event.summary }} - {{ event.child.name }}</h1>
 
     {% if error %}
         <p class="error">{{ error }}</p>
