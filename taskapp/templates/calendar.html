@@ -120,7 +120,7 @@
   <div
     id="Modal"
     class="h-full w-full bg-black absolute flex justify-center items-start p-2 lg:p-0"
-    style="display: none; background-color: rgba(0, 0, 0, 0.5);z-index: 2;"
+    style="display: none; background-color: rgba(0, 0, 0, 0.5); z-index: 2"
   >
     <div
       class="h-[300px] w-[100%] mt-[150px] lg:mt-[60px] lg:w-[40%] bg-white rounded-xl flex flex-col p-4"
@@ -141,22 +141,22 @@
         >
           <h1>{{child.name}}</h1>
         </div>
-        
 
         {% endfor %}
         <div
-        class="flex flex-row items-center justify-center mt-2 bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
-      >
-      <a href="#" onclick="navigateToManageChildren(true); return false;">Add Child</a>
+          class="flex flex-row items-center justify-center mt-2 bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
+        >
+          <a href="#" onclick="navigateToManageChildren(true); return false;"
+            >Add Child</a
+          >
 
-      <script>
-        function navigateToManageChildren(child) {
-            const url = `/manage_children?child=${child}`;
-            window.location.href = url;
-        }
-        </script>
-    </div>
-      
+          <script>
+            function navigateToManageChildren(child) {
+              const url = `/manage_children?child=${child}`;
+              window.location.href = url;
+            }
+          </script>
+        </div>
       </div>
     </div>
   </div>
@@ -164,7 +164,7 @@
   <div
     id="Modal2"
     class="h-full w-full bg-black absolute flex justify-center items-start p-2 lg:p-0"
-    style="display: none; background-color: rgba(0, 0, 0, 0.5);z-index: 2;"
+    style="display: none; background-color: rgba(0, 0, 0, 0.5); z-index: 2"
   >
     <div
       class="h-[500px] w-[100%] mt-[150px] lg:mt-[60px] lg:w-[40%] bg-white rounded-xl flex flex-col p-4"
@@ -196,19 +196,20 @@
         {% endfor %}
 
         <div
-        class="flex flex-row items-center justify-center mt-2 bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
-      >
-      <a href="#" onclick="navigateToManageTrust(true); return false;">Add Trusted Person</a>
+          class="flex flex-row items-center justify-center mt-2 bg-[#3E818D] text-white h-[50px] p-3 font-bold rounded-lg mr-3"
+        >
+          <a href="#" onclick="navigateToManageTrust(true); return false;"
+            >Add Trusted Person</a
+          >
 
-      <script>
-        function navigateToManageTrust(trust) {
-          console.log(trust,"yr")
-            const url = `/manage_children?trust=${trust}`;
-            window.location.href = url;
-        }
-        </script>
-    </div>
-      
+          <script>
+            function navigateToManageTrust(trust) {
+              console.log(trust, "yr");
+              const url = `/manage_children?trust=${trust}`;
+              window.location.href = url;
+            }
+          </script>
+        </div>
       </div>
     </div>
   </div>
@@ -257,8 +258,9 @@
         <input type="hidden" id="eventId" name="eventId" />
 
         <div class="flex flex-col items-start w-full">
-          <div class="flex flex-col lg:flex-row justify-between w-full mt-5 relative">
-
+          <div
+            class="flex flex-col lg:flex-row justify-between w-full mt-5 relative"
+          >
             <div
               class="flex flex-col items-start w-full lg:w-[100%] mr-5 lg:mr-0"
             >
@@ -267,7 +269,7 @@
                 id="summary"
                 placeholder="Event Title"
                 class="bg-[white] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
-                style="color: #6b7280; height: 70px; border: 1px solid #3e818c;"
+                style="color: #6b7280; height: 70px; border: 1px solid #3e818c"
               />
             </div>
           </div>
@@ -302,7 +304,7 @@
                 <input
                   id="child"
                   value="Select child"
-                  name="child"
+                  name="child_name"
                   style="
                     color: black;
                     width: 100%;
@@ -323,6 +325,7 @@
                   "
                 >
                   {% for child in user_children %}
+
                   <option value="{{ child.id }}">{{ child.name }}</option>
                   {% endfor %}
                 </select>
@@ -335,12 +338,15 @@
             ></div>
           </div>
 
-          <div class=" flex-col justify-between   relative" style="flex-wrap: wrap;">
+          <div
+            class="flex-col justify-between relative"
+            style="flex-wrap: wrap"
+          >
             <div
-              class="  items-start  mr-5 lg:mr-0 mt-2 lg:mt-1"
-              style="  gap: 10px;"
+              class="items-start mr-5 lg:mr-0 mt-2 lg:mt-1"
+              style="gap: 10px"
             >
-              <div style="display: flex; justify-content: start;">
+              <div style="display: flex; justify-content: start">
                 <input
                   type="datetime-local"
                   id="startDateTime"
@@ -353,12 +359,15 @@
                     border-radius: 5px;
                     border: 1px solid #aab1b6;
                     background-color: #d9d9d9;
-                    width:80%
+                    width: 80%;
                   "
                 />
               </div>
 
-              <div class="ms-5 mt-5" style="display: flex; justify-content: start;">
+              <div
+                class="ms-5 mt-5"
+                style="display: flex; justify-content: start"
+              >
                 <input
                   type="time"
                   id="endTime"
@@ -371,45 +380,43 @@
                     border-radius: 5px;
                     border: 1px solid #aab1b6;
                     background-color: #d9d9d9;
-                    width:80%
+                    width: 80%;
                   "
                 />
               </div>
             </div>
-
-            
           </div>
           <div
-          class="flex flex-col items-start w-full lg:w-[50%] mr-5 lg:mr-0 mt-5 lg:mt-5"
-        >
-          <div
-            class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
-            style="
-              color: black;
-              border-radius: 5px;
-              border: 1px solid #aab1b6;
-              background-color: #d9d9d9;
-              width: 240px;
-            "
+            class="flex flex-col items-start w-full lg:w-[50%] mr-5 lg:mr-0 mt-5 lg:mt-5"
           >
-            <select
-              id="repeat"
-              name="repeat"
-              required
+            <div
+              class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
               style="
-                background-color: #d9d9d9;
-                width: 100%;
-                border: none;
+                color: black;
                 border-radius: 5px;
+                border: 1px solid #aab1b6;
+                background-color: #d9d9d9;
+                width: 240px;
               "
             >
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="custom">Custom</option>
-            </select>
+              <select
+                id="repeat"
+                name="repeat"
+                required
+                style="
+                  background-color: #d9d9d9;
+                  width: 100%;
+                  border: none;
+                  border-radius: 5px;
+                "
+              >
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
           </div>
-        </div>
           <div class="flex flex-col lg:flex-row justify-between w-full mt-5">
             <div
               class="flex flex-col items-start w-full lg:w-[45%] mr-5 lg:mr-0"
@@ -437,7 +444,7 @@
                 id="feeAmount"
                 name="fee_amount"
                 placeholder="Fee Amount"
-                class=" w-full border-2 border-[#f1f5f9] rounded-lg text-lg h-[40px] lg:text-sm w-full"
+                class="w-full border-2 border-[#f1f5f9] rounded-lg text-lg h-[40px] lg:text-sm w-full"
                 style="
                   color: black;
                   border-radius: 5px;
@@ -506,15 +513,15 @@
                 >
                 <input
                   class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm w-full"
-                  style= "color: black;
-                  border-radius: 5px;
-                  border: 1px solid #aab1b6;
-                  background-color: #d9d9d9;
+                  style="
+                    color: black;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
                   "
                   type="date"
                   id="afterDateInput"
                   name="afterDateInput"
-                  
                 />
               </div>
 
@@ -525,10 +532,11 @@
               >
                 <input
                   class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm w-full"
-                  style= "color: black;
-                  border-radius: 5px;
-                  border: 1px solid #aab1b6;
-                  background-color: #d9d9d9;
+                  style="
+                    color: black;
+                    border-radius: 5px;
+                    border: 1px solid #aab1b6;
+                    background-color: #d9d9d9;
                   "
                   type="number"
                   id="afterOccurrencesInput"
@@ -671,18 +679,20 @@
           success: function (response) {
             const event = response;
             console.log(event);
+            var ele = document.getElementById("child");
+            var childId = document.getElementById("childId");
+
+            var trustedele = document.getElementById("trustedPerson");
+            var trustedId = document.getElementById("tpersonId");
+
+            childId.value = event.child;
+            ele.value = event.child_name;
+            trustedId.value = event.trusted_person;
+            trustedele.value = event.trusted_person_name;
 
             document.getElementById("eventId").value = event.id;
-
-            document.getElementById("child").value = event.child;
-
-            if (event.trusted_person) {
-              document.getElementById("trustedPerson").value =
-                event.trusted_person;
-            } else {
-              document.getElementById("trustedPerson").value = 0; // Assuming 0 is for 'Me'
-            }
-
+            document.getElementById("feeAmount").value = event.fee_amount;
+            document.getElementById("feeDate").value = event.fee_date;
             document.getElementById("summary").value = event.summary;
             // Format start date and time correctly
             const startDateTime = new Date(event.start_datetime);
@@ -692,13 +702,13 @@
 
             // Format end time correctly
             const endTime = new Date(event.end_datetime);
-            const formattedEndTime = `${endTime
-              .getHours()
-              .toString()
-              .padStart(2, "0")}:${endTime
-              .getMinutes()
-              .toString()
-              .padStart(2, "0")}`;
+            const formattedEndTime = endTime.toLocaleTimeString("en-GB", {
+              hour: "2-digit",
+              minute: "2-digit",
+              timeZone: "UTC",
+            });
+
+
             document.getElementById("endTime").value = formattedEndTime;
 
             document.getElementById("repeat").value = event.repeat;
@@ -728,9 +738,6 @@
               document.getElementById("afterOccurrencesDiv").style.display =
                 "none";
             }
-
-            document.getElementById("feeAmount").value = event.fee_amount;
-            document.getElementById("feeDate").value = event.fee_date;
 
             openFormModal();
           },
@@ -914,7 +921,9 @@
       class="flex flex-col w-full lg:w-[50%] items-start lg:pr-10 lg:pl-10 p-2 p-5"
       style=""
     >
-      <h2 class="text-3xl font-bold" style="color: #3e818c">Scheduled Events</h2>
+      <h2 class="text-3xl font-bold" style="color: #3e818c">
+        Scheduled Events
+      </h2>
       <div
         class="flex flex-col w-full mt-5 scrollable-container"
         style="overflow-y: scroll; height: 400px"
