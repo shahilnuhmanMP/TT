@@ -204,7 +204,6 @@
 
           <script>
             function navigateToManageTrust(trust) {
-              console.log(trust, "yr");
               const url = `/manage_children?trust=${trust}`;
               window.location.href = url;
             }
@@ -574,8 +573,6 @@
       function selectchild(valuee, id) {
         var ele = document.getElementById("child");
         var childId = document.getElementById("childId");
-        console.log("data1:" + ele.value);
-        console.log("value=" + valuee);
 
         childId.value = id;
         ele.value = valuee;
@@ -584,8 +581,6 @@
       function selectTperson(value, id) {
         var ele = document.getElementById("trustedPerson");
         var tpid = document.getElementById("tpersonId");
-        console.log("data1:" + ele.value);
-        console.log("value=" + value);
         closeModal("Modal2");
         tpid.value = id;
         ele.value = value;
@@ -678,18 +673,25 @@
           url: `/api/events/${eventId}/`,
           success: function (response) {
             const event = response;
-            console.log(event);
             var ele = document.getElementById("child");
             var childId = document.getElementById("childId");
 
-            var trustedele = document.getElementById("trustedPerson");
-            var trustedId = document.getElementById("tpersonId");
-
             childId.value = event.child;
             ele.value = event.child_name;
-            trustedId.value = event.trusted_person;
-            trustedele.value = event.trusted_person_name;
 
+            if(event.trusted_person==null){
+              var trustedele = document.getElementById("trustedPerson");
+              var trustedId = document.getElementById("tpersonId");
+              trustedId.value = String(event.user);
+              trustedele.value = event.username;
+            }
+            else{
+              var trustedele = document.getElementById("trustedPerson");
+              var trustedId = document.getElementById("tpersonId");
+              trustedId.value = String(event.trusted_person);
+              trustedele.value = event.trusted_person_name;
+            }
+            
             document.getElementById("eventId").value = event.id;
             document.getElementById("feeAmount").value = event.fee_amount;
             document.getElementById("feeDate").value = event.fee_date;
@@ -708,27 +710,30 @@
               timeZone: "UTC",
             });
 
-
             document.getElementById("endTime").value = formattedEndTime;
 
             document.getElementById("repeat").value = event.repeat;
 
-            if (event.repeat === "custom") {
-              document.getElementById("customRepeat").style.display = "block";
-              event.custom_repeat_days.forEach((day) => {
-                document.getElementById(`occurrenceDay_${day}`).checked = true;
-              });
-            } else {
-              document.getElementById("customRepeat").style.display = "none";
-            }
+            // if (event.repeat === "custom") {
+            //   document.getElementById("customRepeat").style.display = "block";
+            //   event.custom_repeat_days.forEach((day) => {
+            //     document.getElementById(`occurrenceDay_${day}`).checked = true;
+            //   });
+            // } else {
+            //   document.getElementById("customRepeat").style.display = "none";
+            // }
 
             document.getElementById("recurrenceEnd").value =
               event.recurrence_end_option;
-            if (event.recurrence_end_option === "afterDate") {
+            if (String(event.recurrence_end_option) === "afterDate") {
               document.getElementById("afterDateDiv").style.display = "block";
               document.getElementById("afterDateInput").value =
                 event.recurrence_end_date;
-            } else if (event.recurrence_end_option === "afterOccurrences") {
+
+
+            } else if (
+              String(event.recurrence_end_option) === "afterOccurrences"
+            ) {
               document.getElementById("afterOccurrencesDiv").style.display =
                 "block";
               document.getElementById("afterOccurrencesInput").value =
@@ -862,7 +867,6 @@
           fee_amount: feeAmount,
           fee_date: feeDate,
         };
-        console.log(eventData, "ayakkumpo");
 
         const method = eventId ? "PUT" : "POST";
         const url = eventId ? `/api/events/${eventId}/` : baseUrl;
@@ -884,14 +888,12 @@
       }
 
       function deleteEvent(eventId) {
-        console.log("del", eventId);
         const confirmDelete = confirm(
           "Are you sure you want to delete this event?"
         );
 
         if (confirmDelete) {
           deleteEvent1(eventId);
-          console.log("del2", eventId, "${eventId}");
         }
       }
 
@@ -905,7 +907,6 @@
             "X-CSRFToken": csrftoken,
           },
           success: function (response) {
-            console.log(response);
             alert("Event deleted successfully!");
             location.reload();
           },
