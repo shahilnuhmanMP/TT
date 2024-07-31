@@ -682,7 +682,7 @@
             if(event.trusted_person==null){
               var trustedele = document.getElementById("trustedPerson");
               var trustedId = document.getElementById("tpersonId");
-              trustedId.value = String(event.user);
+              trustedId.value = event.user;
               trustedele.value = event.username;
             }
             else{
@@ -803,7 +803,7 @@
 
         const childId = document.getElementById("childId").value;
 
-        const trustedPersonId = document.getElementById("tpersonId").value;
+        const trustedPersonId = document.getElementById("tpersonId").value==0?null:document.getElementById("tpersonId").value;
         const feeAmount = document.getElementById("feeAmount").value;
         const feeDate = document.getElementById("feeDate").value;
 
@@ -814,7 +814,6 @@
           !repeat ||
           !feeAmount ||
           !feeDate ||
-          !trustedPersonId ||
           !childId
         ) {
           alert("All fields are mandatory.");
