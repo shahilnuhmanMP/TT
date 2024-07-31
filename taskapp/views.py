@@ -301,18 +301,15 @@ class EventRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def put(self, request, *args, **kwargs):
         print("PUT method invoked on EventRetrieveUpdateDestroyView")
-
-        # Extract the event ID from the URL parameters
+        response = super().put(request, *args, **kwargs)
         event_id = self.kwargs.get('pk')
-        print(event_id,'eventidddd')
-        if event_id:
+        if response.status_code == 200 and event_id:
             generate_and_save_occurrences(event_id)
-        return super().put(request, *args, **kwargs)
+        return response
 
     def delete(self, request, *args, **kwargs):
         print("DELETE method invoked on EventRetrieveUpdateDestroyView")
         return super().delete(request, *args, **kwargs)
-
 
 
 @csrf_exempt
