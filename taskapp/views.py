@@ -311,14 +311,14 @@ def save_event(request):
         repeat = data.get('repeat')
         custom_repeat_days = data.get('customRepeatDays', [])
 
-        recurrence_end_option = data.get('recurrenceEndOption')
-        recurrence_end_date = data.get('recurrenceEndDate')
-        recurrence_occurrences = data.get('recurrenceOccurrences')
+        recurrence_end_option = data.get('recurrence_end_option')
+        recurrence_end_date = data.get('recurrence_end_date')
+        recurrence_occurrences = data.get('recurrence_occurrences')
         fee_amount = Decimal(data.get('fee_amount'))
         fee_date = data.get('fee_date')
 
         child_id = data.get('childId')
-        trusted_person_id = data.get('trustedPersonId')
+        trusted_person_id = data.get('trusted_person')
         # print("ttidtype", type(trusted_person_id))
 
         user = request.user
