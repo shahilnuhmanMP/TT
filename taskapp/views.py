@@ -295,6 +295,25 @@ class EventRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated]
 
+    def get(self, request, *args, **kwargs):
+        print("GET method invoked on EventRetrieveUpdateDestroyView")
+        return super().get(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        print("PUT method invoked on EventRetrieveUpdateDestroyView")
+
+        # Extract the event ID from the URL parameters
+        event_id = self.kwargs.get('pk')
+        print(event_id,'eventidddd')
+        if event_id:
+            generate_and_save_occurrences(event_id)
+        return super().put(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        print("DELETE method invoked on EventRetrieveUpdateDestroyView")
+        return super().delete(request, *args, **kwargs)
+
+
 
 @csrf_exempt
 @login_required
