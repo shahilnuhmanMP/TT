@@ -113,6 +113,15 @@
       height: auto;
     }
   }
+
+  @media (max-width: 768px) {
+    #startDateTime {
+      min-width: 220px;
+    }
+    #endTime {
+      min-width: 220px;
+    }
+  }
 </style>
 {% tailwind_css %}
 
@@ -345,28 +354,31 @@
               class="items-start mr-5 lg:mr-0 mt-2 lg:mt-1"
               style="gap: 10px"
             >
-              <div style="display: flex; justify-content: start">
+            <label style="display: flex;" class="mt-5">Select start date</label>
+              <div style="display: flex; justify-content: start;">
                 <input
                   type="datetime-local"
                   id="startDateTime"
                   name="startDateTime"
                   placeholder="start date"
                   required
-                  class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] mt-5 rounded-lg text-lg h-[40px] lg:text-sm"
+                  class="bg-[#f8fafc] w-full border-2 border-[#f1f5f9] text-[#e2e8f0] mt-2 rounded-lg text-lg h-[40px] lg:text-sm"
                   style="
                     color: black;
                     border-radius: 5px;
                     border: 1px solid #aab1b6;
                     background-color: #d9d9d9;
-                    width: 80% !important;
+                    width: 100% !important;
                   "
                 />
               </div>
+              <label style="display: flex;" class="mt-5">End time</label>
 
               <div
-                class="ms-5 mt-5"
+                class="ms-5 mt-2"
                 style="display: flex; justify-content: start"
               >
+
                 <input
                   type="time"
                   id="endTime"
@@ -376,11 +388,10 @@
                   class="bg-[#f8fafc] w-full ms-2 border-2 border-[#f1f5f9] text-[#e2e8f0] rounded-lg text-lg h-[40px] lg:text-sm"
                   style="
                     color: black;
-                    width: 100%;
                     border-radius: 5px;
                     border: 1px solid #aab1b6;
                     background-color: #d9d9d9;
-                    width: 80% !important;
+                    width: 100% !important;
                   "
                 />
               </div>
